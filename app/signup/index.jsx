@@ -46,9 +46,11 @@ export default function Index() {
             .post(backend_url + "v1/user/signup", formData)
             .then((response) => {
                 console.log(response.data);
+                router.push('/login')
             })
             .catch((err) => {
                 console.log(err);
+                router.push("/login")
             });
     }
     return (

@@ -17,29 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function LoginScreen() {
-    function handleBackPress() {
-        BackHandler.exitApp();
-    }
-    const [showPassword, setShowPassword] = useState(true);
-    const [token, setToken] = useState(false);
-
-    const [submit, setSubmit] = useState(false);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
-    useFocusEffect(
-        React.useCallback(() => {
-            BackHandler.addEventListener("hardwareBackPress", handleBackPress);
-            return () => {
-                BackHandler.removeEventListener(
-                    "hardwareBackPress",
-                    handleBackPress
-                );
-            };
-        })
-    );
+export default function Temp() {
     useEffect(() => {
         async function fetchData() {
             const token = await AsyncStorage.getItem("BearerToken");
@@ -48,7 +26,6 @@ export default function LoginScreen() {
     }, []);
 
     async function removeToken() {
-        console.log("hello")
         await AsyncStorage.removeItem("BearerToken");
     }
     return (
@@ -61,9 +38,6 @@ export default function LoginScreen() {
                     >
                         <Text className="text-white">Remove</Text>
                     </Pressable>
-                    <Link href={'/login'} className="border border-black-500 p-5 bg-blue-500 rounded-lg">
-                        <Text className="text-white">login</Text>
-                    </Link>
                 </View>
             </ScrollView>
         </SafeAreaView>

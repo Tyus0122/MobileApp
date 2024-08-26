@@ -13,28 +13,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
+import ToastManager, { Toast } from "expo-react-native-toastify";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
-    const [isShowContent, setIsShowContent] = useState(true);
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const token = await AsyncStorage.getItem("BearerToken");
-    //         const headers = {
-    //             authorization: "Bearer " + token,
-    //             "content-type": "application/json",
-    //         };
-    //         axios
-    //             .get(backend_url + "v1/user/login", {headers})
-    //             .then((response) => {
-    //                 console.log('apicallsent')
-    //                 setIsShowContent(true)
-    //             })
-    //             .catch((err) => {
-    //                 router.push("/dashboard");
-    //             });
-    //     }
-    //     fetchData();
-    // },[]);
     const [showPassword, setShowPassword] = useState(true);
     const [isChecked, setIsChecked] = useState(false);
     const [submit, setSubmit] = useState(false);
@@ -51,11 +32,16 @@ export default function LoginScreen() {
                 router.push("/dashboard");
             })
             .catch((err) => {
-                console.log(err.status);
+                if(err.status===404){
+                    Toast.error("Email or password is incorrect")
+                    setSubmit(false)
+                }
+                console.log(err.status===404);
             });
     }
-    return isShowContent ? (
+    return (
         <SafeAreaView>
+            <ToastManager duration={3000} />
             <ScrollView keyboardShouldPersistTaps={"always"}>
                 <View className="h-screen bg-blue-50 p-[15%]">
                     <View className="items-center mt-[40px] mb-5">
@@ -175,15 +161,6 @@ export default function LoginScreen() {
                     </View>
                 </View>
             </ScrollView>
-        </SafeAreaView>
-    ) : (
-        <SafeAreaView>
-            <View className="h-screen flex items-center justify-center">
-                <ActivityIndicator size={"large"} color={"blue"} />
-                <Text className="mt-3 ml-4 text-xl font-semibold">
-                    Loading ...
-                </Text>
-            </View>
         </SafeAreaView>
     );
 }

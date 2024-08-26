@@ -20,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
     function handleBackPress() {
         BackHandler.exitApp();
+        return true;
     }
     const [showPassword, setShowPassword] = useState(true);
     const [token, setToken] = useState(false);
@@ -48,7 +49,6 @@ export default function LoginScreen() {
     }, []);
 
     async function removeToken() {
-        console.log("hello")
         await AsyncStorage.removeItem("BearerToken");
     }
     return (
@@ -56,7 +56,7 @@ export default function LoginScreen() {
             <ScrollView keyboardShouldPersistTaps={"always"}>
                 <View className="h-screen flex items-center justify-center">
                     <Link href={'/temp'} className="border border-black-500 p-5 bg-blue-500 rounded-lg">
-                        <Text className="text-white">login</Text>
+                        <Text className="text-white">temp</Text>
                     </Link>
                 </View>
             </ScrollView>
