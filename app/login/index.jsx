@@ -15,20 +15,26 @@ import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
-    
-    useEffect(() => {
-        async function fetchData() {
-            const token = await AsyncStorage.getItem("BearerToken");
-            console.log("token")
-            axios
-                .get(backend_url + "v1/user/login")
-                .then((response) => {
-                    router.push("/dashboard");
-                })
-                .catch((err) => {});
-        }
-        fetchData();
-    }, []);
+    const [isShowContent, setIsShowContent] = useState(true);
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         const token = await AsyncStorage.getItem("BearerToken");
+    //         const headers = {
+    //             authorization: "Bearer " + token,
+    //             "content-type": "application/json",
+    //         };
+    //         axios
+    //             .get(backend_url + "v1/user/login", {headers})
+    //             .then((response) => {
+    //                 console.log('apicallsent')
+    //                 setIsShowContent(true)
+    //             })
+    //             .catch((err) => {
+    //                 router.push("/dashboard");
+    //             });
+    //     }
+    //     fetchData();
+    // },[]);
     const [showPassword, setShowPassword] = useState(true);
     const [isChecked, setIsChecked] = useState(false);
     const [submit, setSubmit] = useState(false);
@@ -48,7 +54,7 @@ export default function LoginScreen() {
                 console.log(err.status);
             });
     }
-    return (
+    return isShowContent ? (
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps={"always"}>
                 <View className="h-screen bg-blue-50 p-[15%]">
@@ -169,6 +175,15 @@ export default function LoginScreen() {
                     </View>
                 </View>
             </ScrollView>
+        </SafeAreaView>
+    ) : (
+        <SafeAreaView>
+            <View className="h-screen flex items-center justify-center">
+                <ActivityIndicator size={"large"} color={"blue"} />
+                <Text className="mt-3 ml-4 text-xl font-semibold">
+                    Loading ...
+                </Text>
+            </View>
         </SafeAreaView>
     );
 }

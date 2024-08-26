@@ -55,7 +55,13 @@ export default function LoginScreen() {
         <SafeAreaView>
             <ScrollView keyboardShouldPersistTaps={"always"}>
                 <View className="h-screen flex items-center justify-center">
-                    <Link href={'/temp'} className="border border-black-500 p-5 bg-blue-500 rounded-lg">
+                    <Pressable
+                        className="border border-black-500 p-5 bg-blue-500 rounded-lg m-5"
+                        onPress={removeToken}
+                    >
+                        <Text className="text-white">Remove</Text>
+                    </Pressable>
+                    <Link href={'/login'} className="border border-black-500 p-5 bg-blue-500 rounded-lg">
                         <Text className="text-white">login</Text>
                     </Link>
                 </View>
