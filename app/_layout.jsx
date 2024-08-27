@@ -11,6 +11,7 @@ export default function RootLayout() {
                 <Stack.Screen name="signup/index" options={{headerShown:false}}/>
                 <Stack.Screen name="dashboard/index" options={{headerShown:false}}/>
                 <Stack.Screen name="temp/index" options={{headerShown:false}}/>
+                <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
             </Stack>
     );
 }

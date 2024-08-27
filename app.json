@@ -4,11 +4,11 @@
     "slug": "tyuss",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/tyuss/loginLogo.jpg",
+    "icon": "./assets/tyuss/loginLogo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/tyuss/loginLogo.jpg",
+      "image": "./assets/tyuss/loginLogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/tyuss/loginLogo.jpg",
+        "foregroundImage": "./assets/tyuss/loginLogo.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/tyuss/loginLogo.jpg"
+      "favicon": "./assets/tyuss/loginLogo.png"
     },
     "plugins": [
       "expo-router"

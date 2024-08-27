@@ -8,12 +8,11 @@ import axios from "axios";
 import { backend_url } from "@/constants/constants";
 export default function Index() {
     const [isLoggedin, setIsLoggedin] = useState("");
-    const [ltoken, setltoken] = useState("empty");
     const [dashboard_json, setdashboard_json] = useState({});
     useEffect(() => {
         async function fetchData() {
             const token = await AsyncStorage.getItem("BearerToken");
-            setltoken(token);
+
             const headers = {
                 authorization: "Bearer " + token,
                 "content-type": "application/json",
@@ -38,7 +37,7 @@ export default function Index() {
             </View>
         </SafeAreaView>
     ) : isLoggedin === true ? (
-        <Redirect href={"/dashboard"} />
+        <Redirect href={"/home"} />
     ) : (
         (<Redirect href={"/login"} />)
     );

@@ -46,7 +46,7 @@ export default function LoginScreen() {
                 <View className="h-screen bg-blue-50 p-[15%]">
                     <View className="items-center mt-[40px] mb-5">
                         <Image
-                            source={require("@/assets/tyuss/loginLogo.jpg")}
+                            source={require("@/assets/tyuss/loginLogo.png")}
                             className="w-[32px] h-[32px]"
                         />
                     </View>

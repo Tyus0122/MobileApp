@@ -8,7 +8,8 @@ import {
     ActivityIndicator,
     BackHandler,
 } from "react-native";
-import {PostComponent} from "../../components/PostComponent";
+import { PostComponent } from "@/components/PostComponent";
+import { NavBarComponent } from "@/components/NavBarComponent";
 import { useState, useEffect } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -18,7 +19,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function LoginScreen() {
+export default function Home() {
     function handleBackPress() {
         BackHandler.exitApp();
         return true;
@@ -50,8 +51,11 @@ export default function LoginScreen() {
     // }, []);
     return (
         <SafeAreaView>
+            <NavBarComponent />
             <ScrollView keyboardShouldPersistTaps={"always"}>
-                {/* <PostComponent /> */}
+                {[1, 2, 3].map((key, value) => (
+                    <PostComponent key={key} />
+                ))}
             </ScrollView>
         </SafeAreaView>
     );
