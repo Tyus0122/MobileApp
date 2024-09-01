@@ -17,9 +17,6 @@ import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import { router, Link } from "expo-router";
 export default function Index() {
-    const showToast = () => {
-        Toast.error("Promised is resolved");
-    };
     const [formData, setFormData] = useState({
         fullname: "",
         username: "",
@@ -27,10 +24,11 @@ export default function Index() {
         dob: "",
         phno: "",
         password: "",
+        phnocode:""
     });
     const [showPassword, setShowPassword] = useState(true);
-    const [isChecked, setIsChecked] = useState(false);
     const [modalopen, setmodalopen] = useState(false);
+    const [error, setError] = useState(true);
     function formatDate(date) {
         const day = String(date.getDate()).padStart(2, "0");
         const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -41,25 +39,30 @@ export default function Index() {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+    function validation() {
+        console.log(formData)
+    }
     function submitHandler() {
         axios
             .post(backend_url + "v1/user/signup", formData)
             .then((response) => {
-                console.log(response.data);
-                router.push('/login')
+                router.push("/login");
             })
             .catch((err) => {
                 console.log(err);
-                router.push("/login")
+                router.push("/login");
             });
     }
     return (
         <SafeAreaView>
             <ToastManager duration={3000} />
-            <ScrollView keyboardShouldPersistTaps={'always'}>
+            <ScrollView keyboardShouldPersistTaps={"always"} keyboardDismissMode="on-drag">
                 <View className="h-screen bg-blue-50">
-                    <Pressable className="mt-[30px] ml-[20px]" onPress={()=>router.back()}>
-                        <Ionicons 
+                    <Pressable
+                        className="mt-[30px] ml-[20px]"
+                        onPress={() => router.back()}
+                    >
+                        <Ionicons
                             name={"arrow-back-outline"}
                             size={24}
                             color="gray"
@@ -76,6 +79,13 @@ export default function Index() {
                                     <Text className="text-blue-500">Login</Text>
                                 </Link>
                             </Text>
+                            {error && (
+                                <View className="mt-4">
+                                    <Text className="text-red-500 text-xl font-normal">
+                                        wrong password
+                                    </Text>
+                                </View>
+                            )}
                         </View>
 
                         <View className="mt-5">
@@ -109,12 +119,31 @@ export default function Index() {
 
                         <View className="mt-5">
                             <Text className="text-xl text-gray-500">Phone</Text>
-                            <View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center">
-                                <PhoneInput
-                                    onChangePhoneNumber={(data) =>
-                                        setFormData({ ...formData, phno: data })
-                                    }
-                                    initialCountry={"us"}
+                            <View className='flex-row items-center gap-2'>
+                                <View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center w-[83px]">
+                                    <Ionicons
+                                        name={"chevron-down-outline"}
+                                        size={8}
+                                        color="gray"
+                                    />
+                                    <PhoneInput
+                                        onChangePhoneNumber={(data) =>
+                                            setFormData({
+                                                ...formData,
+                                                phnocode: data,
+                                            })
+                                        }
+                                        initialCountry={"us"}
+                                    />
+                                </View>
+                                <TextInput
+                                    className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl w-[72%] mb-2"
+                                    onChangeText={(data) => {
+                                        setFormData({
+                                            ...formData,
+                                            phno: data,
+                                        });
+                                    }}
                                 />
                             </View>
                         </View>
@@ -193,7 +222,7 @@ export default function Index() {
                         <View className="mt-[50px]">
                             <Pressable
                                 className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
-                                onPress={submitHandler}
+                                onPress={validation}
                             >
                                 <Text className="text-white text-2xl font-semibold">
                                     Register

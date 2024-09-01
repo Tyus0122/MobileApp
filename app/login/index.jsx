@@ -29,7 +29,7 @@ export default function LoginScreen() {
             .post(backend_url + "v1/user/loginSubmit", formData)
             .then((response) => {
                 AsyncStorage.setItem("BearerToken", response.data.BearerToken);
-                router.push("/dashboard");
+                router.push("home");
             })
             .catch((err) => {
                 if(err.status===404){
@@ -116,9 +116,11 @@ export default function LoginScreen() {
                             </Text>
                         </View>
                         <View>
+                            <Link href={'forgotphno'}>
                             <Text className="text-xl text-blue-500">
                                 Forgot Password ?
                             </Text>
+                            </Link>
                         </View>
                     </View>
                     <View className="mt-5">

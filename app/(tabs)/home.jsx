@@ -8,6 +8,8 @@ import {
     ActivityIndicator,
     BackHandler,
 } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+
 import { PostComponent } from "@/components/PostComponent";
 import { NavBarComponent } from "@/components/NavBarComponent";
 import { useState, useEffect } from "react";
@@ -20,13 +22,14 @@ import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Home() {
+    const params=useLocalSearchParams()
+    console.log((params.data))
     function handleBackPress() {
         BackHandler.exitApp();
         return true;
     }
     const [showPassword, setShowPassword] = useState(true);
     const [token, setToken] = useState(false);
-
     const [submit, setSubmit] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
@@ -43,12 +46,12 @@ export default function Home() {
             };
         })
     );
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const token = await AsyncStorage.getItem("BearerToken");
-    //     }
-    //     fetchData();
-    // }, []);
+    useEffect(() => {
+        async function fetchData() {
+            const token = await AsyncStorage.getItem("BearerToken");
+        }
+        fetchData();
+    }, []);
     return (
         <SafeAreaView>
             <NavBarComponent />

@@ -18,9 +18,11 @@ export default function Index() {
                 "content-type": "application/json",
             };
             axios
-                .get(backend_url + "v1/user/dashboard", { headers })
+                .get(backend_url + "v1/user/getPosts", { headers })
                 .then((response) => {
+                    setdashboard_json(response.data)
                     setIsLoggedin(true);
+
                 })
                 .catch((err) => {
                     setIsLoggedin(false);
@@ -37,7 +39,7 @@ export default function Index() {
             </View>
         </SafeAreaView>
     ) : isLoggedin === true ? (
-        <Redirect href={"/home"} />
+        <Redirect href={`/home?data=${JSON.stringify(dashboard_json)}`}/>
     ) : (
         (<Redirect href={"/login"} />)
     );
