@@ -7,40 +7,38 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { backend_url } from "@/constants/constants";
 export default function Index() {
-    const [isLoggedin, setIsLoggedin] = useState("");
-    const [dashboard_json, setdashboard_json] = useState({});
-    useEffect(() => {
-        async function fetchData() {
-            const token = await AsyncStorage.getItem("BearerToken");
+	const [isLoggedin, setIsLoggedin] = useState("");
+	async function fetchData() {
+		const token = await AsyncStorage.getItem("BearerToken");
 
-            const headers = {
-                authorization: "Bearer " + token,
-                "content-type": "application/json",
-            };
-            axios
-                .get(backend_url + "v1/user/getPosts", { headers })
-                .then((response) => {
-                    setdashboard_json(response.data)
-                    setIsLoggedin(true);
-
-                })
-                .catch((err) => {
-                    setIsLoggedin(false);
-                });
-        }
-        fetchData();
-    }, []);
-    return isLoggedin === "" ? (
-        <SafeAreaView>
-            <View className="h-screen flex items-center justify-center">
-
-            <ActivityIndicator size={"large"} color={"blue"} />
-            <Text className="ml-5 mt-3 text-xl font-semibold">Loading ...</Text>
-            </View>
-        </SafeAreaView>
-    ) : isLoggedin === true ? (
-        <Redirect href={`/home?data=${JSON.stringify(dashboard_json)}`}/>
-    ) : (
-        (<Redirect href={"/login"} />)
-    );
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		axios
+			.get(backend_url + "v1/user/dashboard", { headers })
+			.then((response) => {
+				setIsLoggedin(true);
+			})
+			.catch((err) => {
+				setIsLoggedin(false);
+			});
+	}
+	useEffect(() => {
+		
+		fetchData();
+	}, []);
+	return isLoggedin === "" ? (
+		<SafeAreaView>
+			<View className="h-screen flex items-center justify-center">
+				<ActivityIndicator size={"large"} color={"blue"} />
+				<Text className="ml-5 mt-3 text-xl font-semibold">Loading ...</Text>
+			</View>
+		</SafeAreaView>
+	) : isLoggedin === true ? (
+		<Redirect href={"/home"} />
+	) : (
+		// <Redirect href={`/home?data=${JSON.stringify(dashboard_json.message)}`}/>
+		<Redirect href={"/login"} />
+	);
 }

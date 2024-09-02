@@ -23,6 +23,8 @@ export default function ForgotOtp() {
     const params = useLocalSearchParams();
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputs = useRef([]);
+    const [error, setError] = useState(false);
+    const [errorValue, setErrorVlaue] = useState("");
     const [buttonloading, setbuttonloading] = useState(false);
     const handleChange = (text, index) => {
         const newOtp = [...otp];
@@ -46,22 +48,25 @@ export default function ForgotOtp() {
         }
     };
     const submitHandler = () => {
-        setbuttonloading(!buttonloading);
+        setbuttonloading(true);
         axios
             .post(backend_url + "v1/user/postOtp", {
                 phno: params.phno,
                 otp: otp.join(""),
             })
             .then((response) => {
-                setbuttonloading(!buttonloading);
+                setbuttonloading(false);
                 router.push({
                     pathname: "resetpassword",
                     params: { phno: params.phno },
                 });
             })
             .catch((err) => {
-                console.log(err.message);
-                setbuttonloading(!buttonloading);
+                if (err.status === 420) {
+                    setError(true)
+                    setErrorVlaue("Enter Valid OTP")
+                }
+                setbuttonloading(false);
             });
     };
     return (
@@ -100,7 +105,7 @@ export default function ForgotOtp() {
                             <View className="p-2 mt-[60px] flex-row items-center gap-2">
                                 {otp.map((digit, index) => (
                                     <TextInput
-                                        className="bg-white mt-2 h-[50px] w-[50px] rounded-lg p-2 text-2xl"
+                                        className={`bg-white mt-2 h-[50px] w-[50px] rounded-lg p-2 text-2xl ${(error ? 'border border-red-500' : "")}`}
                                         key={index}
                                         ref={(input) =>
                                             (inputs.current[index] = input)
@@ -118,6 +123,13 @@ export default function ForgotOtp() {
                                     />
                                 ))}
                             </View>
+                            {
+                                error && (
+                                    <Text className="mt-5 text-red-500 text-sm">
+                                        {errorValue}
+                                    </Text>
+                                )
+                            }
                             <Text className="mt-5">
                                 Didn't get OTP?{" "}
                                 <Text className="text-blue-500">
@@ -129,7 +141,7 @@ export default function ForgotOtp() {
                             <TouchableOpacity
                                 className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
                                 onPress={submitHandler}
-                                // disabled={buttonloading}
+                            // disabled={buttonloading}
                             >
                                 {buttonloading ? (
                                     <ActivityIndicator

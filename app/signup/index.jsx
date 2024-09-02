@@ -1,11 +1,12 @@
 import {
-    View,
-    Text,
-    Image,
-    TextInput,
-    Pressable,
-    Modal,
-    ScrollView,
+	View,
+	Text,
+	Image,
+	TextInput,
+	Pressable,
+	Modal,
+	ScrollView,
+	ActivityIndicator
 } from "react-native";
 import { React, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,221 +18,278 @@ import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import { router, Link } from "expo-router";
 export default function Index() {
-    const [formData, setFormData] = useState({
-        fullname: "",
-        username: "",
-        email: "",
-        dob: "",
-        phno: "",
-        password: "",
-        phnocode:""
-    });
-    const [showPassword, setShowPassword] = useState(true);
-    const [modalopen, setmodalopen] = useState(false);
-    const [error, setError] = useState(true);
-    function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
+	const [formData, setFormData] = useState({
+		fullname: "",
+		username: "",
+		email: "",
+		dob: "",
+		phno: "",
+		phnocode: "+1",
+		password: "",
+		phnocode: "",
+	});
+	const [submit, setSubmit] = useState(false);
+	const [showPassword, setShowPassword] = useState(true);
+	const [modalopen, setmodalopen] = useState(false);
+	const [error, setError] = useState(false);
+	const [errorValue, setErrorVlaue] = useState("");
+	const PhoneInputRef = useRef(null);
+	function formatDate(date) {
+		const day = String(date.getDate()).padStart(2, "0");
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const year = date.getFullYear();
 
-        return `${day}-${month}-${year}`;
-    }
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-    function validation() {
-        console.log(formData)
-    }
-    function submitHandler() {
-        axios
-            .post(backend_url + "v1/user/signup", formData)
-            .then((response) => {
-                router.push("/login");
-            })
-            .catch((err) => {
-                console.log(err);
-                router.push("/login");
-            });
-    }
-    return (
-        <SafeAreaView>
-            <ToastManager duration={3000} />
-            <ScrollView keyboardShouldPersistTaps={"always"} keyboardDismissMode="on-drag">
-                <View className="h-screen bg-blue-50">
-                    <Pressable
-                        className="mt-[30px] ml-[20px]"
-                        onPress={() => router.back()}
-                    >
-                        <Ionicons
-                            name={"arrow-back-outline"}
-                            size={24}
-                            color="gray"
-                        />
-                    </Pressable>
-                    <View className=" pl-[15%] pr-[15%]">
-                        <View className="items-center mt-[40px] mb-5">
-                            <Text className="text-5xl font-extrabold mb-3">
-                                Sign Up
-                            </Text>
-                            <Text className="text-lg text-gray-500">
-                                Alread have an account?{" "}
-                                <Link href={"/login"}>
-                                    <Text className="text-blue-500">Login</Text>
-                                </Link>
-                            </Text>
-                            {error && (
-                                <View className="mt-4">
-                                    <Text className="text-red-500 text-xl font-normal">
-                                        wrong password
-                                    </Text>
-                                </View>
-                            )}
-                        </View>
+		return `${day}-${month}-${year}`;
+	}
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	};
+	function isValidEmail(email) {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	}
+	function isValidPassword(password) {
+		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+		return passwordRegex.test(password);
+	}
+	function validation() {
+		if (formData.fullname.length == 0) {
+			setError(true);
+			setErrorVlaue("Full name is required");
+			return;
+		}
+		if (formData.username.length == 0) {
+			setError(true);
+			setErrorVlaue("Username is required");
+			return;
+		}
+		if (formData.phno.length == 0) {
+			setError(true);
+			setErrorVlaue("Phone number is required");
+			return;
+		}
+		if (formData.email.length == 0) {
+			setError(true);
+			setErrorVlaue("Email is required");
+			return;
+		}
+		if (formData.dob.length == 0) {
+			setError(true);
+			setErrorVlaue("Date of birth is required");
+			return;
+		}
+		if (formData.password.length == 0) {
+			setError(true);
+			setErrorVlaue("Password is required");
+			return;
+		}
+		// if (formData.phno.length != 10) {
+		// 	setError(true);
+		// 	setErrorVlaue("Invalid phone number");
+		// 	return;
+		// }
+		if (!isValidEmail(formData.email)) {
+			setError(true);
+			setErrorVlaue("Invalid email address");
+			return;
+		}
+		if (!isValidPassword(formData.password)) {
+			setError(true);
+			setErrorVlaue(
+				"Your password must be include at least 8 characaters,1 digit,1 upper and 1 lower"
+			);
+			return;
+		}
+		submitHandler();
+	}
+	function submitHandler() {
+		setSubmit(true);
+		axios
+			.post(backend_url + "v1/user/signup", formData)
+			.then((response) => {
+				setSubmit(false);
+				// router.push("/login");
+			})
+			.catch((err) => {
+				console.log(err);
+				setSubmit(false);
+				router.push("/login");
+			});
+	}
+	return (
+		<SafeAreaView>
+			<ToastManager duration={3000} />
+			<ScrollView
+				keyboardShouldPersistTaps={"always"}
+				keyboardDismissMode="on-drag"
+			>
+				<View className="h-screen bg-blue-50">
+					<Pressable
+						className="mt-[30px] ml-[20px]"
+						onPress={() => router.back()}
+					>
+						<Ionicons name={"arrow-back-outline"} size={24} color="gray" />
+					</Pressable>
+					<View className=" pl-[15%] pr-[15%]">
+						<View className="items-center mt-[40px] mb-5">
+							<Text className="text-5xl font-extrabold mb-3">Sign Up</Text>
+							<Text className="text-lg text-gray-500">
+								Alread have an account?{" "}
+								<Link href={"/login"}>
+									<Text className="text-blue-500">Loginss</Text>
+								</Link>
+							</Text>
+							{error && (
+								<View className="mt-4">
+									<Text className="text-red-500 text-xl font-normal">
+										{errorValue}
+									</Text>
+								</View>
+							)}
+						</View>
 
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">
-                                Fullname
-                            </Text>
-                            <TextInput
-                                className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
-                                onChangeText={(data) => {
-                                    setFormData({
-                                        ...formData,
-                                        fullname: data,
-                                    });
-                                }}
-                            />
-                        </View>
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">
-                                Username
-                            </Text>
-                            <TextInput
-                                className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
-                                onChangeText={(data) => {
-                                    setFormData({
-                                        ...formData,
-                                        username: data,
-                                    });
-                                }}
-                            />
-                        </View>
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Fullname</Text>
+							<TextInput
+								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								onChangeText={(data) => {
+									setFormData({
+										...formData,
+										fullname: data,
+									});
+									setError(false);
+								}}
+							/>
+						</View>
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Username</Text>
+							<TextInput
+								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								onChangeText={(data) => {
+									setFormData({
+										...formData,
+										username: data,
+									});
+									setError(false);
+								}}
+							/>
+						</View>
 
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">Phone</Text>
-                            <View className='flex-row items-center gap-2'>
-                                <View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center w-[83px]">
-                                    <Ionicons
-                                        name={"chevron-down-outline"}
-                                        size={8}
-                                        color="gray"
-                                    />
-                                    <PhoneInput
-                                        onChangePhoneNumber={(data) =>
-                                            setFormData({
-                                                ...formData,
-                                                phnocode: data,
-                                            })
-                                        }
-                                        initialCountry={"us"}
-                                    />
-                                </View>
-                                <TextInput
-                                    className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl w-[72%] mb-2"
-                                    onChangeText={(data) => {
-                                        setFormData({
-                                            ...formData,
-                                            phno: data,
-                                        });
-                                    }}
-                                />
-                            </View>
-                        </View>
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">Email</Text>
-                            <TextInput
-                                className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
-                                onChangeText={(data) => {
-                                    setFormData({ ...formData, email: data });
-                                }}
-                            />
-                        </View>
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">
-                                Birth of date
-                            </Text>
-                            <View className="relative">
-                                <Pressable
-                                    onPress={() => setmodalopen(!modalopen)}
-                                >
-                                    <TextInput
-                                        placeholder={formData.dob}
-                                        editable={false}
-                                        className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
-                                    />
-                                    <Ionicons
-                                        className="absolute right-2 top-2 mt-3"
-                                        name={"calendar-outline"}
-                                        size={24}
-                                        color="gray"
-                                    />
-                                </Pressable>
-                            </View>
-                        </View>
-                        {modalopen && (
-                            <DateTimePicker
-                                value={new Date()}
-                                mode={"date"}
-                                is24Hour={true}
-                                onChange={(e, dates) => {
-                                    setmodalopen(!modalopen);
-                                    setFormData({
-                                        ...formData,
-                                        dob: formatDate(dates),
-                                    });
-                                }}
-                            />
-                        )}
-                        <View className="mt-5">
-                            <Text className="text-xl text-gray-500">
-                                Set Password
-                            </Text>
-                            <View className="relative">
-                                <TextInput
-                                    className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
-                                    secureTextEntry={showPassword}
-                                    onChangeText={(data) => {
-                                        setFormData({
-                                            ...formData,
-                                            password: data,
-                                        });
-                                    }}
-                                />
-                                <Pressable
-                                    onPress={togglePasswordVisibility}
-                                    className="absolute right-2 top-2 mt-3"
-                                >
-                                    <Ionicons
-                                        name={showPassword ? "eye-off" : "eye"}
-                                        size={24}
-                                        color="gray"
-                                    />
-                                </Pressable>
-                            </View>
-                        </View>
-                        <View className="mt-[50px]">
-                            <Pressable
-                                className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
-                                onPress={validation}
-                            >
-                                <Text className="text-white text-2xl font-semibold">
-                                    Register
-                                </Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Phone</Text>
+							<View className="flex-row items-center gap-2">
+								<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+									<Ionicons
+										name={"chevron-down-outline"}
+										size={8}
+										color="gray"
+									/>
+									<PhoneInput
+										ref={PhoneInputRef}
+										onSelectCountry={(data) => {
+											setFormData({
+												...formData,
+												phnocode: "+" + PhoneInputRef.current.getCountryCode(),
+											});
+										}}
+										onChangePhoneNumber={(data) => {
+											setFormData({
+												...formData,
+												phno: data,
+											});
+											setError(false);
+										}}
+										initialCountry={"us"}
+									/>
+								</View>
+							</View>
+						</View>
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Email</Text>
+							<TextInput
+								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								onChangeText={(data) => {
+									setFormData({ ...formData, email: data });
+									setError(false);
+								}}
+							/>
+						</View>
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Birth of date</Text>
+							<View className="relative">
+								<Pressable onPress={() => setmodalopen(!modalopen)}>
+									<TextInput
+										placeholder={formData.dob}
+										editable={false}
+										className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									/>
+									<Ionicons
+										className="absolute right-2 top-2 mt-3"
+										name={"calendar-outline"}
+										size={24}
+										color="gray"
+									/>
+								</Pressable>
+							</View>
+						</View>
+						{modalopen && (
+							<DateTimePicker
+								value={new Date()}
+								mode={"date"}
+								is24Hour={true}
+								onChange={(e, dates) => {
+									setmodalopen(!modalopen);
+									setFormData({
+										...formData,
+										dob: formatDate(dates),
+									});
+									setError(false);
+								}}
+							/>
+						)}
+						<View className="mt-5">
+							<Text className="text-xl text-gray-500">Set Password</Text>
+							<View className="relative">
+								<TextInput
+									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									secureTextEntry={showPassword}
+									onChangeText={(data) => {
+										setFormData({
+											...formData,
+											password: data,
+										});
+										setError(false);
+									}}
+								/>
+								<Pressable
+									onPress={togglePasswordVisibility}
+									className="absolute right-2 top-2 mt-3"
+								>
+									<Ionicons
+										name={showPassword ? "eye-off" : "eye"}
+										size={24}
+										color="gray"
+									/>
+								</Pressable>
+							</View>
+						</View>
+						<View className="mt-[50px]">
+							<Pressable
+								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
+								onPress={validation}
+							>
+								{submit ? (
+									<ActivityIndicator size={"large"} color={"white"} />
+								) : (
+									<Text className="text-white text-2xl font-semibold">
+										Log in
+									</Text>
+								)}
+							</Pressable>
+						</View>
+					</View>
+				</View>
+			</ScrollView>
+		</SafeAreaView>
+	);
 }

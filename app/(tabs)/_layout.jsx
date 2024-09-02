@@ -3,10 +3,17 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-const TabIcon = ({ icon, color, border, size ,focused}) => {
+const TabIcon = ({ icon, color, size, focused, text }) => {
     return (
-        <View>
+        <View className="flex justify-center items-center">
             <Ionicons name={icon} size={size} color={color} />
+            {
+                focused && (
+                    <Text className="text-black-500">
+                        {text}
+                    </Text>
+                )
+            }
         </View>
     );
 };
@@ -19,9 +26,10 @@ export default function tabs() {
                 headerShown: false,
                 tabBarActiveTintColor: "black",
                 tabBarInactiveTintColor: "gray",
-                tabBarStyle:{
-                    paddingBottom:5,
-                    height:60
+                tabBarStyle: {
+                    paddingBottom: 5,
+                    height: 60,
+                    // display:'none'
                 }
             }}
         >
@@ -34,6 +42,8 @@ export default function tabs() {
                             icon={focused ? "home-sharp" : "home-outline"}
                             color={color}
                             size={24}
+                            text="Home"
+                            focused={focused}
                         />
                     ),
                 }}
@@ -49,6 +59,8 @@ export default function tabs() {
                             }
                             color={color}
                             size={24}
+                            focused={focused}
+                            text="Accommodation"
                         />
                     ),
                 }}
@@ -64,6 +76,8 @@ export default function tabs() {
                             }
                             color={color}
                             size={28}
+                            focused={focused}
+                            text="Post"
                         />
                     ),
                 }}
@@ -81,6 +95,8 @@ export default function tabs() {
                             }
                             color={color}
                             size={28}
+                            focused={focused}
+                            text="Profile"
                         />
                     ),
                 }}
