@@ -13,10 +13,10 @@ import { UserComponent } from "@/components/UserComponent";
 import { useState, useEffect, useCallback } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { backend_url } from "@/constants/constants";
+import { backend_url,debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { debounce } from "lodash";
@@ -33,19 +33,19 @@ export default function Accomodation() {
 	async function endHandler() {
 		if (!isLastPage) {
 			setPage(page + 1);
-			fetchData(page + 1, search,true, isChecked);
+			fetchData(page + 1, search, true, isChecked);
 		}
 	}
 	const debounceCallSearch = useCallback(
 		debounce((data) => {
 			fetchData(0, data, false, isChecked);
-		}, 500),
+		}, debounce_time),
 		[]
 	);
 	const debounceCallAvailable = useCallback(
 		debounce((data) => {
 			fetchData(0, search, false, data);
-		}, 500),
+		}, debounce_time),
 		[]
 	);
 	async function fetchData(
@@ -106,7 +106,7 @@ export default function Accomodation() {
 							}}
 							onChangeText={(data) => {
 								setSearch(data);
-								setPage(0)
+								setPage(0);
 								debounceCallSearch(data);
 							}}
 							placeholder="Search by ID or University or Location"
@@ -155,7 +155,7 @@ export default function Accomodation() {
 						<Pressable
 							className="flex-row items-center justify-center gap-2"
 							onPress={() => {
-								setPage(0)
+								setPage(0);
 								debounceCallAvailable(!isChecked);
 								setIsChecked(!isChecked);
 							}}
@@ -170,7 +170,7 @@ export default function Accomodation() {
 					</View>
 				</View>
 			</View>
-			{true ? (
+			{loading ? (
 				<View className="h-screen bg-white flex-1 items-center justify-center ">
 					<ActivityIndicator size="large" color="blue" />
 				</View>
@@ -179,7 +179,6 @@ export default function Accomodation() {
 					className="bg-white"
 					data={users}
 					renderItem={({ item, index }) => (
-						// <Text>{JSON.stringify(item)}{ index}</Text>
 						<UserComponent user={item} key={index} />
 					)}
 					ListEmptyComponent={

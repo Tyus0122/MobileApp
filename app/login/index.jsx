@@ -22,8 +22,8 @@ export default function LoginScreen() {
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
-		email: "user_1@gmail.com",
-		password: "123",
+		email: "user_2@gmail.com",
+		password: "Useruser_2",
 	});
 	function isValidEmail(email) {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,7 +61,7 @@ export default function LoginScreen() {
 					setError(true);
 					setErrorVlaue("Email or password is incorrect");
 				}
-				console.log(err.status === 404);
+				console.log(err.status)
 			});
 	}
 	return (

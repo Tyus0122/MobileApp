@@ -1,45 +1,66 @@
-import {
-    View,
-    Text,
-    Image,
-    TextInput,
-    Pressable,
-    ScrollView,
-    ActivityIndicator,
-    BackHandler,
-} from "react-native";
-import { useState, useEffect } from "react";
-import React from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { Link } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
-import { backend_url } from "@/constants/constants";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function Temp() {
-    useEffect(() => {
-        async function fetchData() {
-            const token = await AsyncStorage.getItem("BearerToken");
-        }
-        fetchData();
-    }, []);
+import React, { useCallback, useRef, useState } from "react";
+import { StyleSheet, View, Text, Button, TextInput } from "react-native";
+import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-    async function removeToken() {
-        await AsyncStorage.removeItem("BearerToken");
-    }
-    return (
-        <SafeAreaView>
-            <ScrollView keyboardShouldPersistTaps={"always"}>
-                <View className="h-screen flex items-center justify-center">
-                    <Pressable
-                        className="border border-black-500 p-5 bg-blue-500 rounded-lg m-5"
-                        onPress={removeToken}
-                    >
-                        <Text className="text-white">Remove</Text>
-                    </Pressable>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
-}
+const App = () => {
+	const sheetRef = useRef(null);
+	const [isVisible, setIsVisible] = useState(false);
+	const data = Array(50)
+		.fill(0)
+		.map((_, index) => `index-${index}`);
+	const snapPoints = ["25%", "50%", "100%"];
+	const handleSheetChange = useCallback((index) => {
+		console.log("handleSheetChange", index);
+	}, []);
+	const handleSnapPress = useCallback((index) => {
+		sheetRef.current?.snapToIndex(index);
+		setIsVisible(true);
+	}, []);
+
+	const renderItem = useCallback(
+		({ item }) => (
+			<View style={styles.itemContainer}>
+				<Text>{item}</Text>
+			</View>
+		),
+		[]
+	);
+	return (
+		<View className="flex-1">
+			<Button title="Close" onPress={() => setIsVisible(false)} />
+			<Button title="Open" onPress={() => setIsVisible(true)} />
+				<GestureHandlerRootView>
+					<BottomSheet
+						ref={sheetRef}
+						snapPoints={snapPoints}
+						onChange={handleSheetChange}
+					>
+						<TextInput className="bg-blue-500" />
+						<BottomSheetFlatList
+							data={data}
+							keyExtractor={(i) => i}
+							renderItem={renderItem}
+						/>
+					</BottomSheet>
+				</GestureHandlerRootView>
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		paddingTop: 200,
+	},
+	contentContainer: {
+		backgroundColor: "white",
+	},
+	itemContainer: {
+		padding: 6,
+		margin: 6,
+		backgroundColor: "#eee",
+	},
+});
+
+export default App;

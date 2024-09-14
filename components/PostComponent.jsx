@@ -2,18 +2,18 @@ import { View, Text, Image } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { PhotosComponent } from "@/components/PhotosComponent";
+const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 
 export function PostComponent({ post }) {
-	console.log(post);
+	let images = post.files.map((file) => file.url);
 	return (
-		<View>
+		<View className='bg-white'>
 			<View className="p-5">
 				<View className="flex-row items-center justify-between">
-					<View
-						className="flex-row items-center justify-center gap-5"
-					>
+					<View className="flex-row items-center justify-center gap-5">
 						<Image
-							source={{uri:post.pic}}
+							source={post.pic?{ uri: post.pic }:imagePlaceholder}
 							style={{
 								width: 50,
 								height: 50,
@@ -35,15 +35,7 @@ export function PostComponent({ post }) {
 					<Text style={{ textAlign: "center" }}>{post.caption}</Text>
 				</View>
 			</View>
-			<View className="flex items-center justify-center">
-				<Image
-					source={{uri:post.photo}}
-					style={{
-						width: "90%",
-						height: 200,
-					}}
-				/>
-			</View>
+			<PhotosComponent images={images} />
 			<View className="p-5 flex-row items-center justify-between">
 				<View
 					className="flex-row items-center justify-between"
