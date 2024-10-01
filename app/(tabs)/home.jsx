@@ -6,6 +6,7 @@ import {
 	Pressable,
 	TouchableOpacity,
 	ScrollView,
+	RefreshControl,
 	ActivityIndicator,
 	BackHandler,
 	StyleSheet,
@@ -31,6 +32,12 @@ export default function Home() {
 		BackHandler.exitApp();
 		return true;
 	}
+	const [refresh, setRefresh] = useState(false);
+	async function refreshHandler() {
+		setRefresh(true);
+		await fetchData();
+		setRefresh(false);
+	}
 	useFocusEffect(
 		React.useCallback(() => {
 			BackHandler.addEventListener("hardwareBackPress", handleBackPress);
@@ -39,51 +46,57 @@ export default function Home() {
 			};
 		})
 	);
+	async function fetchData() {
+		setLoading(true);
+		const token = await AsyncStorage.getItem("BearerToken");
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		axios
+			.get(backend_url + "v1/user/getposts", { headers })
+			.then((response) => {
+				setPosts(response.data.message.posts);
+				setLoading(false);
+			})
+			.catch((err) => {
+				setLoading(false);
+			});
+	}
 	useEffect(() => {
-		async function fetchData() {
-			setLoading(true);
-			const token = await AsyncStorage.getItem("BearerToken");
-			const headers = {
-				authorization: "Bearer " + token,
-				"content-type": "application/json",
-			};
-			axios
-				.get(backend_url + "v1/user/getposts", { headers })
-				.then((response) => {
-					setPosts(response.data.message.posts);
-					setLoading(false);
-				})
-				.catch((err) => {
-					setLoading(false);
-				});
-		}
 		fetchData();
 	}, []);
 	return (
-		<SafeAreaView>
-			<View className='h-screen bg-white'>
-				<View>
-					<NavBarComponent />
-				</View>
-				<ScrollView
-					keyboardShouldPersistTaps={"always"}
-					keyboardDismissMode="on-drag"
-				>
+		<View className="h-screen bg-white">
+			<ScrollView
+				keyboardShouldPersistTaps={"always"}
+				keyboardDismissMode="on-drag"
+				refreshControl={
+					<RefreshControl
+						refreshing={refresh}
+						onRefresh={() => refreshHandler()}
+					/>
+				}
+			>
+				<SafeAreaView>
+					<View>
+						<NavBarComponent />
+					</View>
 					{loading ? (
 						<View className="h-screen flex items-center justify-center">
 							<ActivityIndicator size="large" color="gray" />
 						</View>
 					) : (
-						posts.map((post, index) => (
+						posts?.map((post, index) => (
 							// <Link to={`/post/${post._id}`}>
 							<PostComponent key={index} post={post} />
 							// {/* </Link> */}
 						))
 					)}
-					<View style={{ height: 100 }}></View>
-				</ScrollView>
-			</View>
-		</SafeAreaView>
+					<View style={{ height: 50 }}></View>
+				</SafeAreaView>
+			</ScrollView>
+		</View>
 	);
 }
 

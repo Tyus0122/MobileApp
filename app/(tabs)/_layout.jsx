@@ -63,7 +63,7 @@ export default function tabs() {
 							color={color}
 							size={24}
 							focused={focused}
-							text="Accommodation"
+							text="Hub"
 						/>
 					),
 				}}

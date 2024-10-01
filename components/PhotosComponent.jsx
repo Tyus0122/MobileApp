@@ -32,7 +32,7 @@ export function PhotosComponent({ images }) {
 	}, []);
 	const renderImages = () => {
 		return images.map((image, index) => (
-			<View className="flex items-center p-5" key={index}>
+			<View className="flex items-center pl-5 pr-5 mb-2 mt-2" key={index}>
 				<Image source={{ uri: image }} style={styles.image} />
 			</View>
 		));

@@ -37,14 +37,8 @@ export default function Accomodation() {
 		}
 	}
 	const debounceCallSearch = useCallback(
-		debounce((data) => {
-			fetchData(0, data, false, isChecked);
-		}, debounce_time),
-		[]
-	);
-	const debounceCallAvailable = useCallback(
-		debounce((data) => {
-			fetchData(0, search, false, data);
+		debounce((data,iscchecked) => {
+			fetchData(0, data, false, iscchecked);
 		}, debounce_time),
 		[]
 	);
@@ -107,7 +101,7 @@ export default function Accomodation() {
 							onChangeText={(data) => {
 								setSearch(data);
 								setPage(0);
-								debounceCallSearch(data);
+								debounceCallSearch(data,isChecked);
 							}}
 							placeholder="Search by ID or University or Location"
 						/>
@@ -156,8 +150,14 @@ export default function Accomodation() {
 							className="flex-row items-center justify-center gap-2"
 							onPress={() => {
 								setPage(0);
-								debounceCallAvailable(!isChecked);
-								setIsChecked(!isChecked);
+								if (isChecked) {
+									setIsChecked(false);
+									debounceCallSearch(search,false);
+								}
+								else {
+									setIsChecked(true);
+                                    debounceCallSearch(search,true);
+								}
 							}}
 						>
 							<Ionicons

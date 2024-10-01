@@ -14,6 +14,7 @@ export default function RootLayout() {
                 <Stack.Screen name="forgototp/index" options={{headerShown:false}}/>
                 <Stack.Screen name="resetpassword/index" options={{headerShown:false}}/>
                 <Stack.Screen name="temp/index" options={{headerShown:false}}/>
+                <Stack.Screen name="profileactions/index" options={{headerShown:false}}/>
                 <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
             </Stack>
     );

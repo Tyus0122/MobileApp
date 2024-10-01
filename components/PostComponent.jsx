@@ -36,7 +36,7 @@ export function PostComponent({ post }) {
 				</View>
 			</View>
 			<PhotosComponent images={images} />
-			<View className="p-5 flex-row items-center justify-between">
+			<View className="ml-5 mr-5 mb-2 flex-row items-center justify-between">
 				<View
 					className="flex-row items-center justify-between"
 					style={{
@@ -61,6 +61,8 @@ export function PostComponent({ post }) {
 					view {post.commentscount} comments
 				</Text>
 				<Text className="text-lg text-gray-500">{post.post_date}</Text>
+			</View>
+			<View className='bg-gray-200' style={{height:1}}>
 			</View>
 		</View>
 	);
