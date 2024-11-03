@@ -4,30 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
-
+const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export function UserComponent({ user }) {
-	// let statusvaluemap = {
-	// 	connected: {
-	// 		color: "gray",
-	// 		disabled: true,
-	// 	},
-	// 	"Request sent": {
-	// 		color: "#24A0ED",
-	// 		disabled: false,
-	// 	},
-	// 	connect: {
-	// 		color: "#24A0ED",
-	// 		disabled: false,
-	// 	},
-	// 	Accept: {
-	// 		color: "green",
-	// 		disabled: false,
-	// 	},
-	// 	Reject: {
-	// 		color: "red",
-	// 		disabled: false,
-	// 	},
-	// };
 	const [sendConnect, setsendConnect] = useState(false);
 	async function connectionHandler() {
 		const body = {
@@ -61,7 +39,7 @@ export function UserComponent({ user }) {
 				<View className="flex-row items-center gap-8">
 					<View>
 						<Image
-							source={require("@/assets/tyuss/shadow1.png")}
+							source={user.pic ? {uri:user.pic.url} :imagePlaceholder}
 							class
 							style={{
 								width: 50,

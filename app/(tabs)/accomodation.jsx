@@ -179,7 +179,16 @@ export default function Accomodation() {
 					className="bg-white"
 					data={users}
 					renderItem={({ item, index }) => (
-						<UserComponent user={item} key={index} />
+						<Pressable key={index} onPress={() => {
+							router.push({
+								pathname: "/userProfile",
+								params: {
+									_id:item._id
+								}
+							})
+						}}>
+							<UserComponent user={item} />
+						</Pressable>
 					)}
 					ListEmptyComponent={
 						<Text style={{ textAlign: "center", padding: 30 }}>

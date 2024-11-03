@@ -1,8 +1,8 @@
-import { View, Text } from "react-native";
-import React , {useState,useEffect} from "react";
+import { View, Text, Keyboard } from "react-native";
+import React, { useState, useEffect } from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from 'expo-image-picker'
+import * as ImagePicker from "expo-image-picker";
 const TabIcon = ({ icon, color, size, focused, text }) => {
 	return (
 		<View className="flex justify-center items-center">
@@ -13,17 +13,28 @@ const TabIcon = ({ icon, color, size, focused, text }) => {
 };
 
 export default function tabs() {
-    const [image,setImage] = useState({})
-    const ImagePermissionsandFilePermissios =async() => {
-        try {
-            await ImagePicker.requestCameraPermissionsAsync();
-            await ImagePicker.requestMediaLibraryPermissionsAsync();
-            
-        }
-        catch (err) {
-            console.error("Error requesting camera permissions", err);
-        }
-    }
+	const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+	useEffect(() => {
+		const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+		  setIsKeyboardVisible(true);
+		});
+		const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+		  setIsKeyboardVisible(false);
+		});
+	
+		return () => {
+		  keyboardDidShowListener.remove();
+		  keyboardDidHideListener.remove();
+		};
+	  }, []);
+	const ImagePermissionsandFilePermissios = async () => {
+		try {
+			await ImagePicker.requestCameraPermissionsAsync();
+			await ImagePicker.requestMediaLibraryPermissionsAsync();
+		} catch (err) {
+			console.error("Error requesting camera permissions", err);
+		}
+	};
 	return (
 		<Tabs
 			screenOptions={{
@@ -34,7 +45,7 @@ export default function tabs() {
 				tabBarStyle: {
 					paddingBottom: 5,
 					height: 60,
-					// display:'none'
+					display:isKeyboardVisible?'none':"block"
 				},
 			}}
 		>
@@ -84,7 +95,7 @@ export default function tabs() {
 				}}
 				listeners={() => ({
 					tabPress: (e) => {
-						ImagePermissionsandFilePermissios()
+						ImagePermissionsandFilePermissios();
 					},
 				})}
 			/>

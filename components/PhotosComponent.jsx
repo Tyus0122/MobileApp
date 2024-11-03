@@ -11,12 +11,15 @@ import {
 	TouchableOpacity,
 	TextInput,
 } from "react-native";
+import { Link, router,useSegments } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 const { width } = Dimensions.get("window");
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-export function PhotosComponent({ images }) {
+export function PhotosComponent({ images, _id }) {
+	const segments = useSegments();
+	const pathname = (segments.join('/'))
     const scrollViewRef = useRef(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const scrollX = useRef(new Animated.Value(0)).current;
@@ -32,9 +35,18 @@ export function PhotosComponent({ images }) {
 	}, []);
 	const renderImages = () => {
 		return images.map((image, index) => (
-			<View className="flex items-center pl-5 pr-5 mb-2 mt-2" key={index}>
+			<Pressable className="flex items-center pl-5 pr-5 mb-2 mt-2" key={index} onPress={() => {
+				if (pathname != "singlepost" && pathname !='(tabs)/post') {
+					router.push({
+						pathname: "/singlepost",
+                        params: {
+                            _id: _id,
+                        },
+					});
+				}
+			}}>
 				<Image source={{ uri: image }} style={styles.image} />
-			</View>
+			</Pressable>
 		));
     };
     

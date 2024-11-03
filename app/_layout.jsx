@@ -15,6 +15,11 @@ export default function RootLayout() {
                 <Stack.Screen name="resetpassword/index" options={{headerShown:false}}/>
                 <Stack.Screen name="temp/index" options={{headerShown:false}}/>
                 <Stack.Screen name="profileactions/index" options={{headerShown:false}}/>
+                <Stack.Screen name="singlepost/index" options={{headerShown:false}}/>
+                <Stack.Screen name="userProfile/index" options={{headerShown:false}}/>
+                <Stack.Screen name="messages/index" options={{headerShown:false}}/>
+                <Stack.Screen name="chat/index" options={{headerShown:false}}/>
+                <Stack.Screen name="editProfile/index" options={{headerShown:false}}/>
                 <Stack.Screen name="(tabs)" options={{headerShown:false}}/>
             </Stack>
     );
