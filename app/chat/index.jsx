@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { PostComponent } from "@/components/PostComponent";
 import { UserMessageComponent } from "@/components/UserMessageComponent";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Link, router, useLocalSearchParams } from "expo-router";
@@ -22,9 +22,11 @@ import { backend_url, debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { debounce, uniqueId } from "lodash";
-import userProfile from "../userProfile";
+import { SocketContext } from "@/app/_layout.jsx";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export default function Chat() {
+	const socket = useContext(SocketContext)
+	socket.emit("messagesent", { message: "hello world" })
 	const params = useLocalSearchParams();
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(0);

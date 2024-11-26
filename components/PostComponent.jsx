@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, TouchableOpacity } from "react-native";
 import React, { useState, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -14,11 +14,20 @@ export function PostComponent({
 	post,
 	setModalVisible,
 	handleSnapPress,
+	updateCommentState,
 	modalVisible,
+	inicomments,
+	ehandleSnapPress,
+	eModalVisible,
+	seteModalVisible,
+	shareModalVisible,
+	setShareModalVisible,
+	sharehandleSnapPress,
 }) {
 	let images = post.files.map((file) => file.url);
 	const [like, setLike] = useState(post.liked);
 	const [likeCount, setLikeCount] = useState(post.likescount);
+	const [saved, setSaved] = useState(post.saved);
 	async function postlikeHandler(data) {
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
@@ -37,8 +46,34 @@ export function PostComponent({
 		debounce((data) => postlikeHandler(data), debounce_time),
 		[]
 	);
+	async function postSaveHandler(data) {
+		const token = await AsyncStorage.getItem("BearerToken");
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		const body = {
+			saved: data,
+			post_id: post._id,
+		};
+		const response = await axios.post(backend_url + "v1/user/savePost", body, {
+			headers,
+		});
+	}
+	const debounceCallSave = useCallback(
+		debounce((data) => postSaveHandler(data), debounce_time),
+		[]
+	);
+	async function fetchComments() {
+		updateCommentState({
+			allcomments: inicomments[post._id].comments.comments,
+			isLastPage: inicomments[post._id].comments.isLastPage,
+			page: 0,
+		});
+	}
+
 	return (
-		<View className="bg-white">
+		<View className={`{${modalVisible ? "bg-gray-300" : "bg-white"}}`}>
 			<View className="p-5">
 				<View className="flex-row items-center justify-between">
 					<Pressable
@@ -65,9 +100,17 @@ export function PostComponent({
 							<Text>{post.posted_by_city}</Text>
 						</View>
 					</Pressable>
-					<View>
+					<Pressable
+						onPress={() => {
+							handleSnapPress(-1);
+							sharehandleSnapPress(-1);
+							updateCommentState({ currentPostId: post._id });
+							seteModalVisible(true);
+							ehandleSnapPress(0);
+						}}
+					>
 						<Ionicons name={"ellipsis-vertical-outline"} size={24} />
-					</View>
+					</Pressable>
 				</View>
 				<View className="mt-3">
 					<Text style={{ textAlign: "center" }}>{post.caption}</Text>
@@ -88,8 +131,8 @@ export function PostComponent({
 							} else {
 								setLikeCount(likeCount + 1);
 							}
-							setLike(!like);
 							debounceCallLike(!like);
+							setLike(!like);
 						}}
 					>
 						<Ionicons
@@ -100,17 +143,33 @@ export function PostComponent({
 					</Pressable>
 					<Pressable
 						onPress={() => {
+							updateCommentState({ currentPostId: post._id });
+							fetchComments();
 							setModalVisible(true);
 							handleSnapPress(0);
 						}}
 					>
 						<Ionicons name={"chatbubble-outline"} size={24} />
 					</Pressable>
-					<Ionicons name={"paper-plane-outline"} size={24} />
+					<Pressable
+						onPress={() => {
+							// updateCommentState({ currentPostId: post._id });
+							// fetchComments();
+							setShareModalVisible(true);
+							sharehandleSnapPress(0);
+						}}
+					>
+						<Ionicons name={"paper-plane-outline"} size={24} />
+					</Pressable>
 				</View>
-				<View>
-					<Ionicons name={"bookmark-outline"} size={24} />
-				</View>
+				<Pressable
+					onPress={() => {
+						setSaved(!saved);
+						debounceCallSave(!saved);
+					}}
+				>
+					<Ionicons name={saved ? "bookmark" : "bookmark-outline"} size={24} />
+				</Pressable>
 			</View>
 			<View className="pl-5">
 				<Text className="text-lg font-semibold">{likeCount} likes</Text>

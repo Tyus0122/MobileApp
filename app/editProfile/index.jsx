@@ -153,7 +153,7 @@ export default function editProfile() {
 								className={`text-2xl ${
 									formData.changePic || formData.changeText
 										? "text-blue-500"
-										: "text-gray-50"
+										: "text-gray-500"
 								}`}
 							>
 								save

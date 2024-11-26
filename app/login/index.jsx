@@ -7,15 +7,17 @@ import {
 	ScrollView,
 	ActivityIndicator,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import ToastManager, { Toast } from "expo-react-native-toastify";
+import { SocketContext } from "@/app/_layout.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
+	const socket = useContext(SocketContext);
 	const [showPassword, setShowPassword] = useState(true);
 	const [isChecked, setIsChecked] = useState(false);
 	const [submit, setSubmit] = useState(false);
@@ -53,6 +55,7 @@ export default function LoginScreen() {
 			.post(backend_url + "v1/user/loginSubmit", formData)
 			.then((response) => {
 				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
+				socket.emit("registerTheToken",{token:response.data.BearerToken});
 				router.push("home");
 			})
 			.catch((err) => {
@@ -61,7 +64,7 @@ export default function LoginScreen() {
 					setError(true);
 					setErrorVlaue("Email or password is incorrect");
 				}
-				console.log(err.status)
+				console.log(err.status);
 			});
 	}
 	return (
@@ -77,7 +80,7 @@ export default function LoginScreen() {
 							source={require("@/assets/tyuss/loginLogo.png")}
 							style={{
 								width: 50,
-								height:50,
+								height: 50,
 							}}
 						/>
 					</View>

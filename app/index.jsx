@@ -25,7 +25,6 @@ export default function Index() {
 			});
 	}
 	useEffect(() => {
-		
 		fetchData();
 	}, []);
 	return isLoggedin === "" ? (

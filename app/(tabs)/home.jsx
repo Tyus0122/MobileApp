@@ -7,51 +7,102 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView,
+	Keyboard,
 	RefreshControl,
 	ActivityIndicator,
 	BackHandler,
-	StyleSheet,
+	FlatList,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { PostComponent } from "@/components/PostComponent";
 import { NavBarComponent } from "@/components/NavBarComponent";
+import { CommentComponent } from "@/components/CommentComponent";
 import { useState, useCallback, useEffect, useRef } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { backend_url } from "@/constants/constants";
+import { backend_url, debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
+import { debounce } from "lodash";
 export default function Home() {
+	const sheetRef = useRef(null);
+	const shareSheetRef = useRef(null);
+	const [shareModalVisible, setShareModalVisible] = useState(false);
+	const shareSnapPoints = ["80%"];
+	const eSheetRef = useRef(null);
+	const [eModalVisible, seteModalVisible] = useState(false);
+	const eSnapPoints = ["60%"];
+	const inputRef = useRef(null);
+	const snapPoints = ["80%"];
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
-
-	//
-	let [image, setImage] = useState("");
-	const [selected, setSelected] = useState([]);
-	const [isLastPage, setIsLastPage] = useState(false);
-	const [users, setUsers] = useState([]);
-	const [usersIds, setUserIds] = useState([]);
-	const [page, setPage] = useState(0);
-	const [search, setSearch] = useState("");
-	const [loggedInUser, setLoggedInUser] = useState({});
-	//
-	function handleBackPress() {
-		BackHandler.exitApp();
-		return true;
-	}
-	const [refresh, setRefresh] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
-	async function refreshHandler() {
-		setRefresh(true);
-		await fetchData();
-		setRefresh(false);
+	const [isLastPage, setIsLastPage] = useState(false);
+	const [page, setPage] = useState(0);
+	const [inicomments, setInicomments] = useState({});
+	const [loggedInUser, setLoggedInUser] = useState({
+		pic: "",
+	});
+	const [commentState, setCommentState] = useState({
+		allcomments: [],
+		currentPostId: "",
+		commentsLoading: false,
+		isLastPage: true,
+		page: 0,
+		comment: "",
+		parent_comment_id: "",
+	});
+	function updateCommentState(newState) {
+		setCommentState((prevState) => ({ ...prevState, ...newState }));
+	}
+	const [userstate, setUserstate] = useState({
+		usersList: [],
+		selected_ids: [],
+		searchString: "",
+		page: 0,
+		isLastPage: false,
+		Loading: false,
+		page_limit:0
+	});
+	function updateuserstate(newState) {
+		setUserstate((prevState) => ({ ...prevState, ...newState }));
+	}
+	const debounceCallSearch = useCallback(
+		debounce((data) => {
+			fetchusersData(0, data);
+		}, debounce_time),
+		[]
+	);
+	const [refresh, setRefresh] = useState(false);
+	function handleBackPress() {
+		if (modalVisible || eModalVisible || shareModalVisible) {
+			setModalVisible(false);
+			setCommentState({
+				...commentState,
+				allcomments: [],
+				currentPostId: "",
+			});
+			seteModalVisible(false)
+			setShareModalVisible(false)
+			setUserstate({
+				usersList: [],
+				selected_ids: [],
+                searchString: "",
+                page: 0,
+                isLastPage: false,
+                loading: false,
+			})
+			return true;
+		} else {
+			BackHandler.exitApp();
+			return true;
+		}
 	}
 	useFocusEffect(
 		React.useCallback(() => {
@@ -61,130 +112,301 @@ export default function Home() {
 			};
 		})
 	);
-	async function fetchData() {
-		setLoading(true);
+	async function refreshHandler() {
+		setRefresh(true);
+		await fetchData({ mode: "refresh" });
+		setRefresh(false);
+	}
+	async function fetchData({ page = 0, mode = "normal" }) {
+		if (page == 0) {
+			setPage(0);
+			setLoading(true);
+		}
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
 			"content-type": "application/json",
 		};
 		axios
-			.get(backend_url + "v1/user/getposts", { headers })
+			.get(backend_url + "v1/user/getposts?page=" + page, { headers })
 			.then((response) => {
-				setPosts(response.data.message.posts);
-				setLoggedInUser(response.data.message.logged_in_user);
-				setLoading(false);
+				if (mode == "refresh" || page == 0) {
+					setPosts(response.data.message.posts);
+					setInicomments(response.data.message.comments);
+				} else {
+					setPosts([...posts, ...response.data.message.posts]);
+					setInicomments({ ...inicomments, ...response.data.message.comments });
+				}
+				updateuserstate({
+					usersList: response.data.message.shareUsers,
+					isLastPage: response.data.message.shareIsLastPage,
+					page_limit: response.data.message.sharePageLimit,
+				});
+				setLoggedInUser({
+					...loggedInUser,
+					pic: response.data.message.logged_in_user.pic,
+				});
+				setIsLastPage(response.data.message.isLastPage);
+				if (page == 0) setLoading(false);
 			})
 			.catch((err) => {
-				setLoading(false);
+				if (page == 0) setLoading(false);
 			});
 	}
-
 	useEffect(() => {
-		fetchData();
+		fetchData({});
+		const keyboardListener = Keyboard.addListener("keyboardDidHide", () => {
+			updateCommentState({ parent_comment_id: "" });
+			// Your custom logic here
+		});
+
+		// Clean up the listener on unmount
+		return () => {
+			keyboardListener.remove();
+		};
 	}, []);
-	const sheetRef = useRef(null);
-	const snapPoints = ["80%"];
+
 	const handleSnapPress = useCallback((index) => {
 		if (index === -1) setModalVisible(false);
 		sheetRef.current?.snapToIndex(index);
 	}, []);
+	const sharehandleSnapPress = useCallback((index) => {
+		if (index === -1) setShareModalVisible(false);
+		shareSheetRef.current?.snapToIndex(index);
+	}, []);
+	const ehandleSnapPress = useCallback((index) => {
+		if (index === -1) seteModalVisible(false);
+		eSheetRef.current?.snapToIndex(index);
+	}, []);
 	async function endHandler() {
-		// if (!isLastPage) {
-		// 	setPage(page + 1);
-		// 	fetchData(page + 1, search, true);
-		// }
-		console.log("hello world");
+		if (!isLastPage) {
+			setPage(page + 1);
+			fetchData({ page: page + 1 });
+		}
 	}
-	const renderItem = useCallback(
-		({ item }) => (
-			<Pressable
-				onPress={() => {
-					setSelected((prevSelected) => {
-						if (!prevSelected.includes(item.username)) {
-							return [...prevSelected, item.username];
-						} else {
-							return prevSelected.filter(
-								(username) => username !== item.username
-							);
-						}
-					});
-					setUserIds((prevSelected) => {
-						if (!prevSelected.includes(item._id)) {
-							return [...prevSelected, item._id];
-						} else {
-							return prevSelected.filter((_id) => _id !== item._id);
-						}
-					});
-				}}
-			>
-				<View className="flex-row items-center justify-between border border-gray-500 ml-4 mr-4 mb-1 mt-1 rounded-xl p-2 ">
-					<View className="flex-row items-center gap-5">
-						<Image
-							source={imagePlaceholder}
-							style={{
-								width: 50,
-								height: 50,
-								borderRadius: 50,
-								borderColor: "black",
-								borderWidth: 1.5,
-							}}
-						/>
-						<View>
-							<Text className="text-xl font-semibold">{item.username}</Text>
-							<Text className="text-lg text-gray-500">{item.city}</Text>
-						</View>
-					</View>
 
-					{/* Show checkmark only if the item is selected */}
-					{selected.includes(item.username) && (
-						<View className="mr-5">
-							<Ionicons name={"checkmark-circle"} size={28} color="lightblue" />
-						</View>
-					)}
+	const openKeyboard = (pid) => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+		updateCommentState({ parent_comment_id: pid });
+	};
+	async function commentHandler() {
+		console.log(commentState.parent_comment_id);
+		const token = await AsyncStorage.getItem("BearerToken");
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		const body = {
+			comment: commentState.comment,
+			post_id: commentState.currentPostId,
+			parent_comment_id:
+				commentState.parent_comment_id == ""
+					? null
+					: commentState.parent_comment_id,
+		};
+		const response = await axios.post(
+			backend_url + "v1/user/commentPost",
+			body,
+			{
+				headers,
+			}
+		);
+		if (parent_coment_id != "") {
+			setCommentState({
+				...commentState,
+				comment: "",
+				parent_comment_id: "",
+				allcomments: [
+					...commentState.allcomments,
+					{
+						_id: response.data._id,
+						pic: response.data.pic,
+						name: response.data.name,
+						city: response.data.city,
+						comment: response.data.comment,
+						time: response.data.time,
+						likes: response.data.likes,
+						liked: response.data.liked,
+					},
+				],
+			});
+		} else {
+			setCommentState({
+				...commentState,
+				comment: "",
+				parent_comment_id: parent_comment_id,
+			});
+		}
+	}
+	async function fetchPageComments({ page }) {
+		try {
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const response = await axios.get(
+				`${backend_url}v1/user/getComments?page=${page}&post_id=${commentState.currentPostId}`,
+				{ headers }
+			);
+			updateCommentState({
+				allcomments: [...commentState.allcomments, ...response.data.comments],
+				isLastPage: response.data.isLastPage,
+			});
+		} catch (err) {
+			if (commentState.page === 0) {
+				updateCommentState({ commentsLoading: false });
+			}
+		}
+	}
+	async function commentsEndHandler() {
+		if (!commentState.isLastPage && !commentState.commentsLoading) {
+			setCommentState({ ...commentState, page: commentState.page + 1 });
+			fetchPageComments({ page: commentState.page + 1 });
+		}
+	}
+	function handleUserSelection(userId) {
+		setUserstate((prevState) => {
+			let updatedSelectedIds = [...prevState.selected_ids];
+			if (updatedSelectedIds.includes(userId)) {
+				// Deselect the user
+				updatedSelectedIds = updatedSelectedIds.filter((id) => id !== userId);
+			} else {
+				// Select the user
+				updatedSelectedIds.push(userId);
+			}
+			return { ...prevState, selected_ids: updatedSelectedIds };
+		});
+	}
+	async function fetchusersData(page, searchString, fromend = false) {
+		const token = await AsyncStorage.getItem("BearerToken");
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		console.log(searchString, page);
+		axios
+			.get(
+				backend_url +
+					`v1/user/getUsers?page=${page}&search=${searchString}&available=${"NA"}`,
+				{
+					headers,
+				}
+			)
+			.then((response) => {
+				if (fromend) {
+					updateuserstate({
+						usersList: [...userstate.usersList, ...response.data.message.users],
+						isLastPage: response.data.message.isLastPage,
+					});
+				} else {
+					updateuserstate({
+						usersList: response.data.message.users,
+						isLastPage: response.data.message.isLastPage,
+						Loading: false,
+						page:0
+					});
+				}
+			})
+			.catch((err) => {
+				if (page == 0) updateuserstate({ Loading: false });
+			});
+	}
+	function shareEndHandler() {
+		if (!userstate.isLastPage) {
+			updateuserstate({ page: userstate.page + 1 });
+			fetchusersData(userstate.page + 1, userstate.searchString, true);
+		}
+	}
+	function renderItem({ item }) {
+		const isSelected = userstate.selected_ids.includes(item._id);
+		return (
+			<Pressable
+				onPress={() => handleUserSelection(item._id)}
+				className="p-5 flex-row justify-between"
+			>
+				<View className="flex-row items-center gap-5">
+					<Image
+						source={imagePlaceholder}
+						style={{
+							width: 50,
+							height: 50,
+							borderRadius: 50,
+							borderColor: "black",
+							borderWidth: 1.5,
+						}}
+					/>
+					<View>
+						<Text className="text-xl font-semibold">{item.username}</Text>
+						<Text className="text-lg text-gray-500">{item.city}</Text>
+					</View>
 				</View>
+				<Ionicons
+					name={isSelected ? "checkbox" : "square-outline"} // Display check/uncheck icon based on selection state
+					size={24}
+					color={isSelected ? "green" : "gray"}
+				/>
 			</Pressable>
-		),
-		[selected] // Add 'selected' to dependency array to re-render correctly
-	);
+		);
+	}
 	return (
 		<GestureHandlerRootView>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 				keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
 			>
-				<View className="bg-white h-full">
+				<View className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}>
 					<SafeAreaView>
-						<ScrollView
-							keyboardShouldPersistTaps={"always"}
-							keyboardDismissMode="on-drag"
+						<FlatList
+							data={posts}
+							keyExtractor={(item, index) => index.toString()}
+							ListHeaderComponent={<NavBarComponent />}
+							ListFooterComponent={() =>
+								isLastPage ? (
+									<Text style={{ textAlign: "center", padding: 30 }}>
+										No more posts to display
+									</Text>
+								) : (
+									<ActivityIndicator size="large" color="gray" />
+								)
+							}
+							onEndReached={endHandler}
+							ListEmptyComponent={
+								loading ? (
+									<View className="h-screen flex items-center justify-center">
+										<ActivityIndicator size="large" color="gray" />
+									</View>
+								) : (
+									<View className="h-screen flex items-center justify-center">
+										<Text>No Posts to display</Text>
+									</View>
+								)
+							}
+							renderItem={({ item }) => (
+								<PostComponent
+									post={item}
+									modalVisible={modalVisible}
+									setModalVisible={setModalVisible}
+									handleSnapPress={handleSnapPress}
+									updateCommentState={updateCommentState}
+									inicomments={inicomments}
+									ehandleSnapPress={ehandleSnapPress}
+									eModalVisible={eModalVisible}
+									seteModalVisible={seteModalVisible}
+									setShareModalVisible={setShareModalVisible}
+									shareModalVisible={shareModalVisible}
+									sharehandleSnapPress={sharehandleSnapPress}
+								/>
+							)}
 							refreshControl={
 								<RefreshControl
 									refreshing={refresh}
-									onRefresh={() => refreshHandler()}
+									onRefresh={refreshHandler}
 								/>
 							}
-						>
-							<View>
-								<NavBarComponent />
-							</View>
-							{loading ? (
-								<View className="h-screen flex items-center justify-center">
-									<ActivityIndicator size="large" color="gray" />
-								</View>
-							) : (
-								posts?.map((post, index) => (
-									<PostComponent
-										key={index}
-										post={post}
-										modalVisible={modalVisible}
-										setModalVisible={setModalVisible}
-										handleSnapPress={handleSnapPress}
-									/>
-								))
-							)}
-							<View style={{ height: 50 }}></View>
-						</ScrollView>
+						/>
 					</SafeAreaView>
 					{modalVisible && (
 						<BottomSheet
@@ -194,15 +416,159 @@ export default function Home() {
 							className="bg-white h-full"
 							onClose={() => {
 								setModalVisible(false);
+								setCommentState({
+									...commentState,
+									allcomments: [],
+									currentPostId: "",
+								});
 							}}
 						>
 							<BottomSheetFlatList
-								data={users}
+								data={commentState.allcomments}
 								keyExtractor={(i) => i._id}
-								renderItem={renderItem}
-								onEndReached={endHandler}
+								renderItem={({ item, index }) => (
+									<CommentComponent
+										item={item}
+										index={index}
+										openKeyboard={openKeyboard}
+										commentState={commentState}
+									/>
+								)}
+								onEndReached={commentsEndHandler}
 								ListFooterComponent={() =>
-									isLastPage ? (
+									commentState.isLastPage ? (
+										<Text style={{ textAlign: "center", padding: 30 }}>
+											You have reached the end of Page
+										</Text>
+									) : (
+										<View className="flex items-center justify-center">
+											<ActivityIndicator size="large" color="gray" />
+										</View>
+									)
+								}
+								ListEmptyComponent={
+									commentState.commentsLoading && !commentState.isLastPage ? (
+										<View></View>
+									) : (
+										<Text style={{ textAlign: "center", padding: 30 }}>
+											No Data: Please change filters
+										</Text>
+									)
+								}
+								keyboardShouldPersistTaps="always"
+								keyboardDismissMode="on-drag"
+								contentContainerStyle={{ padding: 10 }}
+							/>
+							<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[50px] border rounded-2xl">
+								<View className="flex-row items-center ml-2 w-[73%]">
+									<Image
+										source={
+											loggedInUser.pic
+												? { uri: loggedInUser.pic.url }
+												: imagePlaceholder
+										}
+										style={{
+											width: 30,
+											height: 30,
+											borderRadius: 50,
+											borderColor: "black",
+											borderWidth: 1.5,
+										}}
+									/>
+									<TextInput
+										className="h-[45px] pl-5 w-full"
+										ref={inputRef}
+										placeholder="Leave your comment here"
+										value={commentState.comment}
+										onChangeText={(data) =>
+											updateCommentState({ comment: data })
+										}
+									/>
+								</View>
+								<Pressable
+									className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
+									onPress={commentHandler}
+								>
+									<Ionicons name="arrow-up-outline" size={24} color="white" />
+								</Pressable>
+							</View>
+						</BottomSheet>
+					)}
+					{eModalVisible && (
+						<BottomSheet
+							ref={eSheetRef}
+							snapPoints={eSnapPoints}
+							enablePanDownToClose
+							// onClose={handleShareClose}
+							className="bg-white"
+						>
+							<View className="flex-1 items-center justify-between mt-5 mb-5">
+								<Text className="text-3xl">Remove Connection</Text>
+								<Text className="text-3xl">About this Account</Text>
+								<Text className="text-3xl">Share this Profile</Text>
+								<Text className="text-3xl">Add to favorites</Text>
+								<Text className="text-3xl">Hide</Text>
+								<Text className="text-3xl">Archive</Text>
+								<Text className="text-3xl text-red-500">Report</Text>
+							</View>
+						</BottomSheet>
+					)}
+					{shareModalVisible && (
+						<BottomSheet
+							ref={shareSheetRef}
+							snapPoints={shareSnapPoints}
+							enablePanDownToClose
+							className="bg-white"
+							onClose={() => {
+								setShareModalVisible(false);
+								sharehandleSnapPress(-1);
+								updateuserstate({
+									selected_ids: [],
+									page: 0,
+									searchString: "",
+									usersList: userstate.usersList.slice(0,parseInt(userstate.page_limit))
+								});
+							}}
+						>
+							<View className="p-3 flex-row flex-wrap"></View>
+							<View className="flex-row items-center gap-5 pl-5">
+								<Ionicons
+									name={"close-outline"}
+									size={26}
+									color="gray"
+									onPress={() => {
+										setShareModalVisible(false);
+										sharehandleSnapPress(-1);
+									}}
+								/>
+								<View className="flex-row items-center justify-center bg-[#ECE6F0] rounded-lg w-[80%] p-3">
+									<Ionicons
+										name="search-outline"
+										size={20}
+										color="gray"
+										style={{ position: "absolute", left: 15 }}
+									/>
+									<TextInput
+										style={{
+											flex: 1,
+											height: "100%",
+											paddingLeft: 40,
+										}}
+										onChangeText={(data) => {
+											updateuserstate({ searchString: data, page: 0 });
+											debounceCallSearch(data);
+										}}
+										placeholder="Search by ID or University or Location"
+									/>
+								</View>
+							</View>
+							<BottomSheetFlatList
+								data={userstate.usersList}
+								keyExtractor={(i,index) => index}
+								renderItem={renderItem}
+								onEndReached={shareEndHandler}
+								ListFooterComponent={() =>
+									userstate.isLastPage ? (
 										<Text style={{ textAlign: "center", padding: 30 }}>
 											You have reached the end of Page
 										</Text>
@@ -219,27 +585,11 @@ export default function Home() {
 								keyboardDismissMode="on-drag"
 								contentContainerStyle={{ padding: 10 }}
 							/>
-							<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[50px] border rounded-2xl">
-								<View className="flex-row items-center ml-2 w-[73%]">
-									<Image
-										source={loggedInUser.pic ? {uri:loggedInUsercd.pic.url} :imagePlaceholder}
-										style={{
-											width: 30,
-											height: 30,
-											borderRadius: 50,
-											borderColor: "black",
-											borderWidth: 1.5,
-										}}
-									/>
-									<TextInput
-										className="h-[45px] pl-5 w-full"
-										placeholder="Leave your comment here"
-									/>
-								</View>
-								<Pressable className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]">
-									<Ionicons name="arrow-up-outline" size={24} color="white" />
+							{userstate.selected_ids.length > 0 && (
+								<Pressable className="border p-4 flex-row items-center justify-center bg-blue-500 rounded-full ml-5 mr-5">
+									<Text className="text-4xl text-white">Send</Text>
 								</Pressable>
-							</View>
+							)}
 						</BottomSheet>
 					)}
 				</View>

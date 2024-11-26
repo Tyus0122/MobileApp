@@ -23,7 +23,7 @@ const App = () => {
 	const [posts, setPost] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const params = useLocalSearchParams();
-	async function fetchData(page) {
+	async function fetchData() {
 		setLoading(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
