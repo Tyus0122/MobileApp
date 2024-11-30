@@ -192,7 +192,6 @@ export default function Home() {
 		updateCommentState({ parent_comment_id: pid });
 	};
 	async function commentHandler() {
-		console.log(commentState.parent_comment_id);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -286,7 +285,6 @@ export default function Home() {
 			authorization: "Bearer " + token,
 			"content-type": "application/json",
 		};
-		console.log(searchString, page);
 		axios
 			.get(
 				backend_url +

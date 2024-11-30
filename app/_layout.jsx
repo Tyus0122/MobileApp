@@ -1,21 +1,75 @@
 import { useState, createContext, useEffect } from "react";
 import { Stack } from "expo-router";
 import "../global.css";
-import { LogBox } from "react-native";
-LogBox.ignoreAllLogs();
-export const SocketContext = createContext(null);
+import { LogBox, View, ActivityIndicator, Text } from "react-native";
 import io from "socket.io-client";
 import { socket_url } from "@/constants/constants";
+import * as _ from 'lodash'
+LogBox.ignoreAllLogs();
+export const SocketContext = createContext(null);
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function RootLayout() {
 	const [socket, setSocket] = useState(null);
-	useEffect(() => {
+	async function connectSocket() {
+		console.log("Attempting to connect to socket...", socket_url);
 		const newSocket = io(socket_url);
-		setSocket(newSocket);
-		return () => newSocket.close();
+
+		newSocket.on("connect", () => {
+			console.log("Socket connected successfully:", newSocket.id);
+			setSocket(newSocket);
+
+			// Register token after successful connection
+			registerToken(newSocket);
+		});
+
+		newSocket.on("connect_error", (err) => {
+			console.error("Socket connection error:", err.message);
+		});
+
+		newSocket.on("disconnect", () => {
+			console.log("Socket disconnected.");
+			setSocket(null);
+		});
+
+		// Clean up the socket connection on unmount
+		return () => {
+			console.log("Cleaning up socket...");
+			newSocket.close();
+		};
+	}
+
+	async function registerToken(socketInstance) {
+		try {
+			const token = await AsyncStorage.getItem("BearerToken");
+			if (!_.isNil(token)) {
+				console.log("Registering token with the socket...");
+				socketInstance.emit("registerTheToken", { token });
+				console.log("Token registered successfully!");
+			} else {
+				console.warn("No token found in AsyncStorage.");
+			}
+		} catch (error) {
+			console.error("Error registering token:", error.message);
+		}
+	}
+	useEffect(() => {
+		connectSocket();
 	}, []);
-	return (
-		<SocketContext.Provider value={socket}>
+	return !socket ? (
+		<View
+			style={{
+				flex: 1,
+				justifyContent: "center",
+				alignItems: "center",
+				backgroundColor: "#fff",
+			}}
+		>
+			<Text>Connecting to the socket server...</Text>
+			<ActivityIndicator size="large" color="#0000ff" />
+		</View>
+	) : (
+		<SocketContext.Provider value={{ socket, setSocket }}>
 			<Stack>
 				<Stack.Screen name="index" options={{ headerShown: false }} />
 				<Stack.Screen name="login/index" options={{ headerShown: false }} />

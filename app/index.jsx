@@ -1,16 +1,15 @@
 import { Text, View, Pressable, ActivityIndicator } from "react-native";
 import { router, Link, Redirect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { backend_url } from "@/constants/constants";
+
 export default function Index() {
 	const [isLoggedin, setIsLoggedin] = useState("");
 	async function fetchData() {
 		const token = await AsyncStorage.getItem("BearerToken");
-
 		const headers = {
 			authorization: "Bearer " + token,
 			"content-type": "application/json",
@@ -37,7 +36,6 @@ export default function Index() {
 	) : isLoggedin === true ? (
 		<Redirect href={"/home"} />
 	) : (
-		// <Redirect href={`/home?data=${JSON.stringify(dashboard_json.message)}`}/>
 		<Redirect href={"/login"} />
 	);
 }

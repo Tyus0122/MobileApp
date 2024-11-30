@@ -25,15 +25,23 @@ import { debounce, uniqueId } from "lodash";
 import { SocketContext } from "@/app/_layout.jsx";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export default function Chat() {
-	const socket = useContext(SocketContext)
-	socket.emit("messagesent", { message: "hello world" })
+	const { socket, useSocket } = useContext(SocketContext);
 	const params = useLocalSearchParams();
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(0);
 	const [messages, setMessages] = useState([]);
 	const [otherUser, setOtherUser] = useState({});
 	const [msgtosend, setMsgtosend] = useState("");
+
+	async function socketRecievehandler(data) {
+		console.log(messages.length)
+		console.log(params.otherUser_id,data.from)
+		if (params.otherUser_id == data.from) {
+			setMessages((prevMessages) => [data, ...prevMessages]);
+		}
+	}
 	async function fetchData() {
+		socket.on("messagesent", socketRecievehandler);
 		setLoading(true);
 		// setPosts([]);
 		// setIsLastPage(false);
@@ -72,20 +80,30 @@ export default function Chat() {
 	}
 	useEffect(() => {
 		fetchData();
+		// return () => {
+		// 	socket.off("messagesent", socketRecievehandler);
+		// };
 	}, []);
+	async function sendmsgviasocket(message, token, otherUser) {
+		const payload = {
+			...message,
+			...otherUser,
+			token,
+			uid: message._id,
+		};
+		socket.emit("message", payload);
+	}
 	async function sendHandler() {
 		const token = await AsyncStorage.getItem("BearerToken");
 		let time_of_message = new Date();
-		setMessages([
-			{
-				message: msgtosend,
-				_id: uniqueId("id-"),
-				isSender: true,
-				time: time_of_message,
-			},
-
-			...messages,
-		]);
+		let realtime_message = {
+			message: msgtosend,
+			_id: uniqueId("id-"),
+			isSender: true,
+			time: time_of_message,
+		};
+		setMessages([realtime_message, ...messages]);
+		sendmsgviasocket(realtime_message, token, otherUser);
 		const headers = {
 			authorization: "Bearer " + token,
 			"content-type": "application/json",
@@ -96,13 +114,13 @@ export default function Chat() {
 			conversation_id: params.conversation_id,
 		};
 		setMsgtosend("");
-		const response = await axios.post(
-			backend_url + "v1/user/postMessages",
-			data,
-			{
-				headers,
-			}
-		);
+		// const response = await axios.post(
+		// 	backend_url + "v1/user/postMessages",
+		// 	data,
+		// 	{
+		// 		headers,
+		// 	}
+		// );
 	}
 	const renderItem = ({ item }) => (
 		<View
@@ -186,8 +204,12 @@ export default function Chat() {
 										}}
 									/>
 									<Text className="text-3xl text-black-500">
+										{otherUser.logged_in_user_id}
+									</Text>
+									<Text className="text-3xl text-black-500">
 										{otherUser.fullname}
 									</Text>
+									<Text className="text-3xl text-black-500">{socket.id}</Text>
 									<Text className="text-xl text-black-500">
 										{otherUser.username}
 									</Text>
@@ -210,7 +232,7 @@ export default function Chat() {
 								renderItem={renderItem}
 								ListFooterComponent={
 									<View>
-										<ActivityIndicator size="large" color="#0000ff" />
+										{/* <ActivityIndicator size="large" color="#0000ff" /> */}
 									</View>
 								}
 								inverted

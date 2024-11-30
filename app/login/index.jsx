@@ -17,7 +17,7 @@ import ToastManager, { Toast } from "expo-react-native-toastify";
 import { SocketContext } from "@/app/_layout.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
-	const socket = useContext(SocketContext);
+	const { socket, setSocket } = useContext(SocketContext);
 	const [showPassword, setShowPassword] = useState(true);
 	const [isChecked, setIsChecked] = useState(false);
 	const [submit, setSubmit] = useState(false);
@@ -55,8 +55,8 @@ export default function LoginScreen() {
 			.post(backend_url + "v1/user/loginSubmit", formData)
 			.then((response) => {
 				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
-				socket.emit("registerTheToken",{token:response.data.BearerToken});
-				router.push("home");
+				router.push("/");
+				setSubmit(false);
 			})
 			.catch((err) => {
 				if (err.status === 404) {
