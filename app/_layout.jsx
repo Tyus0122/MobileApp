@@ -4,7 +4,7 @@ import "../global.css";
 import { LogBox, View, ActivityIndicator, Text } from "react-native";
 import io from "socket.io-client";
 import { socket_url } from "@/constants/constants";
-import * as _ from 'lodash'
+import * as _ from "lodash";
 LogBox.ignoreAllLogs();
 export const SocketContext = createContext(null);
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -71,7 +71,7 @@ export default function RootLayout() {
 	) : (
 		<SocketContext.Provider value={{ socket, setSocket }}>
 			<Stack>
-				<Stack.Screen name="index" options={{ headerShown: false }} />
+				{/* <Stack.Screen name="index" options={{ headerShown: false }} />
 				<Stack.Screen name="login/index" options={{ headerShown: false }} />
 				<Stack.Screen name="signup/index" options={{ headerShown: false }} />
 				<Stack.Screen name="dashboard/index" options={{ headerShown: false }} />
@@ -101,10 +101,18 @@ export default function RootLayout() {
 				<Stack.Screen name="chat/index" options={{ headerShown: false }} />
 				<Stack.Screen name="saved/index" options={{ headerShown: false }} />
 				<Stack.Screen
+					name="shareProfile/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen
 					name="editProfile/index"
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+				<Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+				<Stack.Screen
+					name="notifications/index"
+					options={{ headerShown: false }}
+				/>
 			</Stack>
 		</SocketContext.Provider>
 	);

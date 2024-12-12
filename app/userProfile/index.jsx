@@ -5,7 +5,6 @@ import {
 	ActivityIndicator,
 	TouchableOpacity,
 	FlatList,
-	RefreshControl,
 	Pressable,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -27,16 +26,9 @@ export default function userProfile() {
 	const [conn, setConn] = useState("");
 	const [posts, setPosts] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [refresh, setRefresh] = useState(false);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [page, setPage] = useState(false);
 	const [buttonloading, setbuttonloading] = useState(false);
-
-	async function refreshHandler() {
-		setRefresh(true);
-		await fetchData();
-		setRefresh(false);
-	}
 	async function fetchData() {
 		setLoading(true);
 		setPosts([]);
@@ -52,10 +44,14 @@ export default function userProfile() {
 				headers,
 			})
 			.then((response) => {
-				setUser(response.data.user);
-				setConn(response.data.user.connectionslength);
-				setPosts(response.data.user.posts);
-				setLoading(false);
+				if (response.data.user.self) {
+					router.push("/(tabs)/profile");
+				} else {
+					setUser(response.data.user);
+					setConn(response.data.user.connectionslength);
+					setPosts(response.data.user.posts);
+					setLoading(false);
+				}
 			})
 			.catch((err) => {
 				setLoading(false);
@@ -130,17 +126,106 @@ export default function userProfile() {
 					headers,
 				}
 			);
-			setbuttonloading(false)
+			setbuttonloading(false);
 			router.push({
 				pathname: "/chat",
 				params: {
 					conversation_id: response.data.posts.conversation_id,
-					otherUser_id: user._id
+					otherUser_id: user._id,
 				},
 			});
 		} catch (error) {
-			setbuttonloading(false)
+			setbuttonloading(false);
 			console.error(error);
+		}
+	}
+	const [connectionbuttonloading, setconnectionbuttonloading] = useState(false);
+	async function acceptHandler() {
+		try {
+			setconnectionbuttonloading(true);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: user._id,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/acceptConnectionRequest",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				setconnectionbuttonloading(false);
+				setUser({ ...user, connectionStatus: "connected" });
+			}
+			console.log(response.status);
+			// console.log(JSON.stringify(response,null,2))
+		} catch (error) {
+			setconnectionbuttonloading(false);
+			console.error(error.message);
+		}
+	}
+	async function rejectHandler() {
+		try {
+			setconnectionbuttonloading(true);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: user._id,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/rejectConnectionRequest",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				setconnectionbuttonloading(false);
+				setUser({ ...user, connectionStatus: "connect" });
+			}
+			console.log(response.status);
+			// console.log(JSON.stringify(response,null,2))
+		} catch (error) {
+			setconnectionbuttonloading(false);
+			console.error(error.message);
+		}
+	}
+	async function connectHandler() {
+		try {
+			setconnectionbuttonloading(true);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: user._id,
+				send:true
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/sendConnectionRequest",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				setconnectionbuttonloading(false);
+				setUser({ ...user, connectionStatus: "connecting" });
+			}
+			console.log(response.status);
+			// console.log(JSON.stringify(response,null,2))
+		} catch (error) {
+			setconnectionbuttonloading(false);
+			console.error(error.message);
 		}
 	}
 	return (
@@ -152,7 +237,7 @@ export default function userProfile() {
 					</View>
 				) : (
 					<FlatList
-						className="bg-white"
+						className="bg-white flex-1"
 						data={posts}
 						numColumns={3}
 						keyExtractor={(item, index) => index.toString()}
@@ -218,28 +303,60 @@ export default function userProfile() {
 												</View>
 											</View>
 											<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-between">
-												<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center">
-													<Text className="text-white text-xl font-semibold ml-3 mr-3">
-														Connect
-													</Text>
-												</TouchableOpacity>
+												{connectionbuttonloading ? (
+													<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center">
+														<ActivityIndicator size="large" color="white" />
+													</TouchableOpacity>
+												) : ["connected", "connecting", "connect"].includes(
+														user.connectionStatus
+												  ) ? (
+													<TouchableOpacity
+														className={`bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center`}
+														disabled={["connected", "connecting"].includes(
+															user.connectionStatus
+																)}
+																onPress={connectHandler}
+													>
+														<Text className="text-white text-xl font-semibold ml-3 mr-3">
+															{user.connectionStatus}
+														</Text>
+													</TouchableOpacity>
+												) : (
+													<View className="flex-row gap-3">
+														<TouchableOpacity
+															onPress={acceptHandler}
+															className=" bg-green-500 rounded-xl w-[70px] h-[45px] flex items-center justify-center"
+														>
+															<Ionicons
+																name={"checkmark-outline"}
+																size={28}
+																color="white"
+															/>
+														</TouchableOpacity>
+														<TouchableOpacity
+															onPress={rejectHandler}
+															className=" bg-red-500 rounded-xl w-[70px] h-[45px] flex items-center justify-center"
+														>
+															<Ionicons
+																name={"close-outline"}
+																size={28}
+																color="white"
+															/>
+														</TouchableOpacity>
+													</View>
+												)}
 												<TouchableOpacity
 													className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center"
 													onPress={messageHandler}
 													disabled={buttonloading}
 												>
-													{
-														buttonloading? (
-                                                            <ActivityIndicator
-                                                                size="small"
-                                                                color="white"
-                                                            />
-                                                        ) : (
-                                                            <Text className="text-white text-xl font-semibold ml-3 mr-3">
-                                                                Message
-                                                            </Text>
-                                                        )
-													}
+													{buttonloading ? (
+														<ActivityIndicator size="small" color="white" />
+													) : (
+														<Text className="text-white text-xl font-semibold ml-3 mr-3">
+															Message
+														</Text>
+													)}
 												</TouchableOpacity>
 											</View>
 										</View>
@@ -259,9 +376,6 @@ export default function userProfile() {
 							</View>
 						}
 						renderItem={renderPost}
-						refreshControl={
-							<RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
-						}
 						onEndReached={endHandler}
 						ListFooterComponent={() =>
 							isLastPage ? (

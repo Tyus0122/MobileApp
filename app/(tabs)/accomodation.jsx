@@ -46,7 +46,7 @@ export default function Accomodation() {
 	const shareSnapPoints = ["80%"];
 	const eSheetRef = useRef(null);
 	const [eModalVisible, seteModalVisible] = useState(false);
-	const eSnapPoints = ["60%"];
+	const eSnapPoints = ["50%"];
 	const inputRef = useRef(null);
 	const snapPoints = ["80%"];
 	const [posts, setPosts] = useState([]);
@@ -651,11 +651,8 @@ export default function Accomodation() {
 							>
 								<View className="flex-1 items-center justify-between mt-5 mb-5">
 									<Text className="text-3xl">Remove Connection</Text>
-									<Text className="text-3xl">About this Account</Text>
 									<Text className="text-3xl">Share this Profile</Text>
-									<Text className="text-3xl">Add to favorites</Text>
 									<Text className="text-3xl">Hide</Text>
-									<Text className="text-3xl">Archive</Text>
 									<Text className="text-3xl text-red-500">Report</Text>
 								</View>
 							</BottomSheet>

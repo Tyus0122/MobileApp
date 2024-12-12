@@ -40,10 +40,7 @@ export default function post() {
 				quality: 1,
 			});
 		}
-		console.log(result);
-		console.log(result.assets.length);
 		if (!result.canceled) {
-			console.log(result.assets[0].uri);
 			setImage(result.assets[0].uri);
 		}
 	}

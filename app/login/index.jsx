@@ -55,6 +55,7 @@ export default function LoginScreen() {
 			.post(backend_url + "v1/user/loginSubmit", formData)
 			.then((response) => {
 				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
+				socket.emit("registerTheToken", { token: response.data.BearerToken });
 				router.push("/");
 				setSubmit(false);
 			})

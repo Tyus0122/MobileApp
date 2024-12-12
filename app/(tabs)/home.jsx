@@ -20,7 +20,7 @@ import { CommentComponent } from "@/components/CommentComponent";
 import { useState, useCallback, useEffect, useRef } from "react";
 import React from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { backend_url, debounce_time } from "@/constants/constants";
@@ -37,7 +37,7 @@ export default function Home() {
 	const shareSnapPoints = ["80%"];
 	const eSheetRef = useRef(null);
 	const [eModalVisible, seteModalVisible] = useState(false);
-	const eSnapPoints = ["60%"];
+	const eSnapPoints = ["40%"];
 	const inputRef = useRef(null);
 	const snapPoints = ["80%"];
 	const [posts, setPosts] = useState([]);
@@ -57,6 +57,7 @@ export default function Home() {
 		page: 0,
 		comment: "",
 		parent_comment_id: "",
+		currentUserId: "",
 	});
 	function updateCommentState(newState) {
 		setCommentState((prevState) => ({ ...prevState, ...newState }));
@@ -68,7 +69,7 @@ export default function Home() {
 		page: 0,
 		isLastPage: false,
 		Loading: false,
-		page_limit:0
+		page_limit: 0,
 	});
 	function updateuserstate(newState) {
 		setUserstate((prevState) => ({ ...prevState, ...newState }));
@@ -88,16 +89,16 @@ export default function Home() {
 				allcomments: [],
 				currentPostId: "",
 			});
-			seteModalVisible(false)
-			setShareModalVisible(false)
+			seteModalVisible(false);
+			setShareModalVisible(false);
 			setUserstate({
 				usersList: [],
 				selected_ids: [],
-                searchString: "",
-                page: 0,
-                isLastPage: false,
-                loading: false,
-			})
+				searchString: "",
+				page: 0,
+				isLastPage: false,
+				loading: false,
+			});
 			return true;
 		} else {
 			BackHandler.exitApp();
@@ -201,9 +202,9 @@ export default function Home() {
 			comment: commentState.comment,
 			post_id: commentState.currentPostId,
 			parent_comment_id:
-				commentState.parent_comment_id == ""
-					? null
-					: commentState.parent_comment_id,
+			commentState.parent_comment_id == ""
+			? null
+			: commentState.parent_comment_id,
 		};
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
@@ -212,7 +213,7 @@ export default function Home() {
 				headers,
 			}
 		);
-		if (parent_coment_id != "") {
+		if (commentState.parent_comment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
@@ -234,8 +235,7 @@ export default function Home() {
 		} else {
 			setCommentState({
 				...commentState,
-				comment: "",
-				parent_comment_id: parent_comment_id,
+				comment: ""
 			});
 		}
 	}
@@ -304,7 +304,7 @@ export default function Home() {
 						usersList: response.data.message.users,
 						isLastPage: response.data.message.isLastPage,
 						Loading: false,
-						page:0
+						page: 0,
 					});
 				}
 			})
@@ -316,6 +316,36 @@ export default function Home() {
 		if (!userstate.isLastPage) {
 			updateuserstate({ page: userstate.page + 1 });
 			fetchusersData(userstate.page + 1, userstate.searchString, true);
+		}
+	}
+	const [shareloading, setShareloading] = useState(false);
+	async function sharePostHandler() {
+		try {
+			setShareloading(true);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const body = {
+				type: "sharePost",
+				message: commentState.currentPostId,
+				toUserIds: userstate.selected_ids,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/sharePostService",
+				body,
+				{
+					headers,
+				}
+			);
+			setShareloading(false);
+			sharehandleSnapPress(-1);
+			updateuserstate({
+				selected_ids: [],
+			});
+		} catch (error) {
+			console.error(error);
 		}
 	}
 	function renderItem({ item }) {
@@ -502,11 +532,19 @@ export default function Home() {
 						>
 							<View className="flex-1 items-center justify-between mt-5 mb-5">
 								<Text className="text-3xl">Remove Connection</Text>
-								<Text className="text-3xl">About this Account</Text>
-								<Text className="text-3xl">Share this Profile</Text>
-								<Text className="text-3xl">Add to favorites</Text>
+								<TouchableOpacity
+									onPress={() => {
+										router.push({
+											pathname: "/shareProfile",
+											params: {
+												profile_id: commentState.currentUserId,
+											},
+										});
+									}}
+								>
+									<Text className="text-3xl">Share this Profile</Text>
+								</TouchableOpacity>
 								<Text className="text-3xl">Hide</Text>
-								<Text className="text-3xl">Archive</Text>
 								<Text className="text-3xl text-red-500">Report</Text>
 							</View>
 						</BottomSheet>
@@ -524,7 +562,10 @@ export default function Home() {
 									selected_ids: [],
 									page: 0,
 									searchString: "",
-									usersList: userstate.usersList.slice(0,parseInt(userstate.page_limit))
+									usersList: userstate.usersList.slice(
+										0,
+										parseInt(userstate.page_limit)
+									),
 								});
 							}}
 						>
@@ -562,7 +603,7 @@ export default function Home() {
 							</View>
 							<BottomSheetFlatList
 								data={userstate.usersList}
-								keyExtractor={(i,index) => index}
+								keyExtractor={(i, index) => index}
 								renderItem={renderItem}
 								onEndReached={shareEndHandler}
 								ListFooterComponent={() =>
@@ -584,8 +625,15 @@ export default function Home() {
 								contentContainerStyle={{ padding: 10 }}
 							/>
 							{userstate.selected_ids.length > 0 && (
-								<Pressable className="border p-4 flex-row items-center justify-center bg-blue-500 rounded-full ml-5 mr-5">
-									<Text className="text-4xl text-white">Send</Text>
+								<Pressable
+									className="border p-4 flex-row items-center justify-center bg-blue-500 rounded-full ml-5 mr-5"
+									onPress={sharePostHandler}
+								>
+									{shareloading ? (
+										<ActivityIndicator size="large" color="white" />
+									) : (
+										<Text className="text-4xl text-white">Send</Text>
+									)}
 								</Pressable>
 							)}
 						</BottomSheet>

@@ -32,7 +32,6 @@ export default function ForgotPhno() {
 		axios
 			.post(backend_url + "v1/user/getOtp", { phno: number })
 			.then((response) => {
-				console.log(response.data);
 				setbuttonloading(false);
 				router.push({
 					pathname: "/forgototp",

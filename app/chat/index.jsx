@@ -34,8 +34,8 @@ export default function Chat() {
 	const [msgtosend, setMsgtosend] = useState("");
 
 	async function socketRecievehandler(data) {
-		console.log(messages.length)
-		console.log(params.otherUser_id,data.from)
+		console.log(messages.length);
+		console.log(params.otherUser_id, data.from);
 		if (params.otherUser_id == data.from) {
 			setMessages((prevMessages) => [data, ...prevMessages]);
 		}
@@ -101,6 +101,7 @@ export default function Chat() {
 			_id: uniqueId("id-"),
 			isSender: true,
 			time: time_of_message,
+			type: "message",
 		};
 		setMessages([realtime_message, ...messages]);
 		sendmsgviasocket(realtime_message, token, otherUser);
@@ -112,35 +113,100 @@ export default function Chat() {
 			message: msgtosend,
 			time: new Date(),
 			conversation_id: params.conversation_id,
+			type: "message",
 		};
 		setMsgtosend("");
-		// const response = await axios.post(
-		// 	backend_url + "v1/user/postMessages",
-		// 	data,
-		// 	{
-		// 		headers,
-		// 	}
-		// );
+		const response = await axios.post(
+			backend_url + "v1/user/postMessages",
+			data,
+			{
+				headers,
+			}
+		);
 	}
-	const renderItem = ({ item }) => (
-		<View
-			className={`flex-row items-center p-3 ${
-				item.isSender ? "justify-end" : ""
-			}`}
-		>
-			<View
-				className={`pl-3 pr-3 pt-2 pb-2 rounded-xl ${
-					item.isSender ? "bg-blue-500" : "bg-gray-200"
-				}`}
-			>
-				<Text
-					className={`text-lg ${item.isSender ? "text-white" : "text-black"}`}
+	const renderItem = ({ item }) => {
+		if (item.typ === "message") {
+			return (
+				<View
+					className={`flex-row items-center p-3 ${
+						item.isSender ? "justify-end" : ""
+					}`}
 				>
-					{item.message}
-				</Text>
-			</View>
-		</View>
-	);
+					<View
+						className={`pl-3 pr-3 pt-2 pb-2 rounded-xl ${
+							item.isSender ? "bg-blue-500" : "bg-gray-200"
+						}`}
+					>
+						<Text
+							className={`text-lg ${
+								item.isSender ? "text-white" : "text-black"
+							}`}
+						>
+							{item.message}
+						</Text>
+					</View>
+				</View>
+			);
+		} else if (item.type == "sharePost") {
+			return (
+				<TouchableOpacity
+					className={`flex-row items-center p-3 ${
+						item.isSender ? "justify-end" : ""
+					}`}
+					onPress={() => {
+						router.push({
+							pathname: "/singlepost",
+							params: {
+								_id: item.message,
+							},
+						});
+					}}
+				>
+					<View
+						className={`pl-3 pr-3 pt-2 pb-2 rounded-xl ${
+							item.isSender ? "bg-blue-500" : "bg-gray-200"
+						}`}
+					>
+						<Text
+							className={`text-lg ${
+								item.isSender ? "text-white" : "text-black"
+							}`}
+						>
+							Tap to open Post
+						</Text>
+					</View>
+				</TouchableOpacity>
+			);
+		} else if (item.type == "shareProfile") {
+			return (
+				<TouchableOpacity
+					className={`flex-row items-center p-3 ${
+						item.isSender ? "justify-end" : ""
+					}`}
+					onPress={() => {
+						router.push({
+							pathname: "/userProfile",
+							params: { _id: item.message },
+						});
+					}}
+				>
+					<View
+						className={`pl-3 pr-3 pt-2 pb-2 rounded-xl ${
+							item.isSender ? "bg-blue-500" : "bg-gray-200"
+						}`}
+					>
+						<Text
+							className={`text-lg ${
+								item.isSender ? "text-white" : "text-black"
+							}`}
+						>
+							Tap to open Profile
+						</Text>
+					</View>
+				</TouchableOpacity>
+			);
+		}
+	};
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>

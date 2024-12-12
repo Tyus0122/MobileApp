@@ -29,7 +29,6 @@ export default function Profile() {
 	const [refresh, setRefresh] = useState(false);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [page, setPage] = useState(false);
-
 	async function refreshHandler() {
 		setRefresh(true);
 		await fetchData();
@@ -213,7 +212,16 @@ export default function Profile() {
 													Edit Profile
 												</Text>
 											</TouchableOpacity>
-											<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center">
+											<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center"
+												onPress={() => {
+													router.push({
+														pathname: "/shareProfile",
+														params: {
+															profile_id: user._id,
+														},
+													});
+												}}
+											>
 												<Text className="text-white text-xl font-semibold ml-3 mr-3">
 													Share Profile
 												</Text>

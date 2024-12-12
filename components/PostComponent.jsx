@@ -104,7 +104,10 @@ export function PostComponent({
 						onPress={() => {
 							handleSnapPress(-1);
 							sharehandleSnapPress(-1);
-							updateCommentState({ currentPostId: post._id });
+							updateCommentState({
+								currentPostId: post._id,
+								currentUserId: post.posted_by_id,
+							});
 							seteModalVisible(true);
 							ehandleSnapPress(0);
 						}}
@@ -143,7 +146,10 @@ export function PostComponent({
 					</Pressable>
 					<Pressable
 						onPress={() => {
-							updateCommentState({ currentPostId: post._id });
+							updateCommentState({
+								currentPostId: post._id,
+								currentUserId: post.posted_by_id,
+							});
 							fetchComments();
 							setModalVisible(true);
 							handleSnapPress(0);
@@ -153,7 +159,11 @@ export function PostComponent({
 					</Pressable>
 					<Pressable
 						onPress={() => {
-							// updateCommentState({ currentPostId: post._id });
+							updateCommentState({
+								currentPostId: post._id,
+								currentUserId: post.posted_by_id,
+							});
+
 							// fetchComments();
 							setShareModalVisible(true);
 							sharehandleSnapPress(0);
