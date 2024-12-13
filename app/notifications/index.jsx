@@ -24,7 +24,6 @@ import { backend_url, debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { debounce } from "lodash";
-
 import { NotificationsRequestComponent } from "@/components/NotificationsRequestComponent";
 import { Notifications7Days } from "@/components/Notifications7Days";
 import { NotificationsConnectComponent } from "@/components/NotificationsConnectComponent";
@@ -32,101 +31,15 @@ const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function mainNotifications() {
-	const users = [
-		{
-			username: "John Doe",
-			city: "New York",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			username: "John Doe",
-			city: "New York",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			username: "John Doe",
-			city: "New York",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			username: "John Doe",
-			city: "New York",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			username: "John Doe",
-			city: "New York",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-	];
-	const notificationss = [
-		{
-			notification: "xxxxxxddddddddddddddddddddxx liked your post",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-			time: "1d",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			notification: "xxxxxxddddddddddddddddddddxx liked your post",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-			time: "1d",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			notification: "xxxxxxddddddddddddddddddddxx liked your post",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-			time: "1d",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			notification: "xxxxxxddddddddddddddddddddxx liked your post",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-			time: "1d",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-		{
-			notification: "xxxxxxddddddddddddddddddddxx liked your post",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-			time: "1d",
-			pic: {
-				url: "https://randomuser.me/api/portraits/men/60.jpg",
-			},
-		},
-	];
 	const [notifications, setNotifications] = useState({
 		requests: [],
 		notifications: [],
 		suggestions: [],
 		loading: false,
 	});
+	function updateNotificationState(newState) {
+		setNotifications((prevState) => ({ ...prevState, ...newState }));
+	}
 	async function fetchData() {
 		setNotifications({ ...notifications, loading: true });
 		const token = await AsyncStorage.getItem("BearerToken");
@@ -137,12 +50,12 @@ export default function mainNotifications() {
 		axios
 			.get(backend_url + "v1/user/getNotifications", { headers })
 			.then((response) => {
-				console.log(response.data);
 				setNotifications({
 					...notifications,
 					requests: response.data.requests ?? [],
 					loading: false,
 					suggestions: response.data.suggestions ?? [],
+					notifications: response.data.notifications ?? [],
 				});
 			})
 			.catch((err) => {
@@ -152,7 +65,6 @@ export default function mainNotifications() {
 	useEffect(() => {
 		fetchData();
 	}, []);
-	console.log(notifications);
 	return (
 		<SafeAreaView>
 			{notifications.loading ? (
@@ -163,7 +75,7 @@ export default function mainNotifications() {
 				<ScrollView>
 					<Pressable
 						className="flex-row p-5 items-center gap-3"
-						onPress={() => router.back}
+						onPress={() => router.back()}
 					>
 						<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 						<Text className="text-3xl">Notifications</Text>
@@ -178,22 +90,31 @@ export default function mainNotifications() {
 							user={user}
 							index={index}
 							key={index}
+							notifications={notifications}
+							updateNotificationState={updateNotificationState}
 						/>
 					))}
 					{notifications.requests.length >= 5 && (
+						<TouchableOpacity
+							className=" items-end mr-5 mt-3"
+							onPress={() => router.push("/requests")}
+						>
+							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
+						</TouchableOpacity>
+					)}
+					{notifications.notifications.length > 0 && (
+						<View className="m-3">
+							<Text className="text-3xl">Last 7 Days</Text>
+						</View>
+					)}
+					{notifications.notifications.map((item, index) => (
+						<Notifications7Days item={item} index={index} key={index} />
+					))}
+					{notifications.notifications.length >= 5 && (
 						<TouchableOpacity className=" items-end mr-5 mt-3">
 							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}
-					<View className="m-3">
-						<Text className="text-3xl">Last 7 Days</Text>
-					</View>
-					{notificationss.map((item, index) => (
-						<Notifications7Days item={item} index={index} key={index} />
-					))}
-					<TouchableOpacity className=" items-end mr-5 mt-3">
-						<Text className="mr-5 text-2xl text-blue-500">See All</Text>
-					</TouchableOpacity>
 					{notifications.suggestions.length > 0 && (
 						<View className="m-3">
 							<Text className="text-3xl">Suggestions</Text>
@@ -204,10 +125,15 @@ export default function mainNotifications() {
 							user={user}
 							index={index}
 							key={index}
+							notifications={notifications}
+							updateNotificationState={updateNotificationState}
 						/>
 					))}
 					{notifications.suggestions.length >= 5 && (
-						<TouchableOpacity className=" items-end mr-5 mt-3">
+						<TouchableOpacity
+							className=" items-end mr-5 mt-3"
+							onPress={() => router.push("/suggestions")}
+						>
 							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}

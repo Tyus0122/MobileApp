@@ -12,7 +12,7 @@ export function Notifications7Days({ item, index }) {
 			<View className="flex-row items-center gap-3">
 				<View>
 					<Image
-						source={item.pic ? { uri: item.pic.url } : imagePlaceholder}
+						source={item.userPic ? { uri: item.userPic.url } : imagePlaceholder}
 						class
 						style={{
 							width: 50,

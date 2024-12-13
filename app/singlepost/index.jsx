@@ -213,13 +213,12 @@ export default function singlePost() {
 				headers,
 			}
 		);
-		if (parent_coment_id != "") {
+		if (parent_coment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
 				parent_comment_id: "",
 				allcomments: [
-					...commentState.allcomments,
 					{
 						_id: response.data._id,
 						pic: response.data.pic,
@@ -230,6 +229,7 @@ export default function singlePost() {
 						likes: response.data.likes,
 						liked: response.data.liked,
 					},
+					...commentState.allcomments,
 				],
 			});
 		} else {

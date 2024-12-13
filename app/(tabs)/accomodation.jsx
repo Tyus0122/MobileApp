@@ -216,7 +216,6 @@ export default function Accomodation() {
 		updateCommentState({ parent_comment_id: pid });
 	};
 	async function commentHandler() {
-		console.log(commentState.parent_comment_id);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -237,13 +236,12 @@ export default function Accomodation() {
 				headers,
 			}
 		);
-		if (parent_coment_id != "") {
+		if (parent_coment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
 				parent_comment_id: "",
 				allcomments: [
-					...commentState.allcomments,
 					{
 						_id: response.data._id,
 						pic: response.data.pic,
@@ -254,6 +252,7 @@ export default function Accomodation() {
 						likes: response.data.likes,
 						liked: response.data.liked,
 					},
+					...commentState.allcomments,
 				],
 			});
 		} else {
@@ -310,7 +309,6 @@ export default function Accomodation() {
 			authorization: "Bearer " + token,
 			"content-type": "application/json",
 		};
-		console.log(searchString, page);
 		axios
 			.get(
 				backend_url +
@@ -375,9 +373,8 @@ export default function Accomodation() {
 			</Pressable>
 		);
 	}
-	console.log(connects)
 	return (
-		<GestureHandlerRootView style={{ flex:1}}>
+		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaView>
 				<View className="bg-white items-center">
 					<View className="flex-row p-5 items-center gap-3">
@@ -506,8 +503,8 @@ export default function Accomodation() {
 			) : (
 				<KeyboardAvoidingView
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
-							keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-							style={{flex:1}}
+					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+					style={{ flex: 1 }}
 				>
 					<View
 						className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}

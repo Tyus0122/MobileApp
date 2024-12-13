@@ -202,9 +202,9 @@ export default function Home() {
 			comment: commentState.comment,
 			post_id: commentState.currentPostId,
 			parent_comment_id:
-			commentState.parent_comment_id == ""
-			? null
-			: commentState.parent_comment_id,
+				commentState.parent_comment_id == ""
+					? null
+					: commentState.parent_comment_id,
 		};
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
@@ -219,7 +219,6 @@ export default function Home() {
 				comment: "",
 				parent_comment_id: "",
 				allcomments: [
-					...commentState.allcomments,
 					{
 						_id: response.data._id,
 						pic: response.data.pic,
@@ -230,12 +229,13 @@ export default function Home() {
 						likes: response.data.likes,
 						liked: response.data.liked,
 					},
+					...commentState.allcomments,
 				],
 			});
 		} else {
 			setCommentState({
 				...commentState,
-				comment: ""
+				comment: "",
 			});
 		}
 	}
@@ -453,7 +453,7 @@ export default function Home() {
 						>
 							<BottomSheetFlatList
 								data={commentState.allcomments}
-								keyExtractor={(i) => i._id}
+								keyExtractor={(i, index) => index}
 								renderItem={({ item, index }) => (
 									<CommentComponent
 										item={item}
@@ -468,10 +468,12 @@ export default function Home() {
 										<Text style={{ textAlign: "center", padding: 30 }}>
 											You have reached the end of Page
 										</Text>
-									) : (
+									) : commentState.allcomments ? (
 										<View className="flex items-center justify-center">
 											<ActivityIndicator size="large" color="gray" />
 										</View>
+									) : (
+										<View></View>
 									)
 								}
 								ListEmptyComponent={
@@ -479,7 +481,7 @@ export default function Home() {
 										<View></View>
 									) : (
 										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Data: Please change filters
+											No Data To Display
 										</Text>
 									)
 								}

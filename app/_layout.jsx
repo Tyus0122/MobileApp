@@ -108,11 +108,16 @@ export default function RootLayout() {
 					name="editProfile/index"
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 				<Stack.Screen
 					name="notifications/index"
 					options={{ headerShown: false }}
 				/>
+				<Stack.Screen
+					name="suggestions/index"
+					options={{ headerShown: false }}
+				/> */}
+				<Stack.Screen name="requests/index" options={{ headerShown: false }} />
 			</Stack>
 		</SocketContext.Provider>
 	);
