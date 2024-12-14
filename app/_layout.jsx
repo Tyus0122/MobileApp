@@ -71,7 +71,7 @@ export default function RootLayout() {
 	) : (
 		<SocketContext.Provider value={{ socket, setSocket }}>
 			<Stack>
-				{/* <Stack.Screen name="index" options={{ headerShown: false }} />
+				<Stack.Screen name="index" options={{ headerShown: false }} />
 				<Stack.Screen name="login/index" options={{ headerShown: false }} />
 				<Stack.Screen name="signup/index" options={{ headerShown: false }} />
 				<Stack.Screen name="dashboard/index" options={{ headerShown: false }} />
@@ -116,8 +116,18 @@ export default function RootLayout() {
 				<Stack.Screen
 					name="suggestions/index"
 					options={{ headerShown: false }}
-				/> */}
+				/>
 				<Stack.Screen name="requests/index" options={{ headerShown: false }} />
+				<Stack.Screen
+					name="latestNotifications/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen name="blocked/index" options={{ headerShown: false }} />
+				<Stack.Screen
+					name="changePassword/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen name="myPosts/index" options={{ headerShown: false }} />
 			</Stack>
 		</SocketContext.Provider>
 	);

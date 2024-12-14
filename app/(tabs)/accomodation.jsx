@@ -25,6 +25,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { debounce } from "lodash";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { CommentComponent } from "@/components/CommentComponent";
+import DateTimePicker from "@react-native-community/datetimepicker";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function Accomodation() {
@@ -106,6 +107,21 @@ export default function Accomodation() {
 		}, debounce_time),
 		[]
 	);
+	const [eventSearch, setEventSearch] = useState("");
+	const [viewCalendar, setViewCalendar] = useState(false);
+	const [datesearchevent, setDateSearchEvent] = useState("");
+	const debounceCalleventsSearch = useCallback(
+		debounce((data, date) => {
+			fetchData({ page: 0, search: data, date: date });
+		}, debounce_time),
+		[]
+	);
+	const debounceCallDateeventsSearch = useCallback(
+		debounce((data, search) => {
+			fetchData({ page: 0, search: search, date: data });
+		}, debounce_time),
+		[]
+	);
 	async function fetchAccomodationsData(
 		AccomodationsPage = 0,
 		AccomodationSearch = "",
@@ -141,7 +157,12 @@ export default function Accomodation() {
 				if (AccomodationsPage == 0) setAccomodationLoading(false);
 			});
 	}
-	async function fetchData({ page = 0, mode = "normal" }) {
+	async function fetchData({
+		page = 0,
+		mode = "normal",
+		search = "",
+		date = "",
+	}) {
 		if (page == 0) {
 			setPage(0);
 			setLoading(true);
@@ -152,7 +173,18 @@ export default function Accomodation() {
 			"content-type": "application/json",
 		};
 		axios
-			.get(backend_url + "v1/user/getposts?page=" + page, { headers })
+			.get(
+				backend_url +
+					"v1/user/getposts?page=" +
+					page +
+					"&search=" +
+					search +
+					"&date=" +
+					date,
+				{
+					headers,
+				}
+			)
 			.then((response) => {
 				if (mode == "refresh" || page == 0) {
 					setPosts(response.data.message.posts);
@@ -205,7 +237,7 @@ export default function Accomodation() {
 	async function endHandler() {
 		if (!isLastPage) {
 			setPage(page + 1);
-			fetchData({ page: page + 1 });
+			fetchData({ page: page + 1, search: eventSearch, date: datesearchevent });
 		}
 	}
 
@@ -381,27 +413,53 @@ export default function Accomodation() {
 						<Pressable onPress={() => router.back()}>
 							<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 						</Pressable>
-						<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
-							<Ionicons
-								name="search-outline"
-								size={20}
-								color="gray"
-								style={{ position: "absolute", left: 15 }}
-							/>
-							<TextInput
-								style={{
-									// flex: 1,
-									height: "100%",
-									paddingLeft: 40,
-								}}
-								onChangeText={(data) => {
-									setAccomodationSearch(data);
-									setAccomodationsPage(0);
-									debounceCallAccomodationSearch(data, isChecked);
-								}}
-								placeholder="AccomodationSearch by ID or University or Location"
-							/>
-						</View>
+						{connects ? (
+							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
+								<Ionicons
+									name="search-outline"
+									size={20}
+									color="gray"
+									style={{ position: "absolute", left: 15 }}
+								/>
+								<TextInput
+									style={{
+										// flex: 1,
+										height: "100%",
+										paddingLeft: 40,
+									}}
+									className="w-full"
+									onChangeText={(data) => {
+										setAccomodationSearch(data);
+										setAccomodationsPage(0);
+										debounceCallAccomodationSearch(data, isChecked);
+									}}
+									placeholder="Search by ID or University or Location"
+								/>
+							</View>
+						) : (
+							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
+								<Ionicons
+									name="search-outline"
+									size={20}
+									color="gray"
+									style={{ position: "absolute", left: 15 }}
+								/>
+								<TextInput
+									style={{
+										// flex: 1,
+										height: "100%",
+										paddingLeft: 40,
+									}}
+									className="w-full"
+									onChangeText={(data) => {
+										setEventSearch(data);
+										setPage(0);
+										debounceCalleventsSearch(data, datesearchevent);
+									}}
+									placeholder="Search by Location"
+								/>
+							</View>
+						)}
 					</View>
 					<View className="flex-row justify-between w-[80%]">
 						{["Accomodation", "Events"].map((item, index) => {
@@ -422,9 +480,8 @@ export default function Accomodation() {
 						})}
 					</View>
 				</View>
-				{/* <View className="bg-gray-300 h-[2px] "></View> */}
+				{/* <View className="bg-gray-500 h-[2px]" /> */}
 			</SafeAreaView>
-
 			{AccomodationLoading ? (
 				<View className="h-screen bg-white flex-1 items-center justify-center ">
 					<ActivityIndicator size="large" color="blue" />
@@ -509,7 +566,55 @@ export default function Accomodation() {
 					<View
 						className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}
 					>
-						<SafeAreaView>
+						<View>
+							<View className="flex-row items-center justify-between pl-5 pr-5">
+								<TouchableOpacity
+									className="flex-row items-center gap-3 pl-3 pr-3 pt-1 pb-1 border rounded-xl"
+									onPress={() => setViewCalendar(!viewCalendar)}
+								>
+									<Ionicons name={"calendar-outline"} size={28} color="gray" />
+									<Text className="text-xl font-semi-bold">
+										{datesearchevent ? `${datesearchevent}` : "Pick A Date"}
+									</Text>
+								</TouchableOpacity>
+
+								{/* Clear Button */}
+								<TouchableOpacity
+									className="pl-3 pr-3 pt-1 pb-1 border border-red-500 rounded-xl"
+									onPress={() => {
+										setDateSearchEvent(""); // Clear the selected date
+										setViewCalendar(false); // Close the calendar if it's open
+										debounceCallDateeventsSearch("", eventSearch);
+									}}
+								>
+									<Text className="text-black text-xl font-semibold">
+										Clear
+									</Text>
+								</TouchableOpacity>
+							</View>
+							{viewCalendar && (
+								<DateTimePicker
+									value={new Date()}
+									mode={"date"}
+									onChange={(e, dates) => {
+										if (e?.type === "dismissed") {
+											// User canceled the picker
+											setViewCalendar(false);
+											return;
+										}
+										const date = new Date(dates); // Convert the ISO string to a Date object
+										const day = String(date.getDate()).padStart(2, "0"); // Get day and pad with leading zero if needed
+										const month = String(date.getMonth() + 1).padStart(2, "0"); // Get month (0-indexed, so +1) and pad with leading zero
+										const year = date.getFullYear(); // Get the full year
+										setDateSearchEvent(`${day}-${month}-${year}`);
+										debounceCallDateeventsSearch(
+											`${day}-${month}-${year}`,
+											eventSearch
+										);
+										setViewCalendar(false);
+									}}
+								/>
+							)}
 							<FlatList
 								data={posts}
 								keyExtractor={(item, index) => index.toString()}
@@ -522,6 +627,7 @@ export default function Accomodation() {
 										<ActivityIndicator size="large" color="gray" />
 									)
 								}
+								contentContainerStyle={{ paddingBottom: 50 }}
 								onEndReached={endHandler}
 								ListEmptyComponent={
 									loading ? (
@@ -551,7 +657,7 @@ export default function Accomodation() {
 									/>
 								)}
 							/>
-						</SafeAreaView>
+						</View>
 						{modalVisible && (
 							<BottomSheet
 								ref={sheetRef}

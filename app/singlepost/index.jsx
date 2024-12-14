@@ -131,24 +131,35 @@ export default function singlePost() {
 				headers,
 			})
 			.then((response) => {
-				if (mode == "refresh" || page == 0) {
-					setPosts(response.data.message.posts);
-					setInicomments(response.data.message.comments);
-				} else {
-					setPosts([...posts, ...response.data.message.posts]);
-					setInicomments({ ...inicomments, ...response.data.message.comments });
+				if (response.data.message.selfPost) {
+					router.back()
+					router.push({
+						pathname: '/myPosts',
+						params: {
+							_id:response.data.message.posts[0]._id
+						}
+					})	
 				}
-				updateuserstate({
-					usersList: response.data.message.shareUsers,
-					isLastPage: response.data.message.shareIsLastPage,
-					page_limit: response.data.message.sharePageLimit,
-				});
-				setLoggedInUser({
-					...loggedInUser,
-					pic: response.data.message.logged_in_user.pic,
-				});
-				setIsLastPage(response.data.message.isLastPage);
-				if (page == 0) setLoading(false);
+				else {
+					if (mode == "refresh" || page == 0) {
+						setPosts(response.data.message.posts);
+						setInicomments(response.data.message.comments);
+					} else {
+						setPosts([...posts, ...response.data.message.posts]);
+						setInicomments({ ...inicomments, ...response.data.message.comments });
+					}
+					updateuserstate({
+						usersList: response.data.message.shareUsers,
+						isLastPage: response.data.message.shareIsLastPage,
+						page_limit: response.data.message.sharePageLimit,
+					});
+					setLoggedInUser({
+						...loggedInUser,
+						pic: response.data.message.logged_in_user.pic,
+					});
+					setIsLastPage(response.data.message.isLastPage);
+					if (page == 0) setLoading(false);
+				}
 			})
 			.catch((err) => {
 				if (page == 0) setLoading(false);

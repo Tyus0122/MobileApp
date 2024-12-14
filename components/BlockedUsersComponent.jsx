@@ -15,14 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function NotificationsRequestComponent({
+export function BlockedUsersComponent({
 	user,
 	index,
 	notifications,
 	updateNotificationState,
 }) {
 	const [connectionbuttonloading, setconnectionbuttonloading] = useState(false);
-	async function acceptHandler() {
+	async function connectHandler() {
 		try {
 			setconnectionbuttonloading(true);
 			const token = await AsyncStorage.getItem("BearerToken");
@@ -32,9 +32,10 @@ export function NotificationsRequestComponent({
 			};
 			const data = {
 				user_id: user._id,
+				block: false,
 			};
 			const response = await axios.post(
-				backend_url + "v1/user/acceptConnectionRequest",
+				backend_url + "v1/user/blockUser",
 				data,
 				{
 					headers,
@@ -43,38 +44,7 @@ export function NotificationsRequestComponent({
 			if (response.status == 200) {
 				setconnectionbuttonloading(false);
 				updateNotificationState({
-					requests: notifications.requests.filter(
-						(item) => item._id != user._id
-					),
-				});
-			}
-		} catch (error) {
-			setconnectionbuttonloading(false);
-			console.error(error.message);
-		}
-	}
-	async function rejectHandler() {
-		try {
-			setconnectionbuttonloading(true);
-			const token = await AsyncStorage.getItem("BearerToken");
-			const headers = {
-				authorization: "Bearer " + token,
-				"content-type": "application/json",
-			};
-			const data = {
-				user_id: user._id,
-			};
-			const response = await axios.post(
-				backend_url + "v1/user/rejectConnectionRequest",
-				data,
-				{
-					headers,
-				}
-			);
-			if (response.status == 200) {
-				setconnectionbuttonloading(false);
-				updateNotificationState({
-					requests: notifications.requests.filter(
+					suggestions: notifications.suggestions.filter(
 						(item) => item._id != user._id
 					),
 				});
@@ -101,7 +71,7 @@ export function NotificationsRequestComponent({
 				>
 					<View>
 						<Image
-							source={user?.pic ? { uri: user.pic.url } : imagePlaceholder}
+							source={user.pic ? { uri: user.pic.url } : imagePlaceholder}
 							class
 							style={{
 								width: 50,
@@ -137,7 +107,7 @@ export function NotificationsRequestComponent({
 								paddingRight: 15,
 								borderColor: "#24A0ED",
 							}}
-							onPress={acceptHandler}
+							onPress={connectHandler}
 						>
 							<Text
 								className="text-xl"
@@ -145,12 +115,9 @@ export function NotificationsRequestComponent({
 									color: "#24A0ED",
 								}}
 							>
-								Accept
+								unblock
 							</Text>
 						</TouchableOpacity>
-						<Pressable onPress={rejectHandler}>
-							<Ionicons name={"close-outline"} size={32} color="black" />
-						</Pressable>
 					</View>
 				)}
 			</View>

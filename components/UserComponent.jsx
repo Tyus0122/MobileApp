@@ -6,33 +6,6 @@ import { backend_url } from "@/constants/constants";
 import axios from "axios";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export function UserComponent({ user }) {
-	const [sendConnect, setsendConnect] = useState(false);
-	async function connectionHandler() {
-		const body = {
-			user_id: user._id,
-			send: !sendConnect,
-		};
-		setsendConnect(!sendConnect);
-		const token = await AsyncStorage.getItem("BearerToken");
-		const headers = {
-			authorization: "Bearer " + token,
-			"content-type": "application/json",
-		};
-		console.log(sendConnect);
-		console.log(body);
-		axios
-			.post(backend_url + "v1/user/sendConnectionRequest", body, { headers })
-			.then((response) => {
-				console.log(response.data);
-			})
-			.catch((err, message) => {
-				console.log(JSON.stringify(err));
-				setLoading(false);
-			});
-	}
-	async function RejectHandler() {
-		console.log("hello")
-	}
 	return (
 		<View>
 			<View className="pl-5 pr-5 pt-2 pb-2 m-1 border border-gray-200 rounded-xl flex-row items-center justify-between">

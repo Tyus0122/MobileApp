@@ -25,7 +25,7 @@ export default function LoginScreen() {
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
 		email: "user_2@gmail.com",
-		password: "Useruser_2",
+		password: "12",
 	});
 	function isValidEmail(email) {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -20,13 +20,12 @@ export default function Profile() {
 		{ label: "Saved", link: "/saved", icon: "bookmark-outline" },
 		{
 			label: "Password and Security",
-			link: "/saved",
+			link: "/changePassword",
 			icon: "lock-closed-outline",
 		},
-		{ label: "Settings", link: "/saved", icon: "settings-outline" },
+		{ label: "Settings", link: "/changePassword", icon: "settings-outline" },
 		{ label: "Help Center", link: "/help", icon: "help-circle-outline" },
 		{ label: "Blocked", link: "/blocked", icon: "ban-outline" },
-		{ label: "About", link: "/about", icon: "information-circle-outline" },
 		{ label: "Privacy Center", link: "/privacy", icon: "shield-outline" },
 	];
 

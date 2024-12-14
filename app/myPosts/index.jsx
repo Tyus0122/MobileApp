@@ -13,6 +13,7 @@ import {
 	BackHandler,
 	FlatList,
 } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import { PostComponent } from "@/components/PostComponent";
 import { NavBarComponent } from "@/components/NavBarComponent";
 import { CommentComponent } from "@/components/CommentComponent";
@@ -29,14 +30,15 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 import { debounce } from "lodash";
-export default function Home() {
+export default function muPosts() {
+	const params = useLocalSearchParams();
 	const sheetRef = useRef(null);
 	const shareSheetRef = useRef(null);
 	const [shareModalVisible, setShareModalVisible] = useState(false);
 	const shareSnapPoints = ["80%"];
 	const eSheetRef = useRef(null);
 	const [eModalVisible, seteModalVisible] = useState(false);
-	const eSnapPoints = ["40%"];
+	const eSnapPoints = ["30%"];
 	const inputRef = useRef(null);
 	const snapPoints = ["80%"];
 	const [posts, setPosts] = useState([]);
@@ -99,9 +101,6 @@ export default function Home() {
 				loading: false,
 			});
 			return true;
-		} else {
-			BackHandler.exitApp();
-			return true;
 		}
 	}
 	useFocusEffect(
@@ -128,7 +127,9 @@ export default function Home() {
 			"content-type": "application/json",
 		};
 		axios
-			.get(backend_url + "v1/user/getposts?page=" + page, { headers })
+			.get(backend_url + "v1/user/getsinglepost?post=" + params._id, {
+				headers,
+			})
 			.then((response) => {
 				if (mode == "refresh" || page == 0) {
 					setPosts(response.data.message.posts);
@@ -212,7 +213,7 @@ export default function Home() {
 				headers,
 			}
 		);
-		if (commentState.parent_comment_id == "") {
+		if (parent_coment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
@@ -235,6 +236,7 @@ export default function Home() {
 			setCommentState({
 				...commentState,
 				comment: "",
+				parent_comment_id: parent_comment_id,
 			});
 		}
 	}
@@ -452,7 +454,7 @@ export default function Home() {
 						>
 							<BottomSheetFlatList
 								data={commentState.allcomments}
-								keyExtractor={(i, index) => index}
+								keyExtractor={(i) => i._id}
 								renderItem={({ item, index }) => (
 									<CommentComponent
 										item={item}
@@ -467,12 +469,10 @@ export default function Home() {
 										<Text style={{ textAlign: "center", padding: 30 }}>
 											You have reached the end of Page
 										</Text>
-									) : commentState.allcomments ? (
+									) : (
 										<View className="flex items-center justify-center">
 											<ActivityIndicator size="large" color="gray" />
 										</View>
-									) : (
-										<View></View>
 									)
 								}
 								ListEmptyComponent={
@@ -480,7 +480,7 @@ export default function Home() {
 										<View></View>
 									) : (
 										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Data To Display
+											No Data: Please change filters
 										</Text>
 									)
 								}
@@ -542,10 +542,10 @@ export default function Home() {
 										});
 									}}
 								>
-									<Text className="text-3xl">Share this Profile</Text>
+									<Text className="text-3xl">Turn Off Commenting</Text>
 								</TouchableOpacity>
-								<Text className="text-3xl text-red-500">block</Text>
-								<Text className="text-3xl text-red-500">Report</Text>
+								<Text className="text-3xl">Edit</Text>
+								<Text className="text-3xl text-red-500">Delete</Text>
 							</View>
 						</BottomSheet>
 					)}

@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { backend_url, debounce_time } from "@/constants/constants";
+import { router } from "expo-router";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
@@ -48,8 +49,6 @@ export function NotificationsConnectComponent({
 					),
 				});
 			}
-			console.log(response.status);
-			// console.log(JSON.stringify(response,null,2))
 		} catch (error) {
 			setconnectionbuttonloading(false);
 			console.error(error.message);
@@ -73,7 +72,15 @@ export function NotificationsConnectComponent({
 			key={index}
 		>
 			<View className="flex-row items-center gap-8 justify-between">
-				<View className="flex-row items-center gap-8">
+				<TouchableOpacity
+					className="flex-row items-center gap-8"
+					onPress={() => {
+						router.push({
+							pathname: "/userProfile",
+							params: { _id: user._id },
+						});
+					}}
+				>
 					<View>
 						<Image
 							source={user.pic ? { uri: user.pic.url } : imagePlaceholder}
@@ -91,7 +98,7 @@ export function NotificationsConnectComponent({
 						<Text className="text-2xl">{user.username}</Text>
 						<Text className="text-gray-500 text-xl">{user.city}</Text>
 					</View>
-				</View>
+				</TouchableOpacity>
 				{connectionbuttonloading ? (
 					<View
 						className="border rounded-xl pl-2 pr-2 pt-1 pb-1"

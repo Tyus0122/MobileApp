@@ -187,6 +187,10 @@ export function PostComponent({
 					view {post.commentscount} comments
 				</Text>
 				<Text className="text-lg text-gray-500">{post.post_date}</Text>
+				<View className="flex-row items-center justify-start">
+					<Text className="text-xl text-gray-500 font-semibold">place:</Text>
+					<Text className="text-lg text-gray-500">{post.post_place}</Text>
+				</View>
 			</View>
 			<View className="bg-gray-200" style={{ height: 1 }}></View>
 		</View>

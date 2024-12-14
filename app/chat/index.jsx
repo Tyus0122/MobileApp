@@ -34,8 +34,6 @@ export default function Chat() {
 	const [msgtosend, setMsgtosend] = useState("");
 
 	async function socketRecievehandler(data) {
-		console.log(messages.length);
-		console.log(params.otherUser_id, data.from);
 		if (params.otherUser_id == data.from) {
 			setMessages((prevMessages) => [data, ...prevMessages]);
 		}
@@ -80,15 +78,16 @@ export default function Chat() {
 	}
 	useEffect(() => {
 		fetchData();
-		// return () => {
-		// 	socket.off("messagesent", socketRecievehandler);
-		// };
+		return () => {
+			socket.off("messagesent", socketRecievehandler);
+		};
 	}, []);
 	async function sendmsgviasocket(message, token, otherUser) {
 		const payload = {
 			...message,
 			...otherUser,
 			token,
+			type:"message",
 			uid: message._id,
 		};
 		socket.emit("message", payload);
@@ -124,8 +123,8 @@ export default function Chat() {
 			}
 		);
 	}
-	const renderItem = ({ item }) => {
-		if (item.typ === "message") {
+	const renderItem = ({ item, index }) => {
+		if (item.type === "message") {
 			return (
 				<View
 					className={`flex-row items-center p-3 ${
@@ -294,7 +293,7 @@ export default function Chat() {
 							)}
 							<FlatList
 								data={messages}
-								keyExtractor={(item) => item._id.toString()}
+								keyExtractor={(item, index) => index.toString()}
 								renderItem={renderItem}
 								ListFooterComponent={
 									<View>

@@ -111,7 +111,10 @@ export default function mainNotifications() {
 						<Notifications7Days item={item} index={index} key={index} />
 					))}
 					{notifications.notifications.length >= 5 && (
-						<TouchableOpacity className=" items-end mr-5 mt-3">
+						<TouchableOpacity
+							className=" items-end mr-5 mt-3"
+							onPress={() => router.push("/latestNotifications")}
+						>
 							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}
