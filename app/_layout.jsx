@@ -1,7 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import { Stack } from "expo-router";
 import "../global.css";
-import { LogBox, View, ActivityIndicator, Text } from "react-native";
+import { LogBox, View, Text, Image } from "react-native";
 import io from "socket.io-client";
 import { socket_url } from "@/constants/constants";
 import * as _ from "lodash";
@@ -31,8 +31,6 @@ export default function RootLayout() {
 			console.log("Socket disconnected.");
 			setSocket(null);
 		});
-
-		// Clean up the socket connection on unmount
 		return () => {
 			console.log("Cleaning up socket...");
 			newSocket.close();
@@ -57,16 +55,11 @@ export default function RootLayout() {
 		connectSocket();
 	}, []);
 	return !socket ? (
-		<View
-			style={{
-				flex: 1,
-				justifyContent: "center",
-				alignItems: "center",
-				backgroundColor: "#fff",
-			}}
-		>
-			<Text>Connecting to the socket server...</Text>
-			<ActivityIndicator size="large" color="#0000ff" />
+		<View className="h-screen flex items-center justify-center">
+			<Image source={require("@/assets/tyuss/loginLogo.png")} />
+			<View>
+				<Text className="text-black text-4xl">TYUS</Text>
+			</View>
 		</View>
 	) : (
 		<SocketContext.Provider value={{ socket, setSocket }}>
@@ -128,6 +121,28 @@ export default function RootLayout() {
 					options={{ headerShown: false }}
 				/>
 				<Stack.Screen name="myPosts/index" options={{ headerShown: false }} />
+				<Stack.Screen name="editPost/index" options={{ headerShown: false }} />
+				<Stack.Screen
+					name="onboarding1/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen
+					name="onboarding2/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen
+					name="onboarding3/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen
+					name="onboarding4/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen
+					name="onboarding5/index"
+					options={{ headerShown: false }}
+				/>
+				<Stack.Screen name="main/index" options={{ headerShown: false }} />
 			</Stack>
 		</SocketContext.Provider>
 	);

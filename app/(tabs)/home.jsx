@@ -191,7 +191,9 @@ export default function Home() {
 		}
 		updateCommentState({ parent_comment_id: pid });
 	};
+	const [commentSendLoader, setCommentSendLoader] = useState(false);
 	async function commentHandler() {
+		setCommentSendLoader(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -237,6 +239,7 @@ export default function Home() {
 				comment: "",
 			});
 		}
+		setCommentSendLoader(false);
 	}
 	async function fetchPageComments({ page }) {
 		try {
@@ -517,6 +520,7 @@ export default function Home() {
 								<Pressable
 									className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
 									onPress={commentHandler}
+									disabled={commentSendLoader}
 								>
 									<Ionicons name="arrow-up-outline" size={24} color="white" />
 								</Pressable>
@@ -532,6 +536,7 @@ export default function Home() {
 							className="bg-white"
 						>
 							<View className="flex-1 items-center justify-between mt-5 mb-5">
+								<Text className="text-3xl">Remove Connection</Text>
 								<TouchableOpacity
 									onPress={() => {
 										router.push({
@@ -544,7 +549,6 @@ export default function Home() {
 								>
 									<Text className="text-3xl">Share this Profile</Text>
 								</TouchableOpacity>
-								<Text className="text-3xl text-red-500">block</Text>
 								<Text className="text-3xl text-red-500">Report</Text>
 							</View>
 						</BottomSheet>

@@ -71,7 +71,6 @@ export function PostComponent({
 			page: 0,
 		});
 	}
-
 	return (
 		<View className={`{${modalVisible ? "bg-gray-300" : "bg-white"}}`}>
 			<View className="p-5">
@@ -122,7 +121,7 @@ export function PostComponent({
 			<PhotosComponent images={images} _id={post._id} />
 			<View className="ml-5 mr-5 mb-2 flex-row items-center justify-between">
 				<View
-					className="flex-row items-center justify-between"
+					className="flex-row items-center gap-3"
 					style={{
 						width: "25%",
 					}}
@@ -144,19 +143,21 @@ export function PostComponent({
 							color={like ? "red" : "black"}
 						/>
 					</Pressable>
-					<Pressable
-						onPress={() => {
-							updateCommentState({
-								currentPostId: post._id,
-								currentUserId: post.posted_by_id,
-							});
-							fetchComments();
-							setModalVisible(true);
-							handleSnapPress(0);
-						}}
-					>
-						<Ionicons name={"chatbubble-outline"} size={24} />
-					</Pressable>
+					{!post.turn_off_comments && (
+						<Pressable
+							onPress={() => {
+								updateCommentState({
+									currentPostId: post._id,
+									currentUserId: post.posted_by_id,
+								});
+								fetchComments();
+								setModalVisible(true);
+								handleSnapPress(0);
+							}}
+						>
+							<Ionicons name={"chatbubble-outline"} size={24} />
+						</Pressable>
+					)}
 					<Pressable
 						onPress={() => {
 							updateCommentState({
@@ -183,9 +184,11 @@ export function PostComponent({
 			</View>
 			<View className="pl-5">
 				<Text className="text-lg font-semibold">{likeCount} likes</Text>
-				<Text className="text-lg text-gray-500">
-					view {post.commentscount} comments
-				</Text>
+				{!post.turn_off_comments && (
+					<Text className="text-lg text-gray-500">
+						view {post.commentscount} comments
+					</Text>
+				)}
 				<Text className="text-lg text-gray-500">{post.post_date}</Text>
 				<View className="flex-row items-center justify-start">
 					<Text className="text-xl text-gray-500 font-semibold">place:</Text>

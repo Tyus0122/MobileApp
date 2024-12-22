@@ -4,11 +4,9 @@ import {
 	Image,
 	TextInput,
 	Pressable,
-	Modal,
 	ActivityIndicator,
 	KeyboardAvoidingView,
 	Platform,
-	StyleSheet,
 	ScrollView,
 	TouchableOpacity,
 } from "react-native";
@@ -18,18 +16,20 @@ import React from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { Preview } from "@/components/Preview";
+import { EditPreview } from "@/components/EditPreview";
 import { backend_url, debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { debounce } from "lodash";
+import { debounce, isEqual } from "lodash";
 const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
+import { useLocalSearchParams } from "expo-router";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-export default function post() {
+export default function editPost() {
+	// const params = useLocalSearchParams();
+	const params = { post_id: "66e3d867ffe950ee7ab0db7e" };
 	let [image, setImage] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
-	const [selected, setSelected] = useState([]);
 	const [isLastPage, setIsLastPage] = useState(false);
 	const [users, setUsers] = useState([]);
 	const [usersIds, setUserIds] = useState([]);
@@ -74,10 +74,33 @@ export default function post() {
 				}
 				setIsLastPage(response.data.message.isLastPage);
 			})
-			.catch((err) => {
-			});
+			.catch((err) => {});
+	}
+	const [post, setPost] = useState({});
+	const updatePost = (newData) => {
+		setPost((prevPost) => ({
+			...prevPost,
+			...newData, // Merge new data with the existing state
+		}));
+	};
+	async function fetchPostData() {
+		const token = await AsyncStorage.getItem("BearerToken");
+		const headers = {
+			authorization: "Bearer " + token,
+			"content-type": "application/json",
+		};
+		axios
+			.get(backend_url + `v1/user/getEditPost?post_id=${params.post_id}`, {
+				headers,
+			})
+			.then((response) => {
+				setPost(response.data.post[0]);
+				setUserIds(response.data.post[0].peopleTagged);
+			})
+			.catch((err) => {});
 	}
 	useEffect(() => {
+		fetchPostData();
 		fetchData();
 	}, []);
 	const sheetRef = useRef(null);
@@ -90,15 +113,6 @@ export default function post() {
 		({ item }) => (
 			<Pressable
 				onPress={() => {
-					setSelected((prevSelected) => {
-						if (!prevSelected.includes(item.username)) {
-							return [...prevSelected, item.username];
-						} else {
-							return prevSelected.filter(
-								(username) => username !== item.username
-							);
-						}
-					});
 					setUserIds((prevSelected) => {
 						if (!prevSelected.includes(item._id)) {
 							return [...prevSelected, item._id];
@@ -108,8 +122,9 @@ export default function post() {
 					});
 				}}
 			>
-				<View className="flex-row items-center justify-between border border-gray-500 ml-4 mr-4 mb-1 mt-1 rounded-xl p-2 ">
+				<View className="flex-row items-center justify-between border border-gray-500 ml-4 mr-4 mb-1 mt-1 rounded-xl p-2">
 					<View className="flex-row items-center gap-5">
+						{/* Profile Image */}
 						<Image
 							source={imagePlaceholder}
 							style={{
@@ -120,24 +135,42 @@ export default function post() {
 								borderWidth: 1.5,
 							}}
 						/>
+						{/* User Info */}
 						<View>
 							<Text className="text-xl font-semibold">{item.username}</Text>
 							<Text className="text-lg text-gray-500">{item.city}</Text>
 						</View>
 					</View>
 
-					{/* Show checkmark only if the item is selected */}
-					{selected.includes(item.username) && (
-						<View className="mr-5">
-							<Ionicons name={"checkmark-circle"} size={28} color="lightblue" />
-						</View>
-					)}
+					{/* Custom Checkbox */}
+					<View
+						style={{
+							width: 24,
+							height: 24,
+							borderWidth: 2,
+							borderColor: "gray",
+							borderRadius: 4,
+							justifyContent: "center",
+							alignItems: "center",
+							marginRight: 15,
+						}}
+					>
+						{usersIds.includes(item._id) && (
+							<View
+								style={{
+									width: 14,
+									height: 14,
+									backgroundColor: "lightblue",
+									borderRadius: 2,
+								}}
+							/>
+						)}
+					</View>
 				</View>
 			</Pressable>
 		),
-		[selected] // Add 'selected' to dependency array to re-render correctly
+		[usersIds]
 	);
-
 	async function uploadImage(mode = "gallery", selection = "single") {
 		let result = {};
 
@@ -146,7 +179,7 @@ export default function post() {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [1, 1],
-				
+
 				quality: 1,
 			});
 		} else if (mode === "gallery" && selection === "multiple") {
@@ -171,7 +204,7 @@ export default function post() {
 
 	return (
 		<GestureHandlerRootView>
-			<View className='bg-white h-full'>
+			<View className="bg-white h-full">
 				<KeyboardAvoidingView
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
 					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
@@ -183,83 +216,15 @@ export default function post() {
 						>
 							<View>
 								<View>
-									{image == "" ? (
+									{!isEqual(post, {}) && (
 										<View>
-											<View className="flex-row p-5 items-center gap-3">
-												<Pressable onPress={() => router.back()}>
-													<Ionicons
-														name={"arrow-back-outline"}
-														size={28}
-														color="gray"
-													/>
-												</Pressable>
-												<Text className="text-2xl">New Post</Text>
-											</View>
-											<View
-												className="flex items-center justify-center"
-												style={{
-													marginTop: 150,
-												}}
-											>
-												<View
-													className="border border-gray-500 p-5 rounded-lg items-center w-[90%]"
-													style={{ opacity: 0.3 }}
-												>
-													<View className="flex-row flex-wrap justify-center">
-														<TouchableOpacity
-															onPress={() => uploadImage("camera")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="camera-outline" size={90} />
-																<Text className="text-xl font-semibold">
-																	Camera
-																</Text>
-															</View>
-														</TouchableOpacity>
-														<TouchableOpacity
-															onPress={() => uploadImage("gallery", "single")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="image-outline" size={90} />
-																<Text className="text-xl font-semibold">
-																	Single
-																</Text>
-															</View>
-														</TouchableOpacity>
-														<TouchableOpacity
-															onPress={() => uploadImage("gallery", "multiple")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="images-outline" size={90} />
-																<Text className="text-xl font-semibold">
-																	Multiple
-																</Text>
-															</View>
-														</TouchableOpacity>
-													</View>
-													<Text className="text-xl font-semibold text-center mt-5 mb-4">
-														Click on the icon to add a new post
-													</Text>
-												</View>
-											</View>
-										</View>
-									) : (
-										<View>
-											<Preview
-												image={image}
+											<EditPreview
 												setImage={setImage}
 												setModalVisible={setModalVisible}
 												handleSnapPress={handleSnapPress}
 												usersIds={usersIds}
+												post={post}
+												updatePost={updatePost}
 											/>
 										</View>
 									)}
@@ -274,27 +239,7 @@ export default function post() {
 							enablePanDownToClose
 							className="bg-white"
 						>
-							<View className="p-3 flex-row flex-wrap">
-								{selected.map((value, key) => (
-									<Pressable
-										key={key}
-										className="pl-2 pr-2 pt-1 pb-1 m-1 bg-blue-500 rounded-xl flex-row gap-1 items-center justify-center"
-										onPress={() => {
-											setSelected((prevSelected) =>
-												prevSelected.filter((item) => item !== value)
-											);
-										}}
-									>
-										<Text className="text-white text-xl">{value}</Text>
-										<Ionicons
-											name="close-outline"
-											size={20}
-											color="white"
-											className="mt-1"
-										/>
-									</Pressable>
-								))}
-							</View>
+							<View className="p-3 flex-row flex-wrap"></View>
 							<View className="flex-row items-center gap-5 pl-5">
 								<Ionicons
 									name={"close-outline"}

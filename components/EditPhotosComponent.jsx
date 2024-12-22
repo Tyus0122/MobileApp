@@ -17,7 +17,7 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 const { width } = Dimensions.get("window");
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-export function PhotosComponent({ images, _id }) {
+export function EditPhotosComponent({ images, updatePost, post }) {
 	const segments = useSegments();
 	const pathname = segments.join("/");
 	const scrollViewRef = useRef(null);
@@ -34,26 +34,27 @@ export function PhotosComponent({ images, _id }) {
 	}, []);
 	const renderImages = () => {
 		return images.map((image, index) => (
-			<Pressable
-				className="flex items-center pl-5 pr-5 mb-2 mt-2"
-				key={index}
-				onPress={() => {
-					if (
-						pathname != "singlepost" &&
-						pathname != "(tabs)/post" &&
-						pathname != "myPosts"
-					) {
-						router.push({
-							pathname: "/singlepost",
-							params: {
-								_id: _id,
-							},
-						});
-					}
-				}}
-			>
-				<Image source={{ uri: image }} style={styles.image} />
-			</Pressable>
+			<View key={index}>
+				<View className="flex items-center pl-5 pr-5 mb-2 mt-2" key={index}>
+					<Image source={{ uri: image }} style={styles.image} />
+					<TouchableOpacity
+						className="flex items-center justify-center bg-red-500 rounded-xl mt-3"
+						onPress={() => {
+							console.log(post.files);
+							console.log(image);
+							updatePost({
+								files: post.files.filter(
+									(file) => (file.url ?? file.uri) != image
+								),
+							});
+							setCurrentIndex(0)
+							scrollViewRef.current?.scrollTo({ x: 0, animated: true });
+						}}
+					>
+						<Text className="p-2 text-xl text-white">Remove</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
 		));
 	};
 

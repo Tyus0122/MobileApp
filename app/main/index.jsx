@@ -1,22 +1,3 @@
-// import React, { useState, useEffect, useContext } from "react";
-// import { Text, View, ActivityIndicator } from "react-native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { Redirect } from "expo-router";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import axios from "axios";
-// import { backend_url } from "@/constants/constants";
-// import { SplashScreen } from "@/components/SplashScreenComponent";
-
-// export default function Index() {
-// 	return (
-// 		<SafeAreaView>
-// 			<View>
-// 				<SplashScreen></SplashScreen>
-// 			</View>
-// 		</SafeAreaView>
-// 	);
-// }
-
 import React, { useState, useEffect, useContext } from "react";
 import { Text, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { backend_url } from "@/constants/constants";
 
-export default function Index() {
+export default function Main() {
 	const [isLoggedin, setIsLoggedin] = useState("");
 
 	async function fetchData() {

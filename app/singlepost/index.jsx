@@ -132,21 +132,23 @@ export default function singlePost() {
 			})
 			.then((response) => {
 				if (response.data.message.selfPost) {
-					router.back()
+					router.back();
 					router.push({
-						pathname: '/myPosts',
+						pathname: "/myPosts",
 						params: {
-							_id:response.data.message.posts[0]._id
-						}
-					})	
-				}
-				else {
+							_id: response.data.message.posts[0]._id,
+						},
+					});
+				} else {
 					if (mode == "refresh" || page == 0) {
 						setPosts(response.data.message.posts);
 						setInicomments(response.data.message.comments);
 					} else {
 						setPosts([...posts, ...response.data.message.posts]);
-						setInicomments({ ...inicomments, ...response.data.message.comments });
+						setInicomments({
+							...inicomments,
+							...response.data.message.comments,
+						});
 					}
 					updateuserstate({
 						usersList: response.data.message.shareUsers,
@@ -203,7 +205,9 @@ export default function singlePost() {
 		}
 		updateCommentState({ parent_comment_id: pid });
 	};
+	const [commentSendLoader, setCommentSendLoader] = useState(false);
 	async function commentHandler() {
+		setCommentSendLoader(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -217,6 +221,7 @@ export default function singlePost() {
 					? null
 					: commentState.parent_comment_id,
 		};
+		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -224,7 +229,7 @@ export default function singlePost() {
 				headers,
 			}
 		);
-		if (parent_coment_id == "") {
+		if (commentState.parent_comment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
@@ -247,9 +252,9 @@ export default function singlePost() {
 			setCommentState({
 				...commentState,
 				comment: "",
-				parent_comment_id: parent_comment_id,
 			});
 		}
+		setCommentSendLoader(false);
 	}
 	async function fetchPageComments({ page }) {
 		try {
@@ -465,7 +470,7 @@ export default function singlePost() {
 						>
 							<BottomSheetFlatList
 								data={commentState.allcomments}
-								keyExtractor={(i) => i._id}
+								keyExtractor={(i, index) => index}
 								renderItem={({ item, index }) => (
 									<CommentComponent
 										item={item}
@@ -480,10 +485,12 @@ export default function singlePost() {
 										<Text style={{ textAlign: "center", padding: 30 }}>
 											You have reached the end of Page
 										</Text>
-									) : (
+									) : commentState.allcomments ? (
 										<View className="flex items-center justify-center">
 											<ActivityIndicator size="large" color="gray" />
 										</View>
+									) : (
+										<View></View>
 									)
 								}
 								ListEmptyComponent={
@@ -491,7 +498,7 @@ export default function singlePost() {
 										<View></View>
 									) : (
 										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Data: Please change filters
+											No Data To Display
 										</Text>
 									)
 								}
@@ -527,6 +534,7 @@ export default function singlePost() {
 								</View>
 								<Pressable
 									className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
+									disabled={commentSendLoader}
 									onPress={commentHandler}
 								>
 									<Ionicons name="arrow-up-outline" size={24} color="white" />
@@ -556,7 +564,6 @@ export default function singlePost() {
 								>
 									<Text className="text-3xl">Share this Profile</Text>
 								</TouchableOpacity>
-								<Text className="text-3xl">Hide</Text>
 								<Text className="text-3xl text-red-500">Report</Text>
 							</View>
 						</BottomSheet>

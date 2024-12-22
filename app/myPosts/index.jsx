@@ -81,6 +81,38 @@ export default function muPosts() {
 		}, debounce_time),
 		[]
 	);
+	async function postTurnComments(datas) {
+		try {
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				post_id: params._id,
+				turn: datas,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/turnComments",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				console.log("success");
+			}
+		} catch (error) {
+			setconnectionbuttonloading(false);
+			console.error(error.message);
+		}
+	}
+	const debounceCallTurnComments = useCallback(
+		debounce((data) => {
+			postTurnComments(data);
+		}, debounce_time),
+		[]
+	);
 	const [refresh, setRefresh] = useState(false);
 	function handleBackPress() {
 		if (modalVisible || eModalVisible || shareModalVisible) {
@@ -192,7 +224,9 @@ export default function muPosts() {
 		}
 		updateCommentState({ parent_comment_id: pid });
 	};
+	const [commentSendLoader, setCommentSendLoader] = useState(false);
 	async function commentHandler() {
+		setCommentSendLoader(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -206,6 +240,7 @@ export default function muPosts() {
 					? null
 					: commentState.parent_comment_id,
 		};
+		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -213,7 +248,7 @@ export default function muPosts() {
 				headers,
 			}
 		);
-		if (parent_coment_id == "") {
+		if (commentState.parent_comment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
@@ -236,9 +271,9 @@ export default function muPosts() {
 			setCommentState({
 				...commentState,
 				comment: "",
-				parent_comment_id: parent_comment_id,
 			});
 		}
+		setCommentSendLoader(false);
 	}
 	async function fetchPageComments({ page }) {
 		try {
@@ -345,6 +380,30 @@ export default function muPosts() {
 			updateuserstate({
 				selected_ids: [],
 			});
+		} catch (error) {
+			console.error(error);
+		}
+	}
+	async function deletePostHandler() {
+		try {
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const body = {
+				post_id: params._id,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/deletePost",
+				body,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				console.log("success");
+			}
 		} catch (error) {
 			console.error(error);
 		}
@@ -516,6 +575,7 @@ export default function muPosts() {
 								</View>
 								<Pressable
 									className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
+									disabled={commentSendLoader}
 									onPress={commentHandler}
 								>
 									<Ionicons name="arrow-up-outline" size={24} color="white" />
@@ -534,18 +594,36 @@ export default function muPosts() {
 							<View className="flex-1 items-center justify-between mt-5 mb-5">
 								<TouchableOpacity
 									onPress={() => {
+										debounceCallTurnComments(!posts[0].turn_off_comments);
+										setPosts([
+											{
+												...posts[0],
+												turn_off_comments: !posts[0].turn_off_comments,
+											},
+										]);
+									}}
+								>
+									<Text className="text-3xl">
+										{!posts[0].turn_off_comments
+											? "Turn off comments"
+											: "Turn On Comments"}
+									</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									onPress={() => {
 										router.push({
-											pathname: "/shareProfile",
+											pathname: "/editPost",
 											params: {
-												profile_id: commentState.currentUserId,
+												post_id: posts[0]._id,
 											},
 										});
 									}}
 								>
-									<Text className="text-3xl">Turn Off Commenting</Text>
+									<Text className="text-3xl">Edit</Text>
 								</TouchableOpacity>
-								<Text className="text-3xl">Edit</Text>
-								<Text className="text-3xl text-red-500">Delete</Text>
+								<TouchableOpacity onPress={deletePostHandler}>
+									<Text className="text-3xl text-red-500">Delete</Text>
+								</TouchableOpacity>
 							</View>
 						</BottomSheet>
 					)}

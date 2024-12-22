@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Profile() {
 	async function logoutHandler() {
 		await AsyncStorage.removeItem("BearerToken");
-		router.push("/");
+		router.push("/main");
 	}
 
 	const options = [
@@ -28,7 +28,11 @@ export default function Profile() {
 		{ label: "Blocked", link: "/blocked", icon: "ban-outline" },
 		{ label: "Privacy Center", link: "/privacy", icon: "shield-outline" },
 	];
-
+	async function onboardHandler() {
+		await AsyncStorage.removeItem("BearerToken");
+		await AsyncStorage.removeItem("is_onboarded");
+		router.push("/main")
+	}
 	return (
 		<SafeAreaView className="bg-white flex-1">
 			<ScrollView
@@ -64,6 +68,17 @@ export default function Profile() {
 							<Ionicons name={"log-out-outline"} size={50} color="gray" />
 							<Text className="text-lg font-semibold text-gray-600">
 								Sign Out
+							</Text>
+						</View>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={onboardHandler}
+						className="w-[40%] border border-gray-300 rounded-lg p-4 mb-5 flex-row items-center justify-center"
+					>
+						<View className="items-center justify-center">
+							<Ionicons name={"log-out-outline"} size={50} color="gray" />
+							<Text className="text-lg font-semibold text-gray-600">
+								onboard
 							</Text>
 						</View>
 					</TouchableOpacity>

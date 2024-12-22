@@ -247,7 +247,9 @@ export default function Accomodation() {
 		}
 		updateCommentState({ parent_comment_id: pid });
 	};
+	const [commentSendLoader, setCommentSendLoader] = useState(false);
 	async function commentHandler() {
+		setCommentSendLoader(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		const headers = {
 			authorization: "Bearer " + token,
@@ -261,6 +263,7 @@ export default function Accomodation() {
 					? null
 					: commentState.parent_comment_id,
 		};
+		console.log(body)
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -268,7 +271,7 @@ export default function Accomodation() {
 				headers,
 			}
 		);
-		if (parent_coment_id == "") {
+		if (commentState.parent_comment_id == "") {
 			setCommentState({
 				...commentState,
 				comment: "",
@@ -291,9 +294,9 @@ export default function Accomodation() {
 			setCommentState({
 				...commentState,
 				comment: "",
-				parent_comment_id: parent_comment_id,
 			});
 		}
+		setCommentSendLoader(false);
 	}
 	async function fetchPageComments({ page }) {
 		try {
@@ -690,10 +693,12 @@ export default function Accomodation() {
 											<Text style={{ textAlign: "center", padding: 30 }}>
 												You have reached the end of Page
 											</Text>
-										) : (
+										) : commentState.allcomments ? (
 											<View className="flex items-center justify-center">
 												<ActivityIndicator size="large" color="gray" />
 											</View>
+										) : (
+											<View></View>
 										)
 									}
 									ListEmptyComponent={
@@ -701,7 +706,7 @@ export default function Accomodation() {
 											<View></View>
 										) : (
 											<Text style={{ textAlign: "center", padding: 30 }}>
-												No Data: Please change filters
+												No Data To Display
 											</Text>
 										)
 									}
@@ -737,7 +742,8 @@ export default function Accomodation() {
 									</View>
 									<Pressable
 										className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
-										onPress={commentHandler}
+												onPress={commentHandler}
+												disabled={commentSendLoader}
 									>
 										<Ionicons name="arrow-up-outline" size={24} color="white" />
 									</Pressable>
