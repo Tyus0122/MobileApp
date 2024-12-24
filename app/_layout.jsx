@@ -143,6 +143,11 @@ export default function RootLayout() {
 					options={{ headerShown: false }}
 				/>
 				<Stack.Screen name="main/index" options={{ headerShown: false }} />
+				<Stack.Screen name="help/index" options={{ headerShown: false }} />
+				<Stack.Screen
+					name="searchMessages/index"
+					options={{ headerShown: false }}
+				/>
 			</Stack>
 		</SocketContext.Provider>
 	);

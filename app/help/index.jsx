@@ -46,13 +46,20 @@ export default function Chat() {
 	const [loading, setLoading] = useState(false);
 	const [page, setPage] = useState(0);
 	const [isLastPage, setIsLastPage] = useState(false);
-
+	const [conversation_id, setConversationId] = useState("");
 	const [messages, setMessages] = useState([]);
-	const [otherUser, setOtherUser] = useState({});
+	const [logged_in_user_id, setlogged_in_user_id] = useState([]);
+	const [otherUser, setOtherUser] = useState({
+		pic: require("@/assets/tyuss/admin.png"),
+		fullname: "Help",
+		username: "Help",
+		show_profile: false,
+		_id: "admin_id",
+		logged_in_user_id: "logged_in_user_id",
+	});
 	const [msgtosend, setMsgtosend] = useState("");
 	const [error, setError] = useState("");
 	async function socketRecievehandler(data) {
-		console.log(data);
 		if (params.otherUser_id == data.from) {
 			setMessages((prevMessages) => [data, ...prevMessages]);
 		}
@@ -66,27 +73,14 @@ export default function Chat() {
 			"content-type": "application/json",
 		};
 		axios
-			.get(
-				backend_url +
-					"v1/user/getMessages?page=0&conversation_id=" +
-					params.conversation_id +
-					"&otherUser_id=" +
-					params.otherUser_id,
-				{
-					headers,
-				}
-			)
+			.get(backend_url + "v1/user/creategetAdminChat?page=0", {
+				headers,
+			})
 			.then((response) => {
 				setMessages(response.data.messages);
 				setIsLastPage(response.data.isLastPage);
-				setOtherUser({
-					pic: response.data.pic,
-					fullname: response.data.fullname,
-					username: response.data.username,
-					show_profile: response.data.show_profile,
-					_id: response.data._id,
-					logged_in_user_id: response.data.logged_in_user_id,
-				});
+				setConversationId(response.data.conversation_id);
+				setlogged_in_user_id(response.data.logged_in_user_id);
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -102,67 +96,45 @@ export default function Chat() {
 	async function sendmsgviasocket(message, token, otherUser) {
 		const payload = {
 			...message,
-			...otherUser,
 			token,
 			type: "message",
 			uid: message._id,
 		};
-		socket.emit("message", payload);
+		socket.emit("adminmessagesent", payload);
 	}
 	async function sendHandler() {
-		const token = await AsyncStorage.getItem("BearerToken");
-		let time_of_message = new Date();
-		let realtime_message = {
-			message: msgtosend,
-			_id: uniqueId("id-"),
-			isSender: true,
-			time: time_of_message,
-			type: "message",
-		};
-		setMessages([realtime_message, ...messages]);
-		sendmsgviasocket(realtime_message, token, otherUser);
-		const headers = {
-			authorization: "Bearer " + token,
-			"content-type": "application/json",
-		};
-		const data = {
-			message: msgtosend,
-			time: new Date(),
-			conversation_id: params.conversation_id,
-			type: "message",
-		};
-		setMsgtosend("");
-		const response = await axios.post(
-			backend_url + "v1/user/postMessages",
-			data,
-			{
-				headers,
-			}
-		);
-	}
-	async function reportUser() {
 		try {
-			ehandleSnapPress(-1);
 			const token = await AsyncStorage.getItem("BearerToken");
+			let time_of_message = new Date();
+			let realtime_message = {
+				message: msgtosend,
+				logged_in_user_id: logged_in_user_id,
+				isSender: true,
+				time: time_of_message,
+				type: "message",
+			};
+			setMessages([realtime_message, ...messages]);
+			sendmsgviasocket(realtime_message, token, otherUser);
 			const headers = {
 				authorization: "Bearer " + token,
 				"content-type": "application/json",
 			};
 			const data = {
-				user_id: params.otherUser_id,
+				message: msgtosend,
+				time: new Date(),
+				conversation_id: conversation_id,
+				type: "message",
 			};
+			setMsgtosend("");
 			const response = await axios.post(
-				backend_url + "v1/user/reportUser",
+				backend_url + "v1/user/postMessages",
 				data,
 				{
 					headers,
 				}
 			);
-			if (response.status == 200) {
-				// setUser({ ...user, connectionStatus: "connect" });
-			}
-		} catch (error) {
-			console.error(error.message);
+		} catch (err) {
+			console.log(err.message);
 		}
 	}
 	const formatTime = (time) => {
@@ -347,29 +319,12 @@ export default function Chat() {
 			"content-type": "application/json",
 		};
 		axios
-			.get(
-				backend_url +
-					"v1/user/getMessages?page=" +
-					page +
-					"&conversation_id=" +
-					params.conversation_id +
-					"&otherUser_id=" +
-					params.otherUser_id,
-				{
-					headers,
-				}
-			)
+			.get(backend_url + "v1/user/creategetAdminChat?page=" + page, {
+				headers,
+			})
 			.then((response) => {
 				setMessages([...messages, ...response.data.messages]);
 				setIsLastPage(response.data.isLastPage);
-				setOtherUser({
-					pic: response.data.pic,
-					fullname: response.data.fullname,
-					username: response.data.username,
-					show_profile: response.data.show_profile,
-					_id: response.data._id,
-					logged_in_user_id: response.data.logged_in_user_id,
-				});
 			})
 			.catch((err) => {});
 	}
@@ -377,31 +332,6 @@ export default function Chat() {
 		if (!isLastPage) {
 			setPage(page + 1);
 			fetchDataPageWise({ page: page + 1 });
-		}
-	}
-	async function deleteConversationHandler() {
-		try {
-			const token = await AsyncStorage.getItem("BearerToken");
-			const headers = {
-				authorization: "Bearer " + token,
-				"content-type": "application/json",
-			};
-			const data = {
-				user_id: otherUser._id,
-				conversation_id: params.conversation_id,
-			};
-			const response = await axios.post(
-				backend_url + "v1/user/deleteConversation",
-				data,
-				{
-					headers,
-				}
-			);
-			if (response.status == 200) {
-				router.push("/");
-			}
-		} catch (error) {
-			console.error(error.message);
 		}
 	}
 	return (
@@ -429,11 +359,7 @@ export default function Chat() {
 											/>
 										</Pressable>
 										<Image
-											source={
-												otherUser.pic && otherUser.pic.url
-													? { uri: otherUser.pic.url }
-													: imagePlaceholder
-											}
+											source={otherUser.pic}
 											style={{
 												width: 50,
 												height: 50,
@@ -446,57 +372,7 @@ export default function Chat() {
 											{otherUser.fullname}
 										</Text>
 									</View>
-									<Pressable
-										onPress={() => {
-											setModalVisible(true);
-										}}
-									>
-										<Ionicons
-											name="ellipsis-vertical"
-											size={26}
-											color="black"
-										/>
-									</Pressable>
 								</View>
-								{messages.length < 6 && (
-									<View className="mt-5 flex items-center justify-center">
-										<Image
-											source={
-												otherUser.pic && otherUser.pic.url
-													? { uri: otherUser.pic.url }
-													: imagePlaceholder
-											}
-											style={{
-												width: 100,
-												height: 100,
-												borderRadius: 50,
-												borderColor: "black",
-												borderWidth: 3,
-											}}
-										/>
-										{/* <Text className="text-3xl text-black-500">
-										{otherUser.logged_in_user_id}
-									</Text> */}
-										<Text className="text-3xl text-black-500">
-											{otherUser.fullname}
-										</Text>
-										{/* <Text className="text-3xl text-black-500">{socket.id}</Text> */}
-										<Text className="text-xl text-black-500">
-											{otherUser.username}
-										</Text>
-										<TouchableOpacity
-											className="bg-[#00000040] mt-5 rounded-lg pl-3 pr-3 pt-2 pb-2"
-											onPress={() => {
-												router.push({
-													pathname: "/userProfile",
-													params: { _id: otherUser._id },
-												});
-											}}
-										>
-											<Text className="text-2xl">View Profile</Text>
-										</TouchableOpacity>
-									</View>
-								)}
 								<FlatList
 									data={groupedMessages}
 									keyExtractor={(item, index) => index.toString()}
@@ -557,61 +433,6 @@ export default function Chat() {
 					</View>
 				</KeyboardAvoidingView>
 			</SafeAreaView>
-			{modalVisible && (
-				<BottomSheet
-					ref={sheetRef}
-					snapPoints={snapPoints}
-					enablePanDownToClose
-					onClose={() => {
-						setModalVisible(false);
-						handleSnapPress(-1);
-					}}
-					className="bg-white"
-				>
-					<View className="flex-1 items-center justify-between mt-5 mb-5">
-						<TouchableOpacity onPress={blockHandler}>
-							<Text className="text-3xl text-red-500">block</Text>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={reportUser}>
-							<Text className="text-3xl text-red-500">Report</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={() => {
-								router.push({
-									pathname: "/userProfile",
-									params: { _id: otherUser._id },
-								});
-							}}
-						>
-							<Text className="text-3xl">View Profile</Text>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={deleteConversationHandler}>
-							<Text className="text-3xl">Delete Conversation</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={() => {
-								router.push({
-									pathname: "/searchMessages",
-									params: {
-										conversation_id: params.conversation_id,
-										otherUser_id: params.otherUser_id,
-									},
-								});
-							}}
-						>
-							<Text className="text-3xl">Search</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={() => {
-								setModalVisible(false);
-								handleSnapPress(-1);
-							}}
-						>
-							<Text className="text-3xl">cancel</Text>
-						</TouchableOpacity>
-					</View>
-				</BottomSheet>
-			)}
 		</GestureHandlerRootView>
 	);
 }

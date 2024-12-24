@@ -12,9 +12,11 @@ export function NavBarComponent() {
 				</View>
 				<View className="flex1 w-[140px]"></View>
 				<View className="flex-1 flex-row items-center justify-between">
-					<Ionicons name={"help-circle-sharp"} size={34} />
+					<Link href={"/help"}>
+						<Ionicons name={"help-circle-sharp"} size={34} />
+					</Link>
 					<Link href={"/notifications"}>
-					<Ionicons name={"notifications-outline"} size={34} />
+						<Ionicons name={"notifications-outline"} size={34} />
 					</Link>
 					<Link href={"/messages"}>
 						<Ionicons name={"chatbox-ellipses"} size={34} />

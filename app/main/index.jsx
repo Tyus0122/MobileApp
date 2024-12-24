@@ -28,14 +28,16 @@ export default function Main() {
 				}
 			})
 			.catch(async (err) => {
-				setIsLoggedin("false");
+				console.log('error')
+				if (is_onboarded === "yes") {
+					setIsLoggedin("false");
+				} else setIsLoggedin("no");
 			});
 	}
 
 	useEffect(() => {
 		fetchData();
 	}, []);
-
 	return isLoggedin === "" ? (
 		<SafeAreaView>
 			<View className="h-screen flex items-center justify-center">

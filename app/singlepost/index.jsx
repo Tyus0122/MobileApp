@@ -396,6 +396,53 @@ export default function singlePost() {
 			</Pressable>
 		);
 	}
+	async function removeconnectionHandler() {
+		try {
+			ehandleSnapPress(-1);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: commentState.currentUserId,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/removeConnection",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+			}
+		} catch (error) {}
+	}
+	async function reportUser() {
+		try {
+			ehandleSnapPress(-1);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: commentState.currentUserId,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/reportUser",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				// setUser({ ...user, connectionStatus: "connect" });
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	}
 	return (
 		<GestureHandlerRootView>
 			<KeyboardAvoidingView
@@ -551,7 +598,9 @@ export default function singlePost() {
 							className="bg-white"
 						>
 							<View className="flex-1 items-center justify-between mt-5 mb-5">
-								<Text className="text-3xl">Remove Connection</Text>
+								<TouchableOpacity onPress={removeconnectionHandler}>
+									<Text className="text-3xl">Remove Connection</Text>
+								</TouchableOpacity>
 								<TouchableOpacity
 									onPress={() => {
 										router.push({
@@ -564,7 +613,9 @@ export default function singlePost() {
 								>
 									<Text className="text-3xl">Share this Profile</Text>
 								</TouchableOpacity>
-								<Text className="text-3xl text-red-500">Report</Text>
+								<TouchableOpacity onPress={reportUser}>
+									<Text className="text-3xl text-red-500">Report</Text>
+								</TouchableOpacity>
 							</View>
 						</BottomSheet>
 					)}

@@ -290,7 +290,31 @@ export default function userProfile() {
 			console.error(error.message);
 		}
 	}
-
+	async function reportUser() {
+		try {
+			ehandleSnapPress(-1);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: user._id,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/reportUser",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				// setUser({ ...user, connectionStatus: "connect" });
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	}
 	return (
 		<GestureHandlerRootView>
 			<SafeAreaView>
@@ -487,7 +511,9 @@ export default function userProfile() {
 							<TouchableOpacity onPress={blockHandler}>
 								<Text className="text-3xl text-red-500">Block</Text>
 							</TouchableOpacity>
-							<Text className="text-3xl text-red-500">Report</Text>
+							<TouchableOpacity onPress={reportUser}>
+																<Text className="text-3xl text-red-500">Report</Text>
+															</TouchableOpacity>
 							{user.connectionStatus == "connected" && (
 								<TouchableOpacity onPress={removeConnectionHandler}>
 									<Text className="text-3xl">Remove Connection</Text>

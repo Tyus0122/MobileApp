@@ -263,7 +263,7 @@ export default function Accomodation() {
 					? null
 					: commentState.parent_comment_id,
 		};
-		console.log(body)
+		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -408,6 +408,53 @@ export default function Accomodation() {
 			</Pressable>
 		);
 	}
+	async function removeconnectionHandler() {
+		try {
+			ehandleSnapPress(-1);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: commentState.currentUserId,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/removeConnection",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+			}
+		} catch (error) {}
+	}
+	async function reportUser() {
+		try {
+			ehandleSnapPress(-1);
+			const token = await AsyncStorage.getItem("BearerToken");
+			const headers = {
+				authorization: "Bearer " + token,
+				"content-type": "application/json",
+			};
+			const data = {
+				user_id: commentState.currentUserId,
+			};
+			const response = await axios.post(
+				backend_url + "v1/user/reportUser",
+				data,
+				{
+					headers,
+				}
+			);
+			if (response.status == 200) {
+				// setUser({ ...user, connectionStatus: "connect" });
+			}
+		} catch (error) {
+			console.error(error.message);
+		}
+	}
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaView>
@@ -514,7 +561,7 @@ export default function Accomodation() {
 						</Text>
 					}
 					keyboardShouldPersistTaps="always"
-					keyboardDismissMode="on-drag"
+					keyboardDismissMode="on-dragw"
 					contentContainerStyle={{ padding: 10 }}
 					onEndReached={accomodationsEndHandler}
 					ListHeaderComponent={() => (
@@ -742,8 +789,8 @@ export default function Accomodation() {
 									</View>
 									<Pressable
 										className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
-												onPress={commentHandler}
-												disabled={commentSendLoader}
+										onPress={commentHandler}
+										disabled={commentSendLoader}
 									>
 										<Ionicons name="arrow-up-outline" size={24} color="white" />
 									</Pressable>
@@ -759,10 +806,24 @@ export default function Accomodation() {
 								className="bg-white"
 							>
 								<View className="flex-1 items-center justify-between mt-5 mb-5">
-									<Text className="text-3xl">Remove Connection</Text>
-									<Text className="text-3xl">Share this Profile</Text>
-									<Text className="text-3xl">Hide</Text>
-									<Text className="text-3xl text-red-500">Report</Text>
+									<TouchableOpacity onPress={removeconnectionHandler}>
+										<Text className="text-3xl">Remove Connection</Text>
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={() => {
+											router.push({
+												pathname: "/shareProfile",
+												params: {
+													profile_id: commentState.currentUserId,
+												},
+											});
+										}}
+									>
+										<Text className="text-3xl">Share this Profile</Text>
+									</TouchableOpacity>
+									<TouchableOpacity onPress={reportUser}>
+										<Text className="text-3xl text-red-500">Report</Text>
+									</TouchableOpacity>
 								</View>
 							</BottomSheet>
 						)}
