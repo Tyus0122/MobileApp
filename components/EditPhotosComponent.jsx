@@ -40,8 +40,6 @@ export function EditPhotosComponent({ images, updatePost, post }) {
 					<TouchableOpacity
 						className="flex items-center justify-center bg-red-500 rounded-xl mt-3"
 						onPress={() => {
-							console.log(post.files);
-							console.log(image);
 							updatePost({
 								files: post.files.filter(
 									(file) => (file.url ?? file.uri) != image

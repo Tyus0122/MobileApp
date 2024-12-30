@@ -16,7 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 const { width } = Dimensions.get("window");
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 export function PhotosComponent({ images, _id }) {
 	const segments = useSegments();
 	const pathname = segments.join("/");
@@ -35,7 +34,7 @@ export function PhotosComponent({ images, _id }) {
 	const renderImages = () => {
 		return images.map((image, index) => (
 			<Pressable
-				className="flex items-center pl-5 pr-5 mb-2 mt-2"
+				className="flex items-center mb-2 mt-2"
 				key={index}
 				onPress={() => {
 					if (
@@ -97,7 +96,7 @@ export function PhotosComponent({ images, _id }) {
 }
 const styles = StyleSheet.create({
 	image: {
-		width: 400,
+		width: Math.round(width),
 		height: 400,
 		resizeMode: "cover",
 	},

@@ -7,10 +7,11 @@ import {
 	ScrollView,
 	ActivityIndicator,
 } from "react-native";
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext, useRef } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import PhoneInput from "react-native-phone-input";
 import { backend_url } from "@/constants/constants";
 import axios from "axios";
 import ToastManager, { Toast } from "expo-react-native-toastify";
@@ -18,46 +19,42 @@ import { SocketContext } from "@/app/_layout.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
 	const { socket, setSocket } = useContext(SocketContext);
-	const [showPassword, setShowPassword] = useState(true);
 	const [isChecked, setIsChecked] = useState(false);
 	const [submit, setSubmit] = useState(false);
+	const PhoneInputRef = useRef(null);
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
-		email: "user_2@gmail.com",
-		password: "12",
+		phnocode: "+91",
+		phno: "+919441995344",
 	});
-	function isValidEmail(email) {
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return emailRegex.test(email);
-	}
 	function validator() {
-		if (formData.email.length == 0) {
+		let phno = formData.phno.replace(formData.phnocode,"")
+		if (phno.length == 0) {
 			setError(true);
-			setErrorVlaue("Email is required");
+			setErrorVlaue("Phone number is required");
 			return;
 		}
-		if (formData.password.length == 0) {
+		if (phno.length !== 10) {
 			setError(true);
-			setErrorVlaue("Password is required");
-			return;
-		}
-		if (!isValidEmail(formData.email)) {
-			setError(true);
-			setErrorVlaue("Please enter a valid email address");
+			setErrorVlaue("Phone number must be at least 10 characters");
 			return;
 		}
 		submitHandler();
 	}
 	function submitHandler() {
 		setSubmit(true);
+		setError(false)
 		axios
 			.post(backend_url + "v1/user/loginSubmit", formData)
 			.then((response) => {
-				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
-				socket.emit("registerTheToken", { token: response.data.BearerToken });
-				router.push("/main");
 				setSubmit(false);
+				router.push({
+					pathname: "loginOtp",
+					params: {
+						phno: formData.phno,
+					}
+				})
 			})
 			.catch((err) => {
 				if (err.status === 404) {
@@ -98,42 +95,28 @@ export default function LoginScreen() {
 						<Text className="text-red-500 text-lg mt-2">{errorValue}</Text>
 					)}
 					<View className="mt-5">
-						<Text className="text-xl text-gray-500">Email</Text>
-						<TextInput
-							className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
-							onChangeText={(data) => {
-								setFormData({
-									...formData,
-									email: data,
-								});
-								setError(false);
-							}}
-						/>
-					</View>
-					<View className="mt-5">
-						<Text className="text-xl text-gray-500">Password</Text>
-						<View className="relative">
-							<TextInput
-								className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
-								secureTextEntry={showPassword}
-								onChangeText={(data) => {
-									setFormData({
-										...formData,
-										password: data,
-									});
-									setError(false);
-								}}
-							/>
-							<Pressable
-								onPress={() => setShowPassword(!showPassword)}
-								className="absolute right-2 top-2 mt-3"
-							>
-								<Ionicons
-									name={showPassword ? "eye-off" : "eye"}
-									size={24}
-									color="gray"
+						<Text className="text-xl text-gray-500 mb-3">Phone</Text>
+						<View className="flex-row items-center gap-2">
+							<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+								<Ionicons name={"chevron-down-outline"} size={8} color="gray" />
+								<PhoneInput
+									ref={PhoneInputRef}
+									onSelectCountry={(data) => {
+										setFormData({
+											...formData,
+											phnocode: "+" + PhoneInputRef.current.getCountryCode(),
+										});
+									}}
+									onChangePhoneNumber={(data) => {
+										setFormData({
+											...formData,
+											phno: data,
+										});
+										setError(false);
+									}}
+									initialCountry={"us"}
 								/>
-							</Pressable>
+							</View>
 						</View>
 					</View>
 					<View className="mt-5 flex-row items-center justify-between">
@@ -146,11 +129,6 @@ export default function LoginScreen() {
 								/>
 							</Pressable>
 							<Text className="text-xl text-gray-500">Remember me</Text>
-						</View>
-						<View>
-							<Link href={"forgotphno"}>
-								<Text className="text-xl text-blue-500">Forgot Password ?</Text>
-							</Link>
 						</View>
 					</View>
 					<View className="mt-5">
@@ -171,14 +149,6 @@ export default function LoginScreen() {
 						<View className="border border-gray-300 w-[45%]"></View>
 						<Text>Or</Text>
 						<View className="border border-gray-300 w-[45%]"></View>
-					</View>
-					<View className="mt-5">
-						<Pressable className="bg-white h-[50px] rounded-lg flex-row items-center justify-center gap-3">
-							<Ionicons name={"logo-google"} size={20} />
-							<Text className="text-black-500 text-2xl font-semibold">
-								Continue with Google
-							</Text>
-						</Pressable>
 					</View>
 					<View className="mt-5 flex-row justify-center">
 						<Text className="text-xl text-gray-500">

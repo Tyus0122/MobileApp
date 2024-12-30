@@ -263,7 +263,6 @@ export default function Accomodation() {
 					? null
 					: commentState.parent_comment_id,
 		};
-		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -572,6 +571,20 @@ export default function Accomodation() {
 									alignItems: "flex-end",
 								}}
 							>
+								<View className='flex-row items-center gap-3'>
+								{/* <Pressable
+									className="flex-row items-center justify-center gap-2"
+									onPress={() => {
+										setAccomodationsPage(0);
+										setIsChecked("NA");
+										debounceCallAccomodationSearch(AccomodationSearch, "NA");
+										
+									}}
+								>
+									<View className="flex-row items-center justify-center gap-2 border rounded-lg pl-3 pr-3 py-1 border-red-500">
+										<Text className="text-xl">All</Text>
+									</View>
+								</Pressable> */}
 								<Pressable
 									className="flex-row items-center justify-center gap-2"
 									onPress={() => {
@@ -594,6 +607,7 @@ export default function Accomodation() {
 										<Text className="text-xl text-gray-500">Available</Text>
 									</View>
 								</Pressable>
+								</View>
 							</View>
 						</View>
 					)}
@@ -627,8 +641,6 @@ export default function Accomodation() {
 										{datesearchevent ? `${datesearchevent}` : "Pick A Date"}
 									</Text>
 								</TouchableOpacity>
-
-								{/* Clear Button */}
 								<TouchableOpacity
 									className="pl-3 pr-3 pt-1 pb-1 border border-red-500 rounded-xl"
 									onPress={() => {

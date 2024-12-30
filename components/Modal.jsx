@@ -44,10 +44,6 @@ export default function post() {
 			setImage(result.assets[0].uri);
 		}
 	}
-	// useEffect(() => {
-	//     console.log('helo')
-	// 	setImage("gallery");
-	// });
 
 	return (
 		<SafeAreaView>

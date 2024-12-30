@@ -164,12 +164,7 @@ export function EditPreview({
 				<View className="flex-row items-center justify-between">
 					<Pressable
 						onPress={() =>
-							router.push({
-								pathname: "/myPosts",
-								params: {
-									_id: post._id,
-								},
-							})
+							router.back()
 						}
 						className="flex-row p-5 items-center gap-3"
 					>

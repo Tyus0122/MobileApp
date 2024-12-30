@@ -108,7 +108,7 @@ export default function Index() {
 			.post(backend_url + "v1/user/signup", formData)
 			.then((response) => {
 				setSubmit(false);
-				// router.push("/login");
+				router.push("/login");
 			})
 			.catch((err) => {
 				console.log(err);
@@ -136,7 +136,7 @@ export default function Index() {
 							<Text className="text-lg text-gray-500">
 								Alread have an account?{" "}
 								<Link href={"/login"}>
-									<Text className="text-blue-500">Loginss</Text>
+									<Text className="text-blue-500">Logins</Text>
 								</Link>
 							</Text>
 							{error && (
@@ -282,7 +282,7 @@ export default function Index() {
 									<ActivityIndicator size={"large"} color={"white"} />
 								) : (
 									<Text className="text-white text-2xl font-semibold">
-										Log in
+										Sign up
 									</Text>
 								)}
 							</Pressable>

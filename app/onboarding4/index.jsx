@@ -9,6 +9,17 @@ const imagePlaceholder = require("@/assets/tyuss/onboarding3.png");
 export default function Onboarding2() {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+			<View className="flex-row p-5 items-center justify-between gap-3 m-5">
+							<Pressable onPress={() => router.back()}>
+								<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
+							</Pressable>
+							<Pressable
+								className="items-end"
+								onPress={() => router.push("onboarding5")}
+							>
+								<Text className="text-blue-500 text-2xl mr-5">Skip</Text>
+							</Pressable>
+						</View>
 			<View className="flex-1 items-center justify-center">
 				{/* Image */}
 				<Image

@@ -52,7 +52,6 @@ export default function Chat() {
 	const [msgtosend, setMsgtosend] = useState("");
 	const [error, setError] = useState("");
 	async function socketRecievehandler(data) {
-		console.log(data);
 		if (params.otherUser_id == data.from) {
 			setMessages((prevMessages) => [data, ...prevMessages]);
 		}

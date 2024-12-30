@@ -37,7 +37,7 @@ export default function editProfile() {
 		bio: params.bio,
 		city: params.city,
 		university: params.university,
-		accomodation: params.accomodation,
+		accomodation: params.accomodation == "true" ? true : false,
 		pic: params.pic,
 		files: [
 			{
@@ -234,8 +234,8 @@ export default function editProfile() {
 							<View className="border flex-row items-center justify-between p-3 border-gray-500 rounded-xl mt-5 h-[50px] ">
 								<Text className="text-xl">Accomodation</Text>
 								<Pressable
-									className={`h-[30px] w-[60px] bg-green-500 mr-5 rounded-full   ${
-										formData.accomodation ? "items-end" : ""
+									className={`h-[30px] w-[60px]  mr-5 rounded-full border ${
+										formData.accomodation ? "items-end bg-green-500" : "bg-gray-200"
 									}`}
 									onPress={() => {
 										setFormData({

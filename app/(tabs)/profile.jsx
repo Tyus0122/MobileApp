@@ -94,7 +94,7 @@ export default function Profile() {
 				source={{ uri: item.files[0].url }}
 				style={{
 					width: "100%",
-					height: 150,
+					height: 175,
 					resizeMode: "cover",
 				}}
 			/>
@@ -109,156 +109,166 @@ export default function Profile() {
 
 	return (
 		<SafeAreaView>
-			{loading ? (
-				<View className="h-screen bg-white flex items-center justify-center">
-					<ActivityIndicator size="large" color="gray" />
-				</View>
-			) : (
-				<FlatList
-					className="bg-white"
-					data={posts}
-					numColumns={3}
-					keyExtractor={(item, index) => index.toString()}
-					ListHeaderComponent={
-						<View className="h-[550px] bg-white">
-							<View className="flex-row p-5 items-center justify-between gap-3">
-								<View className="flex-row items-center justify-center gap-3">
-									<Pressable onPress={() => router.back()}>
-										<Ionicons
-											name={"arrow-back-outline"}
-											size={28}
-											color="gray"
-										/>
-									</Pressable>
-									<Text className="text-2xl">{user.username}</Text>
-								</View>
-								<View className="items-end">
-									<Link
-										href={"/profileactions"}
-										className="mr-5"
-									>
-										<OptionsIconComponent />
-									</Link>
-								</View>
-							</View>
-							<View className="items-center">
-								<View className="z-10 items-center bg-white rounded-full p-2">
-									<Image
-										source={user.pic ? { uri: user.pic.url } : imagePlaceholder}
-										style={{
-											width: 100,
-											height: 100,
-											borderRadius: 50,
-											borderColor: "black",
-											borderWidth: 1,
-										}}
-									/>
-								</View>
-								<View className="absolute top-[50%] w-[90%] bg-[#D9D9D97D] rounded-t-[50px]">
-									<View className="flex items-center">
-										<Text className="mt-[70px] text-2xl font-semibold text-gray-500">
-											{user.fullname}
-										</Text>
-										<Text className="mt-1 text-xl text-gray-500">
-											{user.bio}
-										</Text>
-										<View className="flex-row items-center gap-3">
-											<Text className="mt-5 text-4xl">{conn}</Text>
-											<Text className="mt-5 text-2xl">Connections</Text>
-										</View>
-									</View>
-									<View className="mt-5 items-center gap-3">
-										<View className="flex-row items-center justify-between w-[80%]">
-											<View className="gap-4">
-												<Text className="text-3xl font-semibold">City</Text>
-												<Text className="text-3xl font-semibold">
-													Accomodation
-												</Text>
-												<Text className="text-3xl font-semibold">
-													University
-												</Text>
-											</View>
-											<View className="gap-3">
-												<Text className="text-3xl text-gray-500 font-light">
-													{user.city}
-												</Text>
-												<View className="h-[30px] w-[60px] bg-green-500 mr-5 rounded-full items-end">
-													<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
-												</View>
-												<Text className="text-3xl text-gray-500 font-light">
-													{user.university}
-												</Text>
-											</View>
-										</View>
-										<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-between">
-											<TouchableOpacity
-												className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center"
-												onPress={() => {
-													router.push({
-														pathname: "/editProfile",
-														params: {
-															fullname: user.fullname,
-															username: user.username,
-															bio: user.bio,
-															city: user.city,
-															university: user.university,
-															pic: user.pic.url,
-															accomodation: user.accomodation,
-														},
-													});
-												}}
-											>
-												<Text className="text-white text-xl font-semibold ml-3 mr-3">
-													Edit Profile
-												</Text>
-											</TouchableOpacity>
-											<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center"
-												onPress={() => {
-													router.push({
-														pathname: "/shareProfile",
-														params: {
-															profile_id: user._id,
-														},
-													});
-												}}
-											>
-												<Text className="text-white text-xl font-semibold ml-3 mr-3">
-													Share Profile
-												</Text>
-											</TouchableOpacity>
-										</View>
-									</View>
-									<View className="bg-white">
-										<View className=" h-[60px] flex items-center justify-center">
-											<Image
-												source={EVENTSPlaceholder}
-												style={{
-													width: 125,
-													height: 30,
-												}}
+			<View className="h-screen bg-white">
+				{loading ? (
+					<View className="h-screen bg-white flex items-center justify-center">
+						<ActivityIndicator size="large" color="gray" />
+					</View>
+				) : (
+					<FlatList
+						data={posts}
+						numColumns={3}
+						keyExtractor={(item, index) => index.toString()}
+						ListHeaderComponent={
+							<View>
+								<View className="flex-row p-5 items-center justify-between gap-3">
+									<View className="flex-row items-center justify-center gap-3">
+										<Pressable onPress={() => router.back()}>
+											<Ionicons
+												name={"arrow-back-outline"}
+												size={28}
+												color="gray"
 											/>
+										</Pressable>
+										<Text className="text-2xl">{user.username}</Text>
+									</View>
+									<View className="items-end">
+										<Link href={"/profileactions"} className="mr-5">
+											<OptionsIconComponent />
+										</Link>
+									</View>
+								</View>
+								<View className="items-center">
+									<View className="z-10 items-center bg-white rounded-full p-2 absolute">
+										<Image
+											source={
+												user.pic ? { uri: user.pic.url } : imagePlaceholder
+											}
+											style={{
+												width: 100,
+												height: 100,
+												borderRadius: 50,
+												borderColor: "black",
+												borderWidth: 1,
+											}}
+										/>
+									</View>
+									<View className="w-[90%] bg-[#D9D9D97D] rounded-t-[50px] top-[60px] mb-[60px]">
+										<View className="flex items-center">
+											<Text className="mt-[70px] text-2xl font-semibold text-gray-500">
+												{user.fullname}
+											</Text>
+											<Text className="mt-1 text-xl text-gray-500">
+												{user.bio}
+											</Text>
+											<View className="flex-row items-center gap-3">
+												<Text className="mt-5 text-4xl">{conn}</Text>
+												<Text className="mt-5 text-2xl">Connections</Text>
+											</View>
+										</View>
+										<View className="mt-5 items-center gap-3">
+											<View className="flex-row items-center justify-between w-[80%]">
+												<View className="gap-4">
+													<Text className="text-3xl font-semibold">City</Text>
+													<Text className="text-3xl font-semibold">
+														Accomodation
+													</Text>
+													<Text className="text-3xl font-semibold">
+														University
+													</Text>
+												</View>
+												<View className="gap-3">
+													<Text className="text-3xl text-gray-500 font-light">
+														{user.city}
+													</Text>
+													{user.accomodation ? (
+														<View className="h-[30px] w-[60px] bg-green-500 mr-5 rounded-full  items-end">
+															<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
+														</View>
+													) : (
+														<View className="h-[30px] w-[60px]  mr-5 rounded-full border">
+															<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
+														</View>
+													)}
+													<Text className="text-3xl text-gray-500 font-light">
+														{user.university}
+													</Text>
+												</View>
+											</View>
+											<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-center gap-5">
+												<TouchableOpacity
+													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
+													onPress={() => {
+														router.push({
+															pathname: "/editProfile",
+															params: {
+																fullname: user.fullname,
+																username: user.username,
+																bio: user.bio,
+																city: user.city,
+																university: user.university,
+																pic: user.pic.url,
+																accomodation: user.accomodation,
+															},
+														});
+													}}
+												>
+													<Text className="text-white text-xl font-semibold">
+														Edit
+													</Text>
+												</TouchableOpacity>
+												<TouchableOpacity
+													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
+													onPress={() => {
+														router.push({
+															pathname: "/shareProfile",
+															params: {
+																profile_id: user._id,
+															},
+														});
+													}}
+												>
+													<Text className="text-white text-xl font-semibold ">
+														Share
+													</Text>
+												</TouchableOpacity>
+											</View>
+										</View>
+										<View className="bg-white">
+											<View className=" h-[60px] flex items-center justify-center">
+												<Image
+													source={EVENTSPlaceholder}
+													style={{
+														width: 125,
+														height: 30,
+													}}
+												/>
+											</View>
 										</View>
 									</View>
 								</View>
 							</View>
-						</View>
-					}
-					renderItem={renderPost}
-					refreshControl={
-						<RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
-					}
-					onEndReached={endHandler}
-					ListFooterComponent={() =>
-						isLastPage ? (
-							<Text style={{ textAlign: "center", padding: 30 }}>
-								You have reached the end of Page
-							</Text>
-						) : (
-							<ActivityIndicator size="large" color="gray" />
-						)
-					}
-				/>
-			)}
+						}
+						renderItem={renderPost}
+						refreshControl={
+							<RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
+						}
+						onEndReached={endHandler}
+						ListFooterComponent={() => (
+							<>
+								{isLastPage ? (
+									<Text style={{ textAlign: "center", padding: 30 }}>
+										You have reached the end of Page
+									</Text>
+								) : (
+									<ActivityIndicator size="large" color="gray" />
+								)}
+								<View style={{ height: 70 }} />
+							</>
+						)}
+					/>
+				)}
+			</View>
 		</SafeAreaView>
 	);
 }

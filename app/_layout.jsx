@@ -144,6 +144,7 @@ export default function RootLayout() {
 				/>
 				<Stack.Screen name="main/index" options={{ headerShown: false }} />
 				<Stack.Screen name="help/index" options={{ headerShown: false }} />
+				<Stack.Screen name="loginOtp/index" options={{ headerShown: false }} />
 				<Stack.Screen
 					name="searchMessages/index"
 					options={{ headerShown: false }}

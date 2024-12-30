@@ -101,6 +101,10 @@ export default function muPosts() {
 			);
 			if (response.status == 200) {
 				console.log("success");
+				router.push({
+					pathname: "/userProfile",
+					params: { _id: posts[0].posted_by_id },
+				});
 			}
 		} catch (error) {
 			setconnectionbuttonloading(false);
@@ -240,7 +244,6 @@ export default function muPosts() {
 					? null
 					: commentState.parent_comment_id,
 		};
-		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -403,6 +406,10 @@ export default function muPosts() {
 			);
 			if (response.status == 200) {
 				console.log("success");
+				router.push({
+					pathname: "/userProfile",
+					params: { _id: posts[0].posted_by_id },
+				});
 			}
 		} catch (error) {
 			console.error(error);
@@ -450,7 +457,19 @@ export default function muPosts() {
 						<FlatList
 							data={posts}
 							keyExtractor={(item, index) => index.toString()}
-							ListHeaderComponent={<NavBarComponent />}
+							ListHeaderComponent={() => (
+								<Pressable
+									onPress={() => router.back()}
+									className="flex-row p-5 items-center gap-3"
+								>
+									<Ionicons
+										name={"arrow-back-outline"}
+										size={28}
+										color="gray"
+									/>
+									<Text className="text-2xl">Profile</Text>
+								</Pressable>
+							)}
 							ListFooterComponent={() =>
 								isLastPage ? (
 									<Text style={{ textAlign: "center", padding: 30 }}>

@@ -128,7 +128,7 @@ export default function Home() {
 			"content-type": "application/json",
 		};
 		axios
-			.get(backend_url + "v1/user/getposts?page=" + page, { headers })
+			.get(backend_url + "v1/user/getHomePosts?page=" + page, { headers })
 			.then((response) => {
 				if (mode == "refresh" || page == 0) {
 					setPosts(response.data.message.posts);
@@ -399,7 +399,9 @@ export default function Home() {
 					headers,
 				}
 			);
+			console.log("redirected");
 			if (response.status == 200) {
+				await fetchData({ page: 0 });
 			}
 		} catch (error) {}
 	}

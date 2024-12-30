@@ -26,8 +26,7 @@ import { useLocalSearchParams } from "expo-router";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function editPost() {
-	// const params = useLocalSearchParams();
-	const params = { post_id: "66e3d867ffe950ee7ab0db7e" };
+	const params = useLocalSearchParams();
 	let [image, setImage] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [isLastPage, setIsLastPage] = useState(false);

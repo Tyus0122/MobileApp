@@ -4,29 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const imagePlaceholder = require("@/assets/tyuss/onboarding3.png");
+const imagePlaceholder = require("@/assets/tyuss/onboarding5.png");
 
 export default function Onboarding2() {
-	const getAllDataFromAsyncStorage = async () => {
-		try {
-			const keys = await AsyncStorage.getAllKeys();
-			const allData = await AsyncStorage.multiGet(keys);
-			const dataObject = allData.reduce((acc, [key, value]) => {
-				acc[key] = value;
-				return acc;
-			}, {});
-
-			console.log(dataObject);
-		} catch (error) {
-			console.error("Error reading AsyncStorage", error);
-		}
-	};
-	async function remove_is_onboarded() {
-		await AsyncStorage.remove("is_onboarded");
-	}
-	async function remove_token() {
-		await AsyncStorage.removeItem("BearerToken");
-	}
 	async function redirectSignup() {
 		await AsyncStorage.setItem("is_onboarded", "yes");
 		router.push("/signup");
@@ -37,6 +17,11 @@ export default function Onboarding2() {
 	}
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+			<View className="flex-row p-5 items-center justify-between gap-3 m-5">
+				<Pressable onPress={() => router.back()}>
+					<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
+				</Pressable>
+			</View>
 			<View className="flex-1 items-center justify-center">
 				<Image
 					source={imagePlaceholder}
@@ -54,7 +39,7 @@ export default function Onboarding2() {
 						textAlign: "center",
 					}}
 				>
-					You can find people who can match your vibe.
+					Instant Help 24/7
 				</Text>
 				<View
 					className="flex-row justify-center"

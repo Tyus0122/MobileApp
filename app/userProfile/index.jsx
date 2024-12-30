@@ -244,7 +244,7 @@ export default function userProfile() {
 				"content-type": "application/json",
 			};
 			const data = {
-				user_id: user._id
+				user_id: user._id,
 			};
 			const response = await axios.post(
 				backend_url + "v1/user/removeConnection",
@@ -325,12 +325,12 @@ export default function userProfile() {
 						</View>
 					) : (
 						<FlatList
-							className="bg-white flex-1"
+							className="bg-white"
 							data={posts}
 							numColumns={3}
 							keyExtractor={(item, index) => index.toString()}
 							ListHeaderComponent={
-								<View className="h-[550px] bg-white">
+								<View className="mb-[60px] bg-white">
 									<View className="flex-row p-5 items-center justify-between gap-3">
 										<View className="flex-row items-center justify-center gap-3">
 											<Pressable onPress={() => router.back()}>
@@ -353,7 +353,7 @@ export default function userProfile() {
 										</Pressable>
 									</View>
 									<View className="items-center">
-										<View className="z-10 items-center bg-white rounded-full p-2">
+										<View className="z-10 items-center bg-white rounded-full p-2 absolute">
 											<Image
 												source={
 													user.pic ? { uri: user.pic.url } : imagePlaceholder
@@ -367,7 +367,7 @@ export default function userProfile() {
 												}}
 											/>
 										</View>
-										<View className="absolute top-[50%] w-[90%] bg-[#D9D9D97D] rounded-t-[50px]">
+										<View className="top-[60px] w-[90%] bg-[#D9D9D97D] rounded-t-[50px]">
 											<View className="flex items-center">
 												<Text className="mt-[70px] text-2xl font-semibold text-gray-500">
 													{user.fullname}
@@ -395,15 +395,21 @@ export default function userProfile() {
 														<Text className="text-3xl text-gray-500 font-light">
 															{user.city}
 														</Text>
-														<View className="h-[30px] w-[60px] bg-green-500 mr-5 rounded-full items-end">
-															<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
-														</View>
+														{user.accomodation ? (
+															<View className="h-[30px] w-[60px] bg-green-500 mr-5 rounded-full  items-end">
+																<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
+															</View>
+														) : (
+															<View className="h-[30px] w-[60px]  mr-5 rounded-full border">
+																<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
+															</View>
+														)}
 														<Text className="text-3xl text-gray-500 font-light">
 															{user.university}
 														</Text>
 													</View>
 												</View>
-												<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-between">
+												<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-center gap-5">
 													{connectionbuttonloading ? (
 														<TouchableOpacity className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center">
 															<ActivityIndicator size="large" color="white" />
@@ -412,7 +418,7 @@ export default function userProfile() {
 															user.connectionStatus
 													  ) ? (
 														<TouchableOpacity
-															className={`bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center`}
+															className={`bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2`}
 															disabled={["connected", "connecting"].includes(
 																user.connectionStatus
 															)}
@@ -426,7 +432,7 @@ export default function userProfile() {
 														<View className="flex-row gap-3">
 															<TouchableOpacity
 																onPress={acceptHandler}
-																className=" bg-green-500 rounded-xl w-[70px] h-[45px] flex items-center justify-center"
+																className=" bg-green-500 rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
 															>
 																<Ionicons
 																	name={"checkmark-outline"}
@@ -436,7 +442,7 @@ export default function userProfile() {
 															</TouchableOpacity>
 															<TouchableOpacity
 																onPress={rejectHandler}
-																className=" bg-red-500 rounded-xl w-[70px] h-[45px] flex items-center justify-center"
+																className=" bg-red-500 rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
 															>
 																<Ionicons
 																	name={"close-outline"}
@@ -447,7 +453,7 @@ export default function userProfile() {
 														</View>
 													)}
 													<TouchableOpacity
-														className=" bg-[#24A0ED] rounded-xl w-[140px] h-[45px] flex items-center justify-center"
+														className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
 														onPress={messageHandler}
 														disabled={buttonloading}
 													>
@@ -485,15 +491,18 @@ export default function userProfile() {
 									</Text>
 								)
 							}
-							ListFooterComponent={() =>
-								isLastPage ? (
-									<Text style={{ textAlign: "center", padding: 30 }}>
-										You have reached the end of Page
-									</Text>
-								) : (
-									<ActivityIndicator size="large" color="gray" />
-								)
-							}
+							ListFooterComponent={() =>(
+								<>
+									{isLastPage ? (
+										<Text style={{ textAlign: "center", padding: 30 }}>
+											You have reached the end of Page
+										</Text>
+									) : (
+										<ActivityIndicator size="large" color="gray" />
+									)}
+									<View style={{ height: 50 }} />
+								</>
+							)}
 						/>
 					)}
 				</View>
@@ -512,8 +521,8 @@ export default function userProfile() {
 								<Text className="text-3xl text-red-500">Block</Text>
 							</TouchableOpacity>
 							<TouchableOpacity onPress={reportUser}>
-																<Text className="text-3xl text-red-500">Report</Text>
-															</TouchableOpacity>
+								<Text className="text-3xl text-red-500">Report</Text>
+							</TouchableOpacity>
 							{user.connectionStatus == "connected" && (
 								<TouchableOpacity onPress={removeConnectionHandler}>
 									<Text className="text-3xl">Remove Connection</Text>

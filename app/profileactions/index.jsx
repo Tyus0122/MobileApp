@@ -71,7 +71,7 @@ export default function Profile() {
 							</Text>
 						</View>
 					</TouchableOpacity>
-					<TouchableOpacity
+					{/* <TouchableOpacity
 						onPress={onboardHandler}
 						className="w-[40%] border border-gray-300 rounded-lg p-4 mb-5 flex-row items-center justify-center"
 					>
@@ -81,7 +81,7 @@ export default function Profile() {
 								onboard
 							</Text>
 						</View>
-					</TouchableOpacity>
+					</TouchableOpacity> */}
 				</View>
 			</ScrollView>
 		</SafeAreaView>

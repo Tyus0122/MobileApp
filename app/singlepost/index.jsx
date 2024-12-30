@@ -221,7 +221,6 @@ export default function singlePost() {
 					? null
 					: commentState.parent_comment_id,
 		};
-		console.log(body);
 		const response = await axios.post(
 			backend_url + "v1/user/commentPost",
 			body,
@@ -454,7 +453,19 @@ export default function singlePost() {
 						<FlatList
 							data={posts}
 							keyExtractor={(item, index) => index.toString()}
-							ListHeaderComponent={<NavBarComponent />}
+							ListHeaderComponent={() => (
+								<Pressable
+									onPress={() => router.back()}
+									className="flex-row p-5 items-center gap-3"
+								>
+									<Ionicons
+										name={"arrow-back-outline"}
+										size={28}
+										color="gray"
+									/>
+									<Text className="text-2xl">Home</Text>
+								</Pressable>
+							)}
 							ListFooterComponent={() =>
 								isLastPage ? (
 									<Text style={{ textAlign: "center", padding: 30 }}>
