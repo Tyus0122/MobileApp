@@ -17,7 +17,14 @@ export function NavBarComponent() {
 							}
 						}}
 					>
-						<Text className='text-black text-2xl'>Friendzy</Text>
+						{/* <Text className='text-black text-2xl'>Friendzy</Text> */}
+						<Image
+						source={require("@/assets/tyuss/MLogo.png")}
+							style={{
+								height: 60,
+								width:140
+							}}
+						/>
 					</Pressable>
 				</View>
 				<View className="flex1 w-[140px]"></View>
