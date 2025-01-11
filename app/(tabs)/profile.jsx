@@ -207,7 +207,7 @@ export default function Profile() {
 																bio: user.bio,
 																city: user.city,
 																university: user.university,
-																pic: user.pic.url,
+																pic: user.pic?.url,
 																accomodation: user.accomodation,
 															},
 														});

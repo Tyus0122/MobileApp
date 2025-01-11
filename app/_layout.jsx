@@ -149,6 +149,8 @@ export default function RootLayout() {
 					name="searchMessages/index"
 					options={{ headerShown: false }}
 				/>
+				<Stack.Screen name="privacy/index" options={{ headerShown: false }} />
+				<Stack.Screen name="terms/index" options={{ headerShown: false }} />
 			</Stack>
 		</SocketContext.Provider>
 	);

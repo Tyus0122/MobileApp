@@ -130,7 +130,10 @@ export default function Saved() {
 						<RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
 					}
 					ListHeaderComponent={() => (
-						<Pressable className="flex-row p-5 items-center gap-3" onPress={() => router.back()}>
+						<Pressable
+							className="flex-row p-5 items-center gap-3"
+							onPress={() => router.back()}
+						>
 							<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 							<Text className="text-2xl">Saved</Text>
 						</Pressable>
@@ -138,9 +141,15 @@ export default function Saved() {
 					onEndReached={endHandler}
 					ListFooterComponent={() =>
 						isLastPage ? (
-							<Text className="text-center text-gray-500 py-4">
-								You have reached the end.
-							</Text>
+							posts.length>0 ? (
+								<Text className="text-center text-gray-500 py-4">
+									You have reached the end.
+								</Text>
+							) : (
+								<Text className="text-center text-gray-500 py-4">
+									You have no saved posts.
+								</Text>
+							)
 						) : (
 							<ActivityIndicator size="large" color="gray" className="py-4" />
 						)

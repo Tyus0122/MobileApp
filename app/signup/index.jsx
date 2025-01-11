@@ -6,7 +6,7 @@ import {
 	Pressable,
 	Modal,
 	ScrollView,
-	ActivityIndicator
+	ActivityIndicator,
 } from "react-native";
 import { React, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,11 +25,9 @@ export default function Index() {
 		dob: "",
 		phno: "",
 		phnocode: "+1",
-		password: "",
 		phnocode: "",
 	});
 	const [submit, setSubmit] = useState(false);
-	const [showPassword, setShowPassword] = useState(true);
 	const [modalopen, setmodalopen] = useState(false);
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
@@ -41,16 +39,9 @@ export default function Index() {
 
 		return `${day}-${month}-${year}`;
 	}
-	const togglePasswordVisibility = () => {
-		setShowPassword(!showPassword);
-	};
 	function isValidEmail(email) {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
-	}
-	function isValidPassword(password) {
-		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-		return passwordRegex.test(password);
 	}
 	function validation() {
 		if (formData.fullname.length == 0) {
@@ -78,11 +69,6 @@ export default function Index() {
 			setErrorVlaue("Date of birth is required");
 			return;
 		}
-		if (formData.password.length == 0) {
-			setError(true);
-			setErrorVlaue("Password is required");
-			return;
-		}
 		// if (formData.phno.length != 10) {
 		// 	setError(true);
 		// 	setErrorVlaue("Invalid phone number");
@@ -93,13 +79,6 @@ export default function Index() {
 			setErrorVlaue("Invalid email address");
 			return;
 		}
-		if (!isValidPassword(formData.password)) {
-			setError(true);
-			setErrorVlaue(
-				"Your password must be include at least 8 characaters,1 digit,1 upper and 1 lower"
-			);
-			return;
-		}
 		submitHandler();
 	}
 	function submitHandler() {
@@ -108,12 +87,19 @@ export default function Index() {
 			.post(backend_url + "v1/user/signup", formData)
 			.then((response) => {
 				setSubmit(false);
-				router.push("/login");
+				if (response.data.status && response.data.status != "ok") {
+					setError(true);
+					setErrorVlaue(response.data.errorMessage);
+				} else {
+					router.push("/login");
+				}
 			})
 			.catch((err) => {
 				console.log(err);
 				setSubmit(false);
-				router.push("/login");
+				setError(true);
+				setErrorVlaue("internal error occured please try again");
+				// router.push("/login");
 			});
 	}
 	return (
@@ -136,7 +122,7 @@ export default function Index() {
 							<Text className="text-lg text-gray-500">
 								Alread have an account?{" "}
 								<Link href={"/login"}>
-									<Text className="text-blue-500">Logins</Text>
+									<Text className="text-blue-500">Login</Text>
 								</Link>
 							</Text>
 							{error && (
@@ -247,32 +233,6 @@ export default function Index() {
 								}}
 							/>
 						)}
-						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Set Password</Text>
-							<View className="relative">
-								<TextInput
-									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
-									secureTextEntry={showPassword}
-									onChangeText={(data) => {
-										setFormData({
-											...formData,
-											password: data,
-										});
-										setError(false);
-									}}
-								/>
-								<Pressable
-									onPress={togglePasswordVisibility}
-									className="absolute right-2 top-2 mt-3"
-								>
-									<Ionicons
-										name={showPassword ? "eye-off" : "eye"}
-										size={24}
-										color="gray"
-									/>
-								</Pressable>
-							</View>
-						</View>
 						<View className="mt-[50px]">
 							<Pressable
 								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"

@@ -128,7 +128,7 @@ export default function blocked() {
 					keyExtractor={(item, index) => index.toString()}
 					ListEmptyComponent={
 						<Text className="text-center text-gray-500 mt-5">
-							No suggestions available.
+							No blocked users available.
 						</Text>
 					}
 					ListFooterComponent={

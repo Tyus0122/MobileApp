@@ -18,6 +18,29 @@ import ToastManager, { Toast } from "expo-react-native-toastify";
 import { SocketContext } from "@/app/_layout.jsx";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function LoginScreen() {
+	// const printAllAsyncStorage = async () => {
+	// 	try {
+	// 	  // Retrieve all keys
+	// 	  const keys = await AsyncStorage.getAllKeys();
+	  
+	// 	  // If keys exist, fetch all values
+	// 	  if (keys.length > 0) {
+	// 		const keyValuePairs = await AsyncStorage.multiGet(keys);
+	  
+	// 		// Log all key-value pairs
+	// 		console.log("AsyncStorage Contents:");
+	// 		keyValuePairs.forEach(([key, value]) => {
+	// 		  console.log(`${key}: ${value}`);
+	// 		});
+	// 	  } else {
+	// 		console.log("AsyncStorage is empty.");
+	// 	  }
+	// 	} catch (error) {
+	// 	  console.error("Error retrieving data from AsyncStorage:", error);
+	// 	}
+	//   };
+	  
+	//   printAllAsyncStorage();
 	const { socket, setSocket } = useContext(SocketContext);
 	const [isChecked, setIsChecked] = useState(false);
 	const [submit, setSubmit] = useState(false);
@@ -26,10 +49,11 @@ export default function LoginScreen() {
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
 		phnocode: "+91",
-		phno: "+919441995344",
+		phno: "+919492031971",
 	});
 	function validator() {
-		let phno = formData.phno.replace(formData.phnocode,"")
+		let phno = formData.phno.replace(formData.phnocode, "")
+		console.log(formData)
 		if (phno.length == 0) {
 			setError(true);
 			setErrorVlaue("Phone number is required");
@@ -57,10 +81,10 @@ export default function LoginScreen() {
 				})
 			})
 			.catch((err) => {
+				setSubmit(false);
 				if (err.status === 404) {
-					setSubmit(false);
 					setError(true);
-					setErrorVlaue("Email or password is incorrect");
+					setErrorVlaue("No record found with the given Phone number");
 				}
 				console.log(err.status);
 			});
@@ -114,7 +138,7 @@ export default function LoginScreen() {
 										});
 										setError(false);
 									}}
-									initialCountry={"us"}
+									initialCountry={"in"}
 								/>
 							</View>
 						</View>

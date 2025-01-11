@@ -18,10 +18,15 @@ export default function Profile() {
 
 	const options = [
 		{ label: "Saved", link: "/saved", icon: "bookmark-outline" },
+		// {
+		// 	label: "Password and Security",
+		// 	link: "/changePassword",
+		// 	icon: "lock-closed-outline",
+		// },
 		{
-			label: "Password and Security",
-			link: "/changePassword",
-			icon: "lock-closed-outline",
+			label: "Terms and Conditions",
+			link: "/terms",
+			icon: "shield-checkmark-outline",
 		},
 		{ label: "Settings", link: "/changePassword", icon: "settings-outline" },
 		{ label: "Help Center", link: "/help", icon: "help-circle-outline" },
@@ -31,7 +36,7 @@ export default function Profile() {
 	async function onboardHandler() {
 		await AsyncStorage.removeItem("BearerToken");
 		await AsyncStorage.removeItem("is_onboarded");
-		router.push("/main")
+		router.push("/main");
 	}
 	return (
 		<SafeAreaView className="bg-white flex-1">
