@@ -48,8 +48,8 @@ export default function LoginScreen() {
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
-		phnocode: "+91",
-		phno: "+919492031971",
+		phnocode: "+1",
+		phno: "",
 	});
 	function validator() {
 		let phno = formData.phno.replace(formData.phnocode, "")
@@ -138,7 +138,7 @@ export default function LoginScreen() {
 										});
 										setError(false);
 									}}
-									initialCountry={"in"}
+									initialCountry={"us"}
 								/>
 							</View>
 						</View>

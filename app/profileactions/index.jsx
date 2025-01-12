@@ -28,16 +28,11 @@ export default function Profile() {
 			link: "/terms",
 			icon: "shield-checkmark-outline",
 		},
-		{ label: "Settings", link: "/changePassword", icon: "settings-outline" },
+		// { label: "Settings", link: "/changePassword", icon: "settings-outline" },
 		{ label: "Help Center", link: "/help", icon: "help-circle-outline" },
 		{ label: "Blocked", link: "/blocked", icon: "ban-outline" },
 		{ label: "Privacy Center", link: "/privacy", icon: "shield-outline" },
 	];
-	async function onboardHandler() {
-		await AsyncStorage.removeItem("BearerToken");
-		await AsyncStorage.removeItem("is_onboarded");
-		router.push("/main");
-	}
 	return (
 		<SafeAreaView className="bg-white flex-1">
 			<ScrollView
@@ -50,7 +45,7 @@ export default function Profile() {
 						<Ionicons name={"close-outline"} size={28} color="gray" />
 					</Pressable>
 				</View>
-				<View className="p-[10%] flex-row flex-wrap justify-between ">
+				<View className="p-[10%] flex-row flex-wrap gap-12 justify-between ">
 					{options.map((value, key) => (
 						<Pressable
 							className="w-[40%] border border-gray-300 rounded-lg p-4 mb-5 flex-row items-center justify-center"

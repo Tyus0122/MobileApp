@@ -3,7 +3,6 @@ import { View, Text, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { RouterStore } from "expo-router/build/global-state/router-store";
 
 const imagePlaceholder = require("@/assets/tyuss/onboarding2.png");
 
