@@ -108,8 +108,8 @@ export function Preview({
 				}
 			);
 			setSubmitLoading(false);
-			setImage("")
-			router.push('/home')
+			setImage("");
+			router.push("/home");
 		} catch (error) {
 			setSubmitLoading(false);
 			console.error(
@@ -147,7 +147,7 @@ export function Preview({
 								width: "70%",
 							}}
 							onChangeText={(data) => {
-								setError(false)
+								setError(false);
 								setFormData({
 									...formData,
 									caption: data,
@@ -166,7 +166,7 @@ export function Preview({
 							className="bg-white border border-gray-300 rounded-lg p-3 w-[70%]"
 							placeholder="Enter city"
 							onChangeText={(data) => {
-								setError(false)
+								setError(false);
 								setFormData({
 									...formData,
 									city: data,
@@ -217,9 +217,11 @@ export function Preview({
 						<DateTimePicker
 							value={new Date()}
 							mode={mode}
+							display="compact"
 							is24Hour={false}
-								onChange={(e, dates) => {
-								setError(false)
+							onChange={(e, dates) => {
+								setMode("");
+								setError(false);
 								if (mode === "date") {
 									setFormData({
 										...formData,
@@ -231,7 +233,6 @@ export function Preview({
 										time: formatTo12Hour(dates),
 									});
 								}
-								setMode("");
 							}}
 						/>
 					)}

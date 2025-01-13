@@ -224,12 +224,15 @@ export default function Index() {
 								mode={"date"}
 								is24Hour={true}
 								onChange={(e, dates) => {
+									console.log(e.type);
 									setmodalopen(!modalopen);
-									setFormData({
-										...formData,
-										dob: formatDate(dates),
-									});
 									setError(false);
+									if (e.type === "set") {
+										setFormData({
+											...formData,
+											dob: formatDate(dates),
+										});
+									}
 								}}
 							/>
 						)}

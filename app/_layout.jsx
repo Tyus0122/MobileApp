@@ -68,7 +68,7 @@ export default function RootLayout() {
 				<Stack.Screen name="login/index" options={{ headerShown: false }} />
 				<Stack.Screen name="signup/index" options={{ headerShown: false }} />
 				<Stack.Screen name="dashboard/index" options={{ headerShown: false }} />
-				<Stack.Screen
+				{/* <Stack.Screen
 					name="forgotphno/index"
 					options={{ headerShown: false }}
 				/>
@@ -77,7 +77,7 @@ export default function RootLayout() {
 					name="resetpassword/index"
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen name="temp/index" options={{ headerShown: false }} />
+				<Stack.Screen name="temp/index" options={{ headerShown: false }} /> */}
 				<Stack.Screen
 					name="profileactions/index"
 					options={{ headerShown: false }}
