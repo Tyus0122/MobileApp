@@ -48,12 +48,11 @@ export default function LoginScreen() {
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
 	const [formData, setFormData] = useState({
-		phnocode: "+91",
-		phno: "+919492031971",
+		phnocode: "+1",
+		phno: "",
 	});
 	function validator() {
 		let phno = formData.phno.replace(formData.phnocode, "")
-		console.log(formData)
 		if (phno.length == 0) {
 			setError(true);
 			setErrorVlaue("Phone number is required");
