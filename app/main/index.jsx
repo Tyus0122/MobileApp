@@ -28,7 +28,9 @@ export default function Main() {
 				}
 			})
 			.catch(async (err) => {
-				console.log('error')
+				if (err.status == 403) {
+					AsyncStorage.removeItem("BearerToken");
+				}
 				if (is_onboarded === "yes") {
 					setIsLoggedin("false");
 				} else setIsLoggedin("no");

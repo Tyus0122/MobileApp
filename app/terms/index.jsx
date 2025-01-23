@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
 	View,
 	Text,
@@ -15,6 +16,8 @@ const pp2 = require("@/assets/tyuss/pp2.png");
 const pp3 = require("@/assets/tyuss/pp3.png");
 const pp4 = require("@/assets/tyuss/pp4.png");
 export default function Profile() {
+	const [isSelected, setIsSelected] = useState(false);
+	const [showError, setShowError] = useState(false);
 	return (
 		<SafeAreaView>
 			<ScrollView
@@ -27,7 +30,6 @@ export default function Profile() {
 						className="flex-row items-center gap-3"
 					>
 						<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-						<Text className="text-3xl font-semibold">Profile</Text>
 					</Pressable>
 				</View>
 				<View className="m-5">
@@ -96,6 +98,46 @@ export default function Profile() {
 							Contact Email].
 						</Text>
 					</View>
+					<Pressable
+						className="flex-row items-center gap-3"
+						onPress={() => setIsSelected(!isSelected)}
+					>
+						<Ionicons
+							name={isSelected ? "checkbox" : "square-outline"} // Display check/uncheck icon based on selection state
+							size={24}
+							color={isSelected ? "green" : "gray"}
+						/>
+						<Text className="text-xl ">agree to terms and conditions</Text>
+					</Pressable>
+					{showError && (
+						<Text className="text-xl text-red-500 mt-2">
+							Please agree to terms and conditions
+						</Text>
+					)}
+					<Pressable
+						style={{
+							backgroundColor: "#000435",
+							borderRadius: 30,
+							marginTop: 20,
+							paddingVertical: 15,
+							paddingHorizontal: 20,
+							flexDirection: "row",
+							alignItems: "center",
+						}}
+						className="border border-red-500 items-center justify-center flex"
+						onPress={async () => {
+							if (!isSelected) {
+								setShowError(true);
+								return;
+							}
+							setShowError(false);
+
+							await AsyncStorage.setItem("is_onboarded", "yes");
+							router.push("/login");
+						}}
+					>
+						<Text className="text-white text-2xl font-semibold">Login</Text>
+					</Pressable>
 				</View>
 			</ScrollView>
 		</SafeAreaView>

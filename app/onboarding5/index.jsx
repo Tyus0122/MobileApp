@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Link } from "expo-router";
@@ -81,7 +81,7 @@ export default function Onboarding2() {
 						}}
 					/>
 				</View>
-				<Pressable
+				{/* <Pressable
 					className="rounded-full flex-row gap-4 items-center justify-center"
 					style={{
 						backgroundColor: "#000435",
@@ -106,7 +106,27 @@ export default function Onboarding2() {
 					>
 						<Text className="text-2xl text-blue-500">Login</Text>
 					</Pressable>
-				</View>
+				</View> */}
+				<Pressable
+					style={{
+						backgroundColor: "#000435",
+						borderRadius: 30,
+						marginTop: 50,
+						paddingVertical: 15,
+						paddingHorizontal: 20,
+						flexDirection: "row",
+						alignItems: "center",
+					}}
+					onPress={() => {
+						router.push("/terms");
+					}}
+				>
+					<Ionicons
+						name={"chevron-forward-outline"}
+						size={28}
+						color={"white"}
+					/>
+				</Pressable>
 			</View>
 		</SafeAreaView>
 	);
