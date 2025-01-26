@@ -81,6 +81,10 @@ export default function RootLayout() {
 				<Stack.Screen
 					name="profileactions/index"
 					options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+					name="Conditions/index"
+					options={{ headerShown: false }}
 				/>
 				<Stack.Screen
 					name="singlepost/index"

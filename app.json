@@ -18,7 +18,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/tyuss/loginLogo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.pjamalapurapu.Friendzy"
     },
     "web": {
       "bundler": "metro",
@@ -30,6 +31,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "cde19659-6f3f-44ca-8bcb-034b68fe3234"
+      }
     }
   }
 }

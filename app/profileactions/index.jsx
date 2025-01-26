@@ -25,7 +25,7 @@ export default function Profile() {
 		// },
 		{
 			label: "Terms and Conditions",
-			link: "/terms",
+			link: "/Conditions",
 			icon: "shield-checkmark-outline",
 		},
 		// { label: "Settings", link: "/changePassword", icon: "settings-outline" },
