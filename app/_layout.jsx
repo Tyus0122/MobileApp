@@ -13,8 +13,13 @@ export default function RootLayout() {
 	const [socket, setSocket] = useState(null);
 	async function connectSocket() {
 		console.log("Attempting to connect to socket...", socket_url);
-		const newSocket = io(socket_url);
-
+  
+		  // Initialize the socket connection with the custom agent
+		  const newSocket = io(socket_url, {
+			transports: ['websocket'], // Specify transport type as WebSocket
+			secure: true,               // Ensure that the connection is secure (use HTTPS)
+			rejectUnauthorized:false         // Use the custom agent to bypass SSL verification
+		  });
 		newSocket.on("connect", () => {
 			console.log("Socket connected successfully:", newSocket.id);
 			setSocket(newSocket);
@@ -24,7 +29,7 @@ export default function RootLayout() {
 		});
 
 		newSocket.on("connect_error", (err) => {
-			console.error("Socket connection error:", err.message);
+			console.error("Socket connection error:", JSON.stringify(err,null,2));
 		});
 
 		newSocket.on("disconnect", () => {
