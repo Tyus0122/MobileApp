@@ -8,7 +8,7 @@ const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export function UserMessageComponent({ user }) {
 	return (
 		<View>
-			<View className="pl-5 pr-5 pt-2 pb-2 m-1 border border-gray-200 rounded-xl flex-row items-center justify-between">
+			<View className="pl-5 pr-5 pt-2 pb-2 m-1 w-[80%]  border border-gray-200 rounded-xl flex-row items-center justify-between">
 				<View className="flex-row items-center gap-8">
 					<View>
 						<Image

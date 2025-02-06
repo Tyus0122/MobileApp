@@ -38,7 +38,7 @@ export default function editProfile() {
 		city: params.city,
 		university: params.university,
 		accomodation: params.accomodation == "true" ? true : false,
-		pic: params.pic,
+		pic: params.pic ?? "",
 		files: [
 			{
 				fileName: "tmp_file",
@@ -98,11 +98,14 @@ export default function editProfile() {
 			data.append("university", formData.university);
 			data.append("accomodation", formData.accomodation);
 			data.append("changePic", formData.changePic);
-			data.append(`file`, {
-				name: formData.files[0].fileName,
-				type: formData.files[0].mimeType,
-				uri: formData.files[0].uri,
-			});
+			console.log(formData.files);
+			if (formData.uri !== undefined) {
+				data.append(`file`, {
+					name: formData.files[0].fileName,
+					type: formData.files[0].mimeType,
+					uri: formData.files[0].uri,
+				});
+			}
 			const response = await axios.post(
 				backend_url + "v1/user/editProfilePost",
 				data,
@@ -118,7 +121,7 @@ export default function editProfile() {
 		} catch (error) {
 			setSubmitLoading(false);
 			console.error(
-				"Error creating post:",
+				"Error editing profile:",
 				error.response ? error.response.data : error.message
 			);
 			throw error;
@@ -235,7 +238,9 @@ export default function editProfile() {
 								<Text className="text-xl">Accomodation</Text>
 								<Pressable
 									className={`h-[30px] w-[60px]  mr-5 rounded-full border ${
-										formData.accomodation ? "items-end bg-green-500" : "bg-gray-200"
+										formData.accomodation
+											? "items-end bg-green-500"
+											: "bg-gray-200"
 									}`}
 									onPress={() => {
 										setFormData({

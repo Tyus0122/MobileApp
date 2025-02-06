@@ -138,13 +138,13 @@ export function Preview({
 					</View>
 				)}
 				<View>
-					<View className="flex-row items-center justify-between gap-5 p-5">
+					<View className="flex-row items-center justify-start gap-5 p-5">
 						<Text className="text-xl font-semibold">Add a caption</Text>
 						<TextInput
 							className="bg-white border border-gray-300 rounded-lg p-3"
 							style={{
 								height: 100,
-								width: "70%",
+								width: "60%",
 							}}
 							onChangeText={(data) => {
 								setError(false);
@@ -157,13 +157,13 @@ export function Preview({
 							placeholder="Add a caption for the post..."
 						/>
 					</View>
-					<View className="flex-row items-center justify-between gap-5 p-5">
+					<View className="flex-row items-center justify-start gap-5 p-5">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"location-outline"} size={28} color="gray" />
 							<Text className="text-xl font-semibold">Add City</Text>
 						</View>
 						<TextInput
-							className="bg-white border border-gray-300 rounded-lg p-3 w-[70%]"
+							className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
 							placeholder="Enter city"
 							onChangeText={(data) => {
 								setError(false);

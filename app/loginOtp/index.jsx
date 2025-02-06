@@ -99,10 +99,10 @@ export default function ForgotOtp() {
 									Enter the OTP code we just sent{"\n"}
 									you on your registered Email/Phone number
 								</Text>
-								<View className="p-2 mt-[60px] flex-row items-center gap-2">
+								<View className="mt-[60px] flex-row items-center gap-2">
 									{otp.map((digit, index) => (
 										<TextInput
-											className={`bg-white mt-2 h-[50px] w-[50px] rounded-lg p-2 text-2xl ${
+											className={`bg-white mt-2 h-[40px] w-[40px] rounded-lg text-2xl ${
 												error ? "border border-red-500" : ""
 											}`}
 											key={index}

@@ -547,10 +547,12 @@ export default function muPosts() {
 										<Text style={{ textAlign: "center", padding: 30 }}>
 											You have reached the end of Page
 										</Text>
-									) : (
+									) : commentState.allcomments ? (
 										<View className="flex items-center justify-center">
 											<ActivityIndicator size="large" color="gray" />
 										</View>
+									) : (
+										<View></View>
 									)
 								}
 								ListEmptyComponent={
@@ -558,7 +560,7 @@ export default function muPosts() {
 										<View></View>
 									) : (
 										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Data: Please change filters
+											No Comments to show
 										</Text>
 									)
 								}

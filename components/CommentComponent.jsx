@@ -21,6 +21,7 @@ import { backend_url, debounce_time } from "@/constants/constants";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { debounce } from "lodash";
+const imagePlaceholder = require("@/assets/tyuss/shadow1.png");
 export function CommentComponent({
 	item,
 	index,
@@ -97,7 +98,7 @@ export function CommentComponent({
 			<View className="flex-row justify-between pr-5 pl-5 border border-gray-300 rounded-lg ">
 				<View className="flex-row gap-5 mt-2">
 					<Image
-						source={item ? { uri: item.pic.url } : imagePlaceholder}
+						source={item.pic ? { uri: item.pic.url } : imagePlaceholder}
 						class
 						style={{
 							width: 50,

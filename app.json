@@ -12,7 +12,8 @@
       "backgroundColor": "#000000CC"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pjamalapurapu.Friendzy"
     },
     "android": {
       "adaptiveIcon": {

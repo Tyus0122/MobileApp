@@ -532,7 +532,7 @@ export default function Home() {
 										<View></View>
 									) : (
 										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Data To Display
+											No Comments to show
 										</Text>
 									)
 								}

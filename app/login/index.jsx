@@ -100,8 +100,8 @@ export default function LoginScreen() {
 						<Image
 							source={require("@/assets/tyuss/loginLogo.png")}
 							style={{
-								width: 50,
-								height: 50,
+								width: 100,
+								height: 100,
 							}}
 						/>
 					</View>
@@ -111,7 +111,7 @@ export default function LoginScreen() {
 						</Text>
 						<Text className="text-5xl font-extrabold mb-2">Account</Text>
 						<Text className="mb-2 text-lg text-gray-500">
-							Enter your email and password to log in
+							Enter your mobile number to log in
 						</Text>
 					</View>
 					{error && (
