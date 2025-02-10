@@ -14,7 +14,7 @@ import React from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { backend_url } from "@/constants/constants";
+import { backend_url, validatePassword } from "@/constants/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 export default function Resetpassword() {
@@ -25,6 +25,15 @@ export default function Resetpassword() {
 	const [password3, setPassword3] = useState("");
 	const [error, setError] = useState("");
 	async function submitHandler() {
+		if (password2 != password3) {
+			setError("Passwords do not match");
+			return;
+		}
+		let { valid, message } = validatePassword(password2);
+		if (!valid) {
+			setError(message);
+            return;
+		}
 		setbuttonloading(true);
 		const token = await AsyncStorage.getItem("BearerToken");
 		axios

@@ -51,14 +51,14 @@ export default function ForgotOtp() {
 		setbuttonloading(true);
 		setError(false);
 		axios
-			.post(backend_url + "v1/user/loginOtpSubmit", {
+			.post(backend_url + "v1/user/verifyOtp", {
 				phno: params.phno,
 				otp: otp.join(""),
 			})
 			.then((response) => {
 				setbuttonloading(false);
-				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
-				socket.emit("registerTheToken", { token: response.data.BearerToken });
+				// AsyncStorage.setItem("BearerToken", response.data.BearerToken);
+				// socket.emit("registerTheToken", { token: response.data.BearerToken });
 				router.push("/main");
 			})
 			.catch((err) => {
@@ -87,7 +87,6 @@ export default function ForgotOtp() {
 							<Pressable onPress={() => router.back()}>
 								<Ionicons name={"arrow-back-outline"} size={24} color="gray" />
 							</Pressable>
-							<Text className="font-semibold text-2xl">Login</Text>
 						</View>
 						<View className="m-5">
 							<Text className="font-semibold text-4xl">Enter OTP</Text>

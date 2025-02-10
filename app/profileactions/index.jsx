@@ -18,11 +18,11 @@ export default function Profile() {
 
 	const options = [
 		{ label: "Saved", link: "/saved", icon: "bookmark-outline" },
-		// {
-		// 	label: "Password and Security",
-		// 	link: "/changePassword",
-		// 	icon: "lock-closed-outline",
-		// },
+		{
+			label: "Password and Security",
+			link: "/changePassword",
+			icon: "lock-closed-outline",
+		},
 		{
 			label: "Terms and Conditions",
 			link: "/Conditions",
@@ -62,11 +62,11 @@ export default function Profile() {
 					))}
 					<TouchableOpacity
 						onPress={logoutHandler}
-						className="w-[40%] border border-gray-300 rounded-lg p-4 mb-5 flex-row items-center justify-center"
+						className="w-[40%] border border-red-300 rounded-lg p-4 mb-5 flex-row items-center justify-center"
 					>
 						<View className="items-center justify-center">
-							<Ionicons name={"log-out-outline"} size={50} color="gray" />
-							<Text className="text-lg font-semibold text-gray-600">
+							<Ionicons name={"log-out-outline"} size={50} color="red" />
+							<Text className="text-lg font-semibold text-red-600">
 								Sign Out
 							</Text>
 						</View>

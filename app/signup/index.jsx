@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PhoneInput from "react-native-phone-input";
 import ToastManager, { Toast } from "expo-react-native-toastify";
-import { backend_url } from "@/constants/constants";
+import { backend_url, validatePassword } from "@/constants/constants";
 import axios from "axios";
 import { router, Link } from "expo-router";
 export default function Index() {
@@ -26,10 +26,13 @@ export default function Index() {
 		phno: "",
 		phnocode: "+1",
 		phnocode: "",
+		password: "",
+		confirmPassword: "",
 	});
 	const [submit, setSubmit] = useState(false);
 	const [modalopen, setmodalopen] = useState(false);
 	const [error, setError] = useState(false);
+	const [showPassword, setShowPassword] = useState(true);
 	const [errorValue, setErrorVlaue] = useState("");
 	const PhoneInputRef = useRef(null);
 	function formatDate(date) {
@@ -79,6 +82,17 @@ export default function Index() {
 			setErrorVlaue("Invalid email address");
 			return;
 		}
+		if (formData.password != formData.confirmPassword) {
+			setError(true);
+			setErrorVlaue("Passwords do not match");
+			return;
+		}
+		let { valid, message } = validatePassword(formData.password);
+		if (!valid) {
+			setError(true);
+			setErrorVlaue(message);
+			return;
+		}
 		submitHandler();
 	}
 	function submitHandler() {
@@ -91,7 +105,12 @@ export default function Index() {
 					setError(true);
 					setErrorVlaue(response.data.errorMessage);
 				} else {
-					router.push("/login");
+					router.push({
+						pathname: "loginOtp",
+						params: {
+							phno: formData.phno,
+						},
+					});
 				}
 			})
 			.catch((err) => {
@@ -103,13 +122,12 @@ export default function Index() {
 			});
 	}
 	return (
-		<SafeAreaView>
-			<ToastManager duration={3000} />
-			<ScrollView
-				keyboardShouldPersistTaps={"always"}
-				keyboardDismissMode="on-drag"
-			>
-				<View className="h-screen bg-blue-50">
+		<ScrollView
+			keyboardShouldPersistTaps={"always"}
+			keyboardDismissMode="on-drag"
+		>
+			<SafeAreaView>
+				<View className="h-full bg-blue-50">
 					<Pressable
 						className="mt-[30px] ml-[20px]"
 						onPress={() => router.back()}
@@ -200,6 +218,58 @@ export default function Index() {
 								}}
 							/>
 						</View>
+						<View className="mt-5 mb-5">
+							<Text className="text-xl text-gray-500">Password</Text>
+							<View className="relative">
+								<TextInput
+									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									secureTextEntry={showPassword}
+									onChangeText={(data) => {
+										setFormData({
+											...formData,
+											password: data,
+										});
+										setError(false);
+									}}
+								/>
+								<Pressable
+									onPress={() => setShowPassword(!showPassword)}
+									className="absolute right-2 top-2 mt-3"
+								>
+									<Ionicons
+										name={showPassword ? "eye-off" : "eye"}
+										size={24}
+										color="gray"
+									/>
+								</Pressable>
+							</View>
+						</View>
+						<View className="mt-5 mb-5">
+							<Text className="text-xl text-gray-500">Confirm Password</Text>
+							<View className="relative">
+								<TextInput
+									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									secureTextEntry={showPassword}
+									onChangeText={(data) => {
+										setFormData({
+											...formData,
+											confirmPassword: data,
+										});
+										setError(false);
+									}}
+								/>
+								<Pressable
+									onPress={() => setShowPassword(!showPassword)}
+									className="absolute right-2 top-2 mt-3"
+								>
+									<Ionicons
+										name={showPassword ? "eye-off" : "eye"}
+										size={24}
+										color="gray"
+									/>
+								</Pressable>
+							</View>
+						</View>
 						<View className="mt-5">
 							<Text className="text-xl text-gray-500">Birth of date</Text>
 							<View className="relative">
@@ -236,7 +306,7 @@ export default function Index() {
 								}}
 							/>
 						)}
-						<View className="mt-[50px]">
+						<View className="mt-[50px] mb-[50px]">
 							<Pressable
 								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
 								onPress={validation}
@@ -252,7 +322,7 @@ export default function Index() {
 						</View>
 					</View>
 				</View>
-			</ScrollView>
-		</SafeAreaView>
+			</SafeAreaView>
+		</ScrollView>
 	);
 }

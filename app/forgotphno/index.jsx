@@ -12,7 +12,7 @@ import {
 import { PostComponent } from "@/components/PostComponent";
 import { NavBarComponent } from "@/components/NavBarComponent";
 import { useState, useEffect } from "react";
-import React from "react";
+import React, { useRef } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,19 +23,23 @@ import PhoneInput from "react-native-phone-input";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ForgotPhno() {
-	const [number, setNumber] = useState(0);
+	const PhoneInputRef = useRef(null);
 	const [buttonloading, setbuttonloading] = useState(false);
 	const [error, setError] = useState(false);
 	const [errorValue, setErrorVlaue] = useState("");
+	const [formData, setFormData] = useState({
+		phno: "",
+		phnocode: "+1",
+	});
 	function submitHandler() {
 		setbuttonloading(true);
 		axios
-			.post(backend_url + "v1/user/getOtp", { phno: number })
+			.post(backend_url + "v1/user/getOtp", { phno: formData.phno })
 			.then((response) => {
 				setbuttonloading(false);
 				router.push({
 					pathname: "/forgototp",
-					params: { phno: number },
+					params: { phno: formData.phno },
 				});
 			})
 			.catch((err) => {
@@ -61,19 +65,29 @@ export default function ForgotPhno() {
 						<Text className="font-semibold text-2xl">Forgot Password</Text>
 					</View>
 					<View className="m-5">
-						<Text className="font-semibold text-4xl">Enter email/phone No</Text>
+						<Text className="font-semibold text-4xl">Enter phone No</Text>
 						<Text className="text-xl mt-5 text-gray-500">
 							Enter your registered email/phone number
 						</Text>
 					</View>
 					<View className="flex-col justify-between h-[600px] m-5">
 						<View>
-							<Text className="text-gray-500">Phone number/email</Text>
-							<View className="p-2 mt-4 bg-white h-[50px] rounded-lg flex-row items-center">
+							<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+								<Ionicons name={"chevron-down-outline"} size={8} color="gray" />
 								<PhoneInput
+									ref={PhoneInputRef}
+									onSelectCountry={(data) => {
+										setFormData({
+											...formData,
+											phnocode: "+" + PhoneInputRef.current.getCountryCode(),
+										});
+									}}
 									onChangePhoneNumber={(data) => {
-                                        setNumber(data);
-                                        setError(false);
+										setFormData({
+											...formData,
+											phno: data,
+										});
+										setError(false);
 									}}
 									initialCountry={"us"}
 								/>

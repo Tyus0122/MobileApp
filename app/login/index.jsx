@@ -22,11 +22,11 @@ export default function LoginScreen() {
 	// 	try {
 	// 	  // Retrieve all keys
 	// 	  const keys = await AsyncStorage.getAllKeys();
-	  
+
 	// 	  // If keys exist, fetch all values
 	// 	  if (keys.length > 0) {
 	// 		const keyValuePairs = await AsyncStorage.multiGet(keys);
-	  
+
 	// 		// Log all key-value pairs
 	// 		console.log("AsyncStorage Contents:");
 	// 		keyValuePairs.forEach(([key, value]) => {
@@ -39,9 +39,10 @@ export default function LoginScreen() {
 	// 	  console.error("Error retrieving data from AsyncStorage:", error);
 	// 	}
 	//   };
-	  
+
 	//   printAllAsyncStorage();
 	const { socket, setSocket } = useContext(SocketContext);
+	const [showPassword, setShowPassword] = useState(true);
 	const [isChecked, setIsChecked] = useState(false);
 	const [submit, setSubmit] = useState(false);
 	const PhoneInputRef = useRef(null);
@@ -50,9 +51,10 @@ export default function LoginScreen() {
 	const [formData, setFormData] = useState({
 		phnocode: "+1",
 		phno: "",
+		password: "",
 	});
 	function validator() {
-		let phno = formData.phno.replace(formData.phnocode, "")
+		let phno = formData.phno.replace(formData.phnocode, "");
 		if (phno.length == 0) {
 			setError(true);
 			setErrorVlaue("Phone number is required");
@@ -67,17 +69,14 @@ export default function LoginScreen() {
 	}
 	function submitHandler() {
 		setSubmit(true);
-		setError(false)
+		setError(false);
 		axios
-			.post(backend_url + "v1/user/loginSubmit", formData)
+			.post(backend_url + "v1/user/loginOtpSubmit", formData)
 			.then((response) => {
 				setSubmit(false);
-				router.push({
-					pathname: "loginOtp",
-					params: {
-						phno: formData.phno,
-					}
-				})
+				AsyncStorage.setItem("BearerToken", response.data.BearerToken);
+				socket.emit("registerTheToken", { token: response.data.BearerToken });
+				router.push("/main");
 			})
 			.catch((err) => {
 				setSubmit(false);
@@ -142,6 +141,32 @@ export default function LoginScreen() {
 							</View>
 						</View>
 					</View>
+					<View className="mt-5 mb-5">
+						<Text className="text-xl text-gray-500">Password</Text>
+						<View className="relative">
+							<TextInput
+								className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+								secureTextEntry={showPassword}
+								onChangeText={(data) => {
+									setFormData({
+										...formData,
+										password: data,
+									});
+									setError(false);
+								}}
+							/>
+							<Pressable
+								onPress={() => setShowPassword(!showPassword)}
+								className="absolute right-2 top-2 mt-3"
+							>
+								<Ionicons
+									name={showPassword ? "eye-off" : "eye"}
+									size={24}
+									color="gray"
+								/>
+							</Pressable>
+						</View>
+					</View>
 					<View className="mt-5 flex-row items-center justify-between">
 						<View className="flex-row items-center gap-2">
 							<Pressable onPress={() => setIsChecked(!isChecked)}>
@@ -153,6 +178,14 @@ export default function LoginScreen() {
 							</Pressable>
 							<Text className="text-xl text-gray-500">Remember me</Text>
 						</View>
+						<Pressable
+							className="flex-row items-center gap-2"
+							onPress={() => {
+								router.push("/forgotphno");
+							}}
+						>
+							<Text className="text-xl text-blue-500">Forgot Password</Text>
+						</Pressable>
 					</View>
 					<View className="mt-5">
 						<Pressable
