@@ -84,6 +84,10 @@ export default function LoginScreen() {
 					setError(true);
 					setErrorVlaue("No record found with the given Phone number");
 				}
+				if (err.status === 420) {
+					setError(true);
+                    setErrorVlaue("phone number or password is incorrect");
+				}
 				console.log(err.status);
 			});
 	}
@@ -99,8 +103,8 @@ export default function LoginScreen() {
 						<Image
 							source={require("@/assets/tyuss/loginLogo.png")}
 							style={{
-								width: 100,
-								height: 100,
+								width: 80,
+								height: 80,
 							}}
 						/>
 					</View>
