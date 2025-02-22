@@ -137,7 +137,7 @@ export default function Index() {
 					<View className=" pl-[15%] pr-[15%]">
 						<View className="items-center mt-[40px] mb-5">
 							<Text className="text-5xl font-extrabold mb-3">Sign Up</Text>
-							<Text className="text-lg text-gray-500">
+							<Text className="text-base text-gray-500">
 								Alread have an account?{" "}
 								<Link href={"/login"}>
 									<Text className="text-blue-500">Login</Text>
@@ -145,7 +145,7 @@ export default function Index() {
 							</Text>
 							{error && (
 								<View className="mt-4">
-									<Text className="text-red-500 text-xl font-normal">
+									<Text className="text-red-500 text-base font-normal">
 										{errorValue}
 									</Text>
 								</View>
@@ -153,9 +153,9 @@ export default function Index() {
 						</View>
 
 						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Fullname</Text>
+							<Text className="text-base text-gray-500">Fullname</Text>
 							<TextInput
-								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								className="bg-white mt-2 h-[40px] rounded-lg p-2 text-base"
 								onChangeText={(data) => {
 									setFormData({
 										...formData,
@@ -166,9 +166,9 @@ export default function Index() {
 							/>
 						</View>
 						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Username</Text>
+							<Text className="text-base text-gray-500">Username</Text>
 							<TextInput
-								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								className="bg-white mt-2 h-[40px] rounded-lg p-2 text-base"
 								onChangeText={(data) => {
 									setFormData({
 										...formData,
@@ -180,9 +180,9 @@ export default function Index() {
 						</View>
 
 						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Phone</Text>
+							<Text className="text-base text-gray-500">Phone</Text>
 							<View className="flex-row items-center gap-2">
-								<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+								<View className="p-2 bg-white h-[40px] rounded-lg flex-row items-center mr-2">
 									<Ionicons
 										name={"chevron-down-outline"}
 										size={8}
@@ -209,9 +209,9 @@ export default function Index() {
 							</View>
 						</View>
 						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Email</Text>
+							<Text className="text-base text-gray-500">Email</Text>
 							<TextInput
-								className="bg-white mt-2 h-[50px] rounded-lg p-2 text-2xl"
+								className="bg-white mt-2 h-[40px] rounded-lg p-2 text-base"
 								onChangeText={(data) => {
 									setFormData({ ...formData, email: data });
 									setError(false);
@@ -219,10 +219,10 @@ export default function Index() {
 							/>
 						</View>
 						<View className="mt-5 mb-5">
-							<Text className="text-xl text-gray-500">Password</Text>
+							<Text className="text-base text-gray-500">Password</Text>
 							<View className="relative">
 								<TextInput
-									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 									secureTextEntry={showPassword}
 									onChangeText={(data) => {
 										setFormData({
@@ -245,10 +245,10 @@ export default function Index() {
 							</View>
 						</View>
 						<View className="mt-5 mb-5">
-							<Text className="text-xl text-gray-500">Confirm Password</Text>
+							<Text className="text-base text-gray-500">Confirm Password</Text>
 							<View className="relative">
 								<TextInput
-									className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+									className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 									secureTextEntry={showPassword}
 									onChangeText={(data) => {
 										setFormData({
@@ -271,13 +271,13 @@ export default function Index() {
 							</View>
 						</View>
 						<View className="mt-5">
-							<Text className="text-xl text-gray-500">Birth of date</Text>
+							<Text className="text-base text-gray-500">Birth of date</Text>
 							<View className="relative">
 								<Pressable onPress={() => setmodalopen(!modalopen)}>
 									<TextInput
 										placeholder={formData.dob}
 										editable={false}
-										className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 									/>
 									<Ionicons
 										className="absolute right-2 top-2 mt-3"
@@ -308,13 +308,13 @@ export default function Index() {
 						)}
 						<View className="mt-[50px] mb-[50px]">
 							<Pressable
-								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
+								className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"
 								onPress={validation}
 							>
 								{submit ? (
 									<ActivityIndicator size={"large"} color={"white"} />
 								) : (
-									<Text className="text-white text-2xl font-semibold">
+									<Text className="text-white text-base font-semibold">
 										Sign up
 									</Text>
 								)}

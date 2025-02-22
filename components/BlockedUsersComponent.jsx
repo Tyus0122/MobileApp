@@ -83,8 +83,8 @@ export function BlockedUsersComponent({
 						/>
 					</View>
 					<View>
-						<Text className="text-2xl">{user.username}</Text>
-						<Text className="text-gray-500 text-xl">{user.city}</Text>
+						<Text className="text-base">{user.username}</Text>
+						<Text className="text-gray-500 text-base">{user.city}</Text>
 					</View>
 				</TouchableOpacity>
 				{connectionbuttonloading ? (
@@ -110,7 +110,7 @@ export function BlockedUsersComponent({
 							onPress={connectHandler}
 						>
 							<Text
-								className="text-xl"
+								className="text-base"
 								style={{
 									color: "#24A0ED",
 								}}

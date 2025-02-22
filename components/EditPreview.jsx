@@ -169,13 +169,13 @@ export function EditPreview({
 						className="flex-row p-5 items-center gap-3"
 					>
 						<Ionicons name={"close-outline"} size={28} color="gray" />
-						<Text className="text-2xl">New Post</Text>
+						<Text className="text-base">New Post</Text>
 					</Pressable>
 					<Pressable
 						className="bg-blue-500 flex items-center justify-center p-2 mr-5 rounded-xl"
 						onPress={uploadImage}
 					>
-						<Text className="text-white  text-xl">add Photo</Text>
+						<Text className="text-white  text-base">add Photo</Text>
 					</Pressable>
 				</View>
 				<EditPhotosComponent
@@ -185,14 +185,14 @@ export function EditPreview({
 				/>
 				{error && (
 					<View className="ml-5">
-						<Text className="text-red-500 text-xl fornt-semibold">
+						<Text className="text-red-500 text-base fornt-semibold">
 							{ErrorVlaue}
 						</Text>
 					</View>
 				)}
 				<View>
 					<View className="flex-row items-center justify-between gap-5 p-5">
-						<Text className="text-xl font-semibold">Add a caption</Text>
+						<Text className="text-base font-semibold">Add a caption</Text>
 						<TextInput
 							className="bg-white border border-gray-300 rounded-lg p-3"
 							style={{
@@ -214,7 +214,7 @@ export function EditPreview({
 					<View className="flex-row items-center justify-between gap-5 p-5">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"location-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Add City</Text>
+							<Text className="text-base font-semibold">Add City</Text>
 						</View>
 						<TextInput
 							className="bg-white border border-gray-300 rounded-lg p-3 w-[70%]"
@@ -238,7 +238,7 @@ export function EditPreview({
 					>
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"person-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Tag People</Text>
+							<Text className="text-base font-semibold">Tag People</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
 					</TouchableOpacity>
@@ -250,7 +250,7 @@ export function EditPreview({
 					>
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"calendar-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Event Date</Text>
+							<Text className="text-base font-semibold">Event Date</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
 					</TouchableOpacity>
@@ -262,7 +262,7 @@ export function EditPreview({
 					>
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"time-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Event End Time</Text>
+							<Text className="text-base font-semibold">Event End Time</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
 					</TouchableOpacity>
@@ -299,7 +299,7 @@ export function EditPreview({
 							{submitLoading ? (
 								<ActivityIndicator size={"large"} color={"white"} />
 							) : (
-								<Text className="text-2xl font-semibold text-white">Share</Text>
+								<Text className="text-base font-semibold text-white">Share</Text>
 							)}
 						</TouchableOpacity>
 					</View>

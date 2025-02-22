@@ -35,7 +35,7 @@ export default function Onboarding1() {
 								router.push("/onboarding2");
 							}}
 						>
-							<Text className="text-3xl text-white">Let's begin</Text>
+							<Text className="text-base text-white">Let's begin</Text>
 						</Pressable>
 					</View>
 				</View>

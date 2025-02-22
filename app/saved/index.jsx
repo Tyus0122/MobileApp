@@ -135,7 +135,7 @@ export default function Saved() {
 							onPress={() => router.back()}
 						>
 							<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-							<Text className="text-2xl">Saved</Text>
+							<Text className="text-base">Saved</Text>
 						</Pressable>
 					)}
 					onEndReached={endHandler}

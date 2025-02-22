@@ -165,7 +165,7 @@ export default function Chat() {
 		return (
 			<View>
 				<View className="flex items-center bg-gray-100 py-2">
-					<Text className="text-gray-600 text-lg">{item.date}</Text>
+					<Text className="text-gray-600 text-base">{item.date}</Text>
 				</View>
 				{item.messages.map((message, index) => {
 					if (message.type === "message") {
@@ -182,7 +182,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -223,7 +223,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -262,7 +262,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -368,7 +368,7 @@ export default function Chat() {
 												borderWidth: 1.5,
 											}}
 										/>
-										<Text className="text-3xl text-black-500">
+										<Text className="text-base text-black-500">
 											{otherUser.fullname}
 										</Text>
 									</View>

@@ -54,7 +54,7 @@ export default function Profile() {
 						>
 							<View className="gap-5 items-center justify-center">
 								<Ionicons name={value.icon} size={50} color="gray" />
-								<Text className="text-lg font-semibold text-gray-600">
+								<Text className="text-base font-semibold text-gray-600">
 									{value.label}
 								</Text>
 							</View>
@@ -66,7 +66,7 @@ export default function Profile() {
 					>
 						<View className="items-center justify-center">
 							<Ionicons name={"log-out-outline"} size={50} color="red" />
-							<Text className="text-lg font-semibold text-red-600">
+							<Text className="text-base font-semibold text-red-600">
 								Sign Out
 							</Text>
 						</View>
@@ -77,7 +77,7 @@ export default function Profile() {
 					>
 						<View className="items-center justify-center">
 							<Ionicons name={"log-out-outline"} size={50} color="gray" />
-							<Text className="text-lg font-semibold text-gray-600">
+							<Text className="text-base font-semibold text-gray-600">
 								onboard
 							</Text>
 						</View>

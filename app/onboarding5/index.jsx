@@ -32,7 +32,7 @@ export default function Onboarding2() {
 				/>
 				<Text className="font-bold text-5xl mt-5 text-center">Help</Text>
 				<Text
-					className="font-extrabold text-2xl mt-5 text-center"
+					className="font-extrabold text-base mt-5 text-center"
 					style={{
 						width: "80%",
 						color: "gray",
@@ -94,17 +94,17 @@ export default function Onboarding2() {
 						redirectSignup();
 					}}
 				>
-					<Text className="text-3xl text-white">Sign up</Text>
+					<Text className="text-base text-white">Sign up</Text>
 					<Ionicons name={"arrow-forward-outline"} size={28} color={"white"} />
 				</Pressable>
 				<View className="flex-row items-center justify-center mt-2">
-					<Text className="text-2xl">Already have an account?</Text>
+					<Text className="text-base">Already have an account?</Text>
 					<Pressable
 						onPress={() => {
 							redirectLogin();
 						}}
 					>
-						<Text className="text-2xl text-blue-500">Login</Text>
+						<Text className="text-base text-blue-500">Login</Text>
 					</Pressable>
 				</View> */}
 				<Pressable

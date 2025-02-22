@@ -112,7 +112,7 @@ export default function suggestions() {
 				onPress={() => router.back()}
 			>
 				<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-				<Text className="text-3xl">Suggestions</Text>
+				<Text className="text-base">Suggestions</Text>
 			</Pressable>
 
 			{/* Content */}

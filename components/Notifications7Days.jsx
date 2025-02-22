@@ -24,12 +24,12 @@ export function Notifications7Days({ item, index }) {
 					/>
 				</View>
 				<View className="flex-row items-center gap-3">
-					<Text className="text-xl">
+					<Text className="text-base">
 						{item.notification.length > 30
 							? item.notification.substring(0, 25) + "..."
 							: item.notification}
 					</Text>
-					<Text className="text-gray-500 text-xl">{item.time}</Text>
+					<Text className="text-gray-500 text-base">{item.time}</Text>
 				</View>
 			</View>
 			<View>

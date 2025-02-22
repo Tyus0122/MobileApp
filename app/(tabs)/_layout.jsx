@@ -49,7 +49,7 @@ export default function tabs() {
 					tabBarInactiveTintColor: "gray",
 					tabBarStyle: {
 						paddingBottom: 5,
-						height: 60,
+						height: 50,
 						display: isKeyboardVisible ? "none" : "block",
 					},
 				}}

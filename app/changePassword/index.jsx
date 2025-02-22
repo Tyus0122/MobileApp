@@ -75,23 +75,23 @@ export default function Resetpassword() {
 						<Pressable onPress={() => router.back()}>
 							<Ionicons name={"arrow-back-outline"} size={24} color="gray" />
 						</Pressable>
-						<Text className="font-semibold text-2xl">Change Password</Text>
+						<Text className="font-semibold text-base">Change Password</Text>
 					</View>
 					<View className="m-5">
 						<Text className="font-semibold text-4xl">New Password</Text>
-						<Text className="text-xl mt-5 text-gray-500">
+						<Text className="text-base mt-5 text-gray-500">
 							Create a new password. Ensure it differs from{"\n"}
 							previous ones for security
 						</Text>
 					</View>
-					{error && <Text className="text-red-500 ml-5 text-xl">{error}</Text>}
+					{error && <Text className="text-red-500 ml-5 text-base">{error}</Text>}
 					<View className="flex-col justify-between h-[600px] m-5">
 						<View>
 							<View className="mt-5 mb-5">
-								<Text className="text-xl text-gray-500">current Password</Text>
+								<Text className="text-base text-gray-500">current Password</Text>
 								<View className="relative">
 									<TextInput
-										className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 										secureTextEntry={showPassword}
 										onChangeText={(data) => {
 											setPassword1(data);
@@ -110,12 +110,12 @@ export default function Resetpassword() {
 								</View>
 							</View>
 							<View className="mt-5">
-								<Text className="text-xl text-gray-500">
+								<Text className="text-base text-gray-500">
 									Enter new Password
 								</Text>
 								<View className="relative">
 									<TextInput
-										className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 										secureTextEntry={showPassword}
 										onChangeText={(data) => {
 											setPassword2(data);
@@ -134,12 +134,12 @@ export default function Resetpassword() {
 								</View>
 							</View>
 							<View className="mt-5">
-								<Text className="text-xl text-gray-500">
+								<Text className="text-base text-gray-500">
 									Confirm new Password
 								</Text>
 								<View className="relative">
 									<TextInput
-										className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 										secureTextEntry={showPassword}
 										onChangeText={(data) => {
 											setPassword3(data);
@@ -160,14 +160,14 @@ export default function Resetpassword() {
 						</View>
 						<View>
 							<TouchableOpacity
-								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
+								className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"
 								onPress={submitHandler}
 								// disabled={buttonloading}
 							>
 								{buttonloading ? (
 									<ActivityIndicator size={"large"} color={"white"} />
 								) : (
-									<Text className="text-white text-2xl font-semibold">
+									<Text className="text-white text-base font-semibold">
 										change password
 									</Text>
 								)}

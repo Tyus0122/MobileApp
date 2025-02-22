@@ -192,7 +192,7 @@ export default function Chat() {
 		return (
 			<View>
 				<View className="flex items-center bg-gray-100 py-2">
-					<Text className="text-gray-600 text-lg">{item.date}</Text>
+					<Text className="text-gray-600 text-base">{item.date}</Text>
 				</View>
 				{item.messages.map((message, index) => {
 					if (message.type === "message") {
@@ -209,7 +209,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -250,7 +250,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -289,7 +289,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -408,8 +408,7 @@ export default function Chat() {
 			<SafeAreaView style={{ flex: 1 }}>
 				<KeyboardAvoidingView
 					style={{ flex: 1 }}
-					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+					behavior={Platform.OS === "ios" ? "position" : "height"}
 				>
 					<View style={{ flex: 1, backgroundColor: "white" }}>
 						{loading ? (
@@ -434,14 +433,14 @@ export default function Chat() {
 													: imagePlaceholder
 											}
 											style={{
-												width: 50,
-												height: 50,
+												width: 30,
+												height: 30,
 												borderRadius: 50,
 												borderColor: "black",
 												borderWidth: 1.5,
 											}}
 										/>
-										<Text className="text-3xl text-black-500">
+										<Text className="text-base text-black-500">
 											{otherUser.fullname}
 										</Text>
 									</View>
@@ -466,21 +465,21 @@ export default function Chat() {
 													: imagePlaceholder
 											}
 											style={{
-												width: 100,
-												height: 100,
+												width: 80,
+												height: 80,
 												borderRadius: 50,
 												borderColor: "black",
 												borderWidth: 3,
 											}}
 										/>
-										{/* <Text className="text-3xl text-black-500">
+										{/* <Text className="text-base text-black-500">
 										{otherUser.logged_in_user_id}
 									</Text> */}
-										<Text className="text-3xl text-black-500">
+										<Text className="text-base text-black-500">
 											{otherUser.fullname}
 										</Text>
-										{/* <Text className="text-3xl text-black-500">{socket.id}</Text> */}
-										<Text className="text-xl text-black-500">
+										{/* <Text className="text-base text-black-500">{socket.id}</Text> */}
+										<Text className="text-base text-black-500">
 											{otherUser.username}
 										</Text>
 										<TouchableOpacity
@@ -492,7 +491,7 @@ export default function Chat() {
 												});
 											}}
 										>
-											<Text className="text-2xl">View Profile</Text>
+											<Text className="text-base">View Profile</Text>
 										</TouchableOpacity>
 									</View>
 								)}
@@ -520,7 +519,7 @@ export default function Chat() {
 										<TextInput
 											style={{
 												backgroundColor: "white",
-												height: 50,
+												height: 40,
 												paddingHorizontal: 15,
 												fontSize: 18,
 												borderRadius: 25,
@@ -545,7 +544,7 @@ export default function Chat() {
 													sendHandler();
 												}
 											}}
-											style={{ width: 50, height: 50 }}
+											style={{ width: 40, height: 40 }}
 										>
 											<Ionicons name="send" size={28} color="black" />
 										</Pressable>
@@ -569,10 +568,10 @@ export default function Chat() {
 				>
 					<View className="flex-1 items-center justify-between mt-5 mb-5">
 						<TouchableOpacity onPress={blockHandler}>
-							<Text className="text-3xl text-red-500">block</Text>
+							<Text className="text-base text-red-500">block</Text>
 						</TouchableOpacity>
 						<TouchableOpacity onPress={reportUser}>
-							<Text className="text-3xl text-red-500">Report</Text>
+							<Text className="text-base text-red-500">Report</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => {
@@ -582,10 +581,10 @@ export default function Chat() {
 								});
 							}}
 						>
-							<Text className="text-3xl">View Profile</Text>
+							<Text className="text-base">View Profile</Text>
 						</TouchableOpacity>
 						<TouchableOpacity onPress={deleteConversationHandler}>
-							<Text className="text-3xl">Delete Conversation</Text>
+							<Text className="text-base">Delete Conversation</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => {
@@ -598,7 +597,7 @@ export default function Chat() {
 								});
 							}}
 						>
-							<Text className="text-3xl">Search</Text>
+							<Text className="text-base">Search</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							onPress={() => {
@@ -606,7 +605,7 @@ export default function Chat() {
 								handleSnapPress(-1);
 							}}
 						>
-							<Text className="text-3xl">cancel</Text>
+							<Text className="text-base">cancel</Text>
 						</TouchableOpacity>
 					</View>
 				</BottomSheet>

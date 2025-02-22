@@ -130,7 +130,7 @@ export default function Profile() {
 												color="gray"
 											/>
 										</Pressable>
-										<Text className="text-2xl">{user.username}</Text>
+										<Text className="text-base">{user.username}</Text>
 									</View>
 									<View className="items-end">
 										<Link href={"/profileactions"} className="mr-5">
@@ -145,8 +145,8 @@ export default function Profile() {
 												user.pic ? { uri: user.pic.url } : imagePlaceholder
 											}
 											style={{
-												width: 100,
-												height: 100,
+												width: 80,
+												height: 80,
 												borderRadius: 50,
 												borderColor: "black",
 												borderWidth: 1,
@@ -155,30 +155,30 @@ export default function Profile() {
 									</View>
 									<View className="w-[90%] bg-[#D9D9D97D] rounded-t-[50px] top-[60px] mb-[60px]">
 										<View className="flex items-center">
-											<Text className="mt-[70px] text-2xl font-semibold text-gray-500">
+											<Text className="mt-[50px] text-base font-semibold text-gray-500">
 												{user.fullname}
 											</Text>
-											<Text className="mt-1 text-xl text-gray-500">
+											<Text className="mt-1 text-base text-gray-500">
 												{user.bio}
 											</Text>
 											<View className="flex-row items-center gap-3">
 												<Text className="mt-5 text-4xl">{conn}</Text>
-												<Text className="mt-5 text-2xl">Connections</Text>
+												<Text className="mt-5 text-base">Connections</Text>
 											</View>
 										</View>
 										<View className="mt-5 items-center gap-3">
 											<View className="flex-row items-center justify-between w-[80%]">
 												<View className="gap-4">
-													<Text className="text-3xl font-semibold">City</Text>
-													<Text className="text-3xl font-semibold">
+													<Text className="text-base font-semibold">City</Text>
+													<Text className="text-base font-semibold">
 														Accomodation
 													</Text>
-													<Text className="text-3xl font-semibold">
+													<Text className="text-base font-semibold">
 														University
 													</Text>
 												</View>
 												<View className="gap-3">
-													<Text className="text-3xl text-gray-500 font-light">
+													<Text className="text-base text-gray-500 font-light">
 														{user.city}
 													</Text>
 													{user.accomodation ? (
@@ -190,7 +190,7 @@ export default function Profile() {
 															<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
 														</View>
 													)}
-													<Text className="text-3xl text-gray-500 font-light">
+													<Text className="text-base text-gray-500 font-light">
 														{user.university}
 													</Text>
 												</View>
@@ -213,7 +213,7 @@ export default function Profile() {
 														});
 													}}
 												>
-													<Text className="text-white text-xl font-semibold">
+													<Text className="text-white text-base font-semibold">
 														Edit
 													</Text>
 												</TouchableOpacity>
@@ -228,7 +228,7 @@ export default function Profile() {
 														});
 													}}
 												>
-													<Text className="text-white text-xl font-semibold ">
+													<Text className="text-white text-base font-semibold ">
 														Share
 													</Text>
 												</TouchableOpacity>

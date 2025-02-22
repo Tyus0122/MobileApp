@@ -95,7 +95,7 @@ export function PostComponent({
 							}}
 						/>
 						<View>
-							<Text className="text-xl font-medium">{post.posted_by}</Text>
+							<Text className="text-base font-medium">{post.posted_by}</Text>
 							<Text>{post.posted_by_city}</Text>
 						</View>
 					</Pressable>
@@ -183,16 +183,16 @@ export function PostComponent({
 				</Pressable>
 			</View>
 			<View className="pl-5">
-				<Text className="text-lg font-semibold">{likeCount} likes</Text>
+				<Text className="text-base font-semibold">{likeCount} likes</Text>
 				{!post.turn_off_comments && (
-					<Text className="text-lg text-gray-500">
+					<Text className="text-base text-gray-500">
 						view {post.commentscount} comments
 					</Text>
 				)}
-				<Text className="text-lg text-gray-500">{post.post_date}</Text>
+				<Text className="text-base text-gray-500">{post.post_date}</Text>
 				<View className="flex-row items-center justify-start">
-					<Text className="text-xl text-gray-500 font-semibold">place:</Text>
-					<Text className="text-lg text-gray-500">{post.post_place}</Text>
+					<Text className="text-base text-gray-500 font-semibold">place:</Text>
+					<Text className="text-base text-gray-500">{post.post_place}</Text>
 				</View>
 			</View>
 			<View className="bg-gray-200" style={{ height: 1 }}></View>

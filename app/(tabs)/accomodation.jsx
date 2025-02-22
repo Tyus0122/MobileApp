@@ -395,8 +395,8 @@ export default function Accomodation() {
 						}}
 					/>
 					<View>
-						<Text className="text-xl font-semibold">{item.username}</Text>
-						<Text className="text-lg text-gray-500">{item.city}</Text>
+						<Text className="text-base font-semibold">{item.username}</Text>
+						<Text className="text-base text-gray-500">{item.city}</Text>
 					</View>
 				</View>
 				<Ionicons
@@ -463,7 +463,7 @@ export default function Accomodation() {
 							<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 						</Pressable>
 						{connects ? (
-							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
+							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[40px] p-3">
 								<Ionicons
 									name="search-outline"
 									size={20}
@@ -486,7 +486,7 @@ export default function Accomodation() {
 								/>
 							</View>
 						) : (
-							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
+							<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[40px] p-3">
 								<Ionicons
 									name="search-outline"
 									size={20}
@@ -518,7 +518,7 @@ export default function Accomodation() {
 								<View className="p-3" key={item}>
 									<TouchableOpacity onPress={() => setConnects(index === 0)}>
 										<Text
-											className={`text-xl ${isActive ? "font-semibold" : ""}`}
+											className={`text-base ${isActive ? "font-semibold" : ""}`}
 										>
 											{item}
 										</Text>
@@ -582,7 +582,7 @@ export default function Accomodation() {
 									}}
 								>
 									<View className="flex-row items-center justify-center gap-2 border rounded-lg pl-3 pr-3 py-1 border-red-500">
-										<Text className="text-xl">All</Text>
+										<Text className="text-base">All</Text>
 									</View>
 								</Pressable> */}
 								<Pressable
@@ -604,7 +604,7 @@ export default function Accomodation() {
 											size={24}
 											color="gray"
 										/>
-										<Text className="text-xl text-gray-500">Available</Text>
+										<Text className="text-base text-gray-500">Available</Text>
 									</View>
 								</Pressable>
 								</View>
@@ -637,7 +637,7 @@ export default function Accomodation() {
 									onPress={() => setViewCalendar(!viewCalendar)}
 								>
 									<Ionicons name={"calendar-outline"} size={28} color="gray" />
-									<Text className="text-xl font-semi-bold">
+									<Text className="text-base font-semi-bold">
 										{datesearchevent ? `${datesearchevent}` : "Pick A Date"}
 									</Text>
 								</TouchableOpacity>
@@ -649,7 +649,7 @@ export default function Accomodation() {
 										debounceCallDateeventsSearch("", eventSearch);
 									}}
 								>
-									<Text className="text-black text-xl font-semibold">
+									<Text className="text-black text-base font-semibold">
 										Clear
 									</Text>
 								</TouchableOpacity>
@@ -773,7 +773,7 @@ export default function Accomodation() {
 									keyboardDismissMode="on-drag"
 									contentContainerStyle={{ padding: 10 }}
 								/>
-								<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[50px] border rounded-2xl">
+								<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[40px] border rounded-2xl">
 									<View className="flex-row items-center ml-2 w-[73%]">
 										<Image
 											source={
@@ -819,7 +819,7 @@ export default function Accomodation() {
 							>
 								<View className="flex-1 items-center justify-between mt-5 mb-5">
 									<TouchableOpacity onPress={removeconnectionHandler}>
-										<Text className="text-3xl">Remove Connection</Text>
+										<Text className="text-base">Remove Connection</Text>
 									</TouchableOpacity>
 									<TouchableOpacity
 										onPress={() => {
@@ -831,10 +831,10 @@ export default function Accomodation() {
 											});
 										}}
 									>
-										<Text className="text-3xl">Share this Profile</Text>
+										<Text className="text-base">Share this Profile</Text>
 									</TouchableOpacity>
 									<TouchableOpacity onPress={reportUser}>
-										<Text className="text-3xl text-red-500">Report</Text>
+										<Text className="text-base text-red-500">Report</Text>
 									</TouchableOpacity>
 								</View>
 							</BottomSheet>

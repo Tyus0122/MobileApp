@@ -33,7 +33,7 @@ export function ShareUserComponent({ user }) {
 						/>
 					</View>
 					<View>
-						<Text className="text-xl">{user.username}</Text>
+						<Text className="text-base">{user.username}</Text>
 						<Text className="text-gray-500">{user.city}</Text>
 					</View>
 				</View>

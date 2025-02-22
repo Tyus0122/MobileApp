@@ -113,7 +113,7 @@ export default function Chat() {
 		return (
 			<View>
 				<View className="flex items-center bg-gray-100 py-2">
-					<Text className="text-gray-600 text-lg">{item.date}</Text>
+					<Text className="text-gray-600 text-base">{item.date}</Text>
 				</View>
 				{item.messages.map((message, index) => {
 					const messageRef = React.createRef(index);
@@ -139,7 +139,7 @@ export default function Chat() {
 									} ${isHighlighted ? "bg-green-500" : ""} `}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -180,7 +180,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -219,7 +219,7 @@ export default function Chat() {
 									}`}
 								>
 									<Text
-										className={`text-lg ${
+										className={`text-base ${
 											message.isSender ? "text-white" : "text-black"
 										}`}
 									>
@@ -324,13 +324,13 @@ export default function Chat() {
 												borderWidth: 1.5,
 											}}
 										/>
-										<Text className="text-3xl text-black-500">
+										<Text className="text-base text-black-500">
 											{otherUser.fullname}
 										</Text>
 									</View>
 								</View>
 								<View>
-									<View className="flex-row items-center bg-[#ECE6F0] rounded-full h-[50px] p-3">
+									<View className="flex-row items-center bg-[#ECE6F0] rounded-full h-[40px] p-3">
 										<Ionicons
 											name="search-outline"
 											size={20}

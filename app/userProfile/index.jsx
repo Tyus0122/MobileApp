@@ -340,7 +340,7 @@ export default function userProfile() {
 													color="gray"
 												/>
 											</Pressable>
-											<Text className="text-2xl">{user.username}</Text>
+											<Text className="text-base">{user.username}</Text>
 										</View>
 										<Pressable
 											className="items-end"
@@ -359,8 +359,8 @@ export default function userProfile() {
 													user.pic ? { uri: user.pic.url } : imagePlaceholder
 												}
 												style={{
-													width: 100,
-													height: 100,
+													width: 80,
+													height: 80,
 													borderRadius: 50,
 													borderColor: "black",
 													borderWidth: 1,
@@ -369,30 +369,30 @@ export default function userProfile() {
 										</View>
 										<View className="top-[60px] w-[90%] bg-[#D9D9D97D] rounded-t-[50px]">
 											<View className="flex items-center">
-												<Text className="mt-[70px] text-2xl font-semibold text-gray-500">
+												<Text className="mt-[50px] text-base font-semibold text-gray-500">
 													{user.fullname}
 												</Text>
-												<Text className="mt-1 text-xl text-gray-500">
+												<Text className="mt-1 text-base text-gray-500">
 													{user.bio}
 												</Text>
 												<View className="flex-row items-center gap-3">
 													<Text className="mt-5 text-4xl">{conn}</Text>
-													<Text className="mt-5 text-2xl">Connections</Text>
+													<Text className="mt-5 text-base">Connections</Text>
 												</View>
 											</View>
 											<View className="mt-5 items-center gap-3">
 												<View className="flex-row items-center justify-between w-[80%]">
 													<View className="gap-4">
-														<Text className="text-3xl font-semibold">City</Text>
-														<Text className="text-3xl font-semibold">
+														<Text className="text-base font-semibold">City</Text>
+														<Text className="text-base font-semibold">
 															Accomodation
 														</Text>
-														<Text className="text-3xl font-semibold">
+														<Text className="text-base font-semibold">
 															University
 														</Text>
 													</View>
 													<View className="gap-3">
-														<Text className="text-3xl text-gray-500 font-light">
+														<Text className="text-base text-gray-500 font-light">
 															{user.city}
 														</Text>
 														{user.accomodation ? (
@@ -404,7 +404,7 @@ export default function userProfile() {
 																<View className="bg-white h-[30px] w-[35px] rounded-full"></View>
 															</View>
 														)}
-														<Text className="text-3xl text-gray-500 font-light">
+														<Text className="text-base text-gray-500 font-light">
 															{user.university}
 														</Text>
 													</View>
@@ -424,7 +424,7 @@ export default function userProfile() {
 															)}
 															onPress={connectHandler}
 														>
-															<Text className="text-white text-xl font-semibold ml-3 mr-3">
+															<Text className="text-white text-base font-semibold ml-3 mr-3">
 																{user.connectionStatus}
 															</Text>
 														</TouchableOpacity>
@@ -460,7 +460,7 @@ export default function userProfile() {
 														{buttonloading ? (
 															<ActivityIndicator size="small" color="white" />
 														) : (
-															<Text className="text-white text-xl font-semibold ml-3 mr-3">
+															<Text className="text-white text-base font-semibold ml-3 mr-3">
 																Message
 															</Text>
 														)}
@@ -518,14 +518,14 @@ export default function userProfile() {
 					>
 						<View className="flex-1 items-center justify-between mt-5 mb-5">
 							<TouchableOpacity onPress={blockHandler}>
-								<Text className="text-3xl text-red-500">Block</Text>
+								<Text className="text-base text-red-500">Block</Text>
 							</TouchableOpacity>
 							<TouchableOpacity onPress={reportUser}>
-								<Text className="text-3xl text-red-500">Report</Text>
+								<Text className="text-base text-red-500">Report</Text>
 							</TouchableOpacity>
 							{user.connectionStatus == "connected" && (
 								<TouchableOpacity onPress={removeConnectionHandler}>
-									<Text className="text-3xl">Remove Connection</Text>
+									<Text className="text-base">Remove Connection</Text>
 								</TouchableOpacity>
 							)}
 
@@ -539,9 +539,9 @@ export default function userProfile() {
 									});
 								}}
 							>
-								<Text className="text-3xl">Share this Profile</Text>
+								<Text className="text-base">Share this Profile</Text>
 							</TouchableOpacity>
-							<Text className="text-3xl">cancel</Text>
+							<Text className="text-base">cancel</Text>
 						</View>
 					</BottomSheet>
 				)}

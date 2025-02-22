@@ -90,18 +90,18 @@ export default function ForgotOtp() {
 						</View>
 						<View className="m-5">
 							<Text className="font-semibold text-4xl">Enter OTP</Text>
-							<Text className="text-xl mt-5 text-gray-500">Verification</Text>
+							<Text className="text-base mt-5 text-gray-500">Verification</Text>
 						</View>
 						<View className="flex-col justify-between flex-1 m-5">
 							<View>
-								<Text className="text-gray-500 text-xl">
+								<Text className="text-gray-500 text-base">
 									Enter the OTP code we just sent{"\n"}
 									you on your registered Email/Phone number
 								</Text>
 								<View className="mt-[60px] flex-row items-center gap-2">
 									{otp.map((digit, index) => (
 										<TextInput
-											className={`bg-white mt-2 h-[40px] w-[40px] rounded-lg text-2xl ${
+											className={`bg-white mt-2 h-[40px] w-[40px] rounded-lg text-base ${
 												error ? "border border-red-500" : ""
 											}`}
 											key={index}
@@ -127,13 +127,13 @@ export default function ForgotOtp() {
 							</View>
 							<View>
 								<TouchableOpacity
-									className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
+									className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"
 									onPress={submitHandler}
 								>
 									{buttonloading ? (
 										<ActivityIndicator size={"large"} color={"white"} />
 									) : (
-										<Text className="text-white text-2xl font-semibold">
+										<Text className="text-white text-base font-semibold">
 											Next
 										</Text>
 									)}

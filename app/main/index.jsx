@@ -44,7 +44,7 @@ export default function Main() {
 		<SafeAreaView>
 			<View className="h-screen flex items-center justify-center">
 				<ActivityIndicator size={"large"} color={"blue"} />
-				<Text className="ml-5 mt-3 text-xl font-semibold">Loading ...</Text>
+				<Text className="ml-5 mt-3 text-base font-semibold">Loading ...</Text>
 			</View>
 		</SafeAreaView>
 	) : isLoggedin === "no" ? (

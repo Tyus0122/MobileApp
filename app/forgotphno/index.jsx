@@ -62,17 +62,17 @@ export default function ForgotPhno() {
 						<Pressable onPress={() => router.back()}>
 							<Ionicons name={"arrow-back-outline"} size={24} color="gray" />
 						</Pressable>
-						<Text className="font-semibold text-2xl">Forgot Password</Text>
+						<Text className="font-semibold text-base">Forgot Password</Text>
 					</View>
 					<View className="m-5">
 						<Text className="font-semibold text-4xl">Enter phone No</Text>
-						<Text className="text-xl mt-5 text-gray-500">
+						<Text className="text-base mt-5 text-gray-500">
 							Enter your registered email/phone number
 						</Text>
 					</View>
 					<View className="flex-col justify-between h-[600px] m-5">
 						<View>
-							<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+							<View className="p-2 bg-white h-[40px] rounded-lg flex-row items-center mr-2">
 								<Ionicons name={"chevron-down-outline"} size={8} color="gray" />
 								<PhoneInput
 									ref={PhoneInputRef}
@@ -93,19 +93,19 @@ export default function ForgotPhno() {
 								/>
 							</View>
 							{error && (
-								<Text className="mt-5 text-xl text-red-500">{errorValue}</Text>
+								<Text className="mt-5 text-base text-red-500">{errorValue}</Text>
 							)}
 						</View>
 						<View>
 							<TouchableOpacity
-								className="bg-blue-500 h-[50px] rounded-lg flex items-center justify-center"
+								className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"
 								onPress={submitHandler}
 								// disabled={buttonloading}
 							>
 								{buttonloading ? (
 									<ActivityIndicator size={"large"} color={"white"} />
 								) : (
-									<Text className="text-white text-2xl font-semibold">
+									<Text className="text-white text-base font-semibold">
 										Send OTP
 									</Text>
 								)}

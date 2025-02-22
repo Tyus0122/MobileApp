@@ -73,7 +73,7 @@ export default function Messages() {
 					<Pressable onPress={() => router.back()}>
 						<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 					</Pressable>
-					<View className="flex-row items-center bg-[#00000080] rounded-xl w-[90%] h-[50px] p-3">
+					<View className="flex-row items-center bg-[#00000080] rounded-xl w-[90%] h-[40px] p-3">
 						<Ionicons
 							name="search-outline"
 							size={24}

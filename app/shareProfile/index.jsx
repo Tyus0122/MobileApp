@@ -151,7 +151,7 @@ export default function shareProfiles() {
 							}}
 						/>
 						<View>
-							<Text className="text-xl">{item.username}</Text>
+							<Text className="text-base">{item.username}</Text>
 							<Text className="text-gray-500">{item.city}</Text>
 						</View>
 					</View>
@@ -172,7 +172,7 @@ export default function shareProfiles() {
 						<Pressable onPress={() => router.back()}>
 							<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
 						</Pressable>
-						<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[50px] p-3">
+						<View className="flex-row items-center bg-[#ECE6F0] rounded-full w-[90%] h-[40px] p-3">
 							<Ionicons
 								name="search-outline"
 								size={20}

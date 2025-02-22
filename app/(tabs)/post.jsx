@@ -121,8 +121,8 @@ export default function post() {
 							}}
 						/>
 						<View>
-							<Text className="text-xl font-semibold">{item.username}</Text>
-							<Text className="text-lg text-gray-500">{item.city}</Text>
+							<Text className="text-base font-semibold">{item.username}</Text>
+							<Text className="text-base text-gray-500">{item.city}</Text>
 						</View>
 					</View>
 
@@ -193,7 +193,7 @@ export default function post() {
 														color="gray"
 													/>
 												</Pressable>
-												<Text className="text-2xl">New Post</Text>
+												<Text className="text-base">New Post</Text>
 											</View>
 											<View
 												className="flex items-center justify-center"
@@ -214,7 +214,7 @@ export default function post() {
 																style={{ margin: 10 }}
 															>
 																<Ionicons name="camera-outline" size={90} />
-																<Text className="text-xl font-semibold">
+																<Text className="text-base font-semibold">
 																	Camera
 																</Text>
 															</View>
@@ -227,7 +227,7 @@ export default function post() {
 																style={{ margin: 10 }}
 															>
 																<Ionicons name="image-outline" size={90} />
-																<Text className="text-xl font-semibold">
+																<Text className="text-base font-semibold">
 																	Single
 																</Text>
 															</View>
@@ -240,13 +240,13 @@ export default function post() {
 																style={{ margin: 10 }}
 															>
 																<Ionicons name="images-outline" size={90} />
-																<Text className="text-xl font-semibold">
+																<Text className="text-base font-semibold">
 																	Multiple
 																</Text>
 															</View>
 														</TouchableOpacity>
 													</View>
-													<Text className="text-xl font-semibold text-center mt-5 mb-4">
+													<Text className="text-base font-semibold text-center mt-5 mb-4">
 														Click on the icon to add a new post
 													</Text>
 												</View>
@@ -285,7 +285,7 @@ export default function post() {
 											);
 										}}
 									>
-										<Text className="text-white text-xl">{value}</Text>
+										<Text className="text-white text-base">{value}</Text>
 										<Ionicons
 											name="close-outline"
 											size={20}

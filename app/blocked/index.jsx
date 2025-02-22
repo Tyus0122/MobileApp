@@ -113,7 +113,7 @@ export default function blocked() {
 				onPress={() => router.back()}
 			>
 				<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-				<Text className="text-3xl">Blocked Users</Text>
+				<Text className="text-base">Blocked Users</Text>
 			</Pressable>
 
 			{/* Content */}

@@ -49,7 +49,7 @@ export function EditPhotosComponent({ images, updatePost, post }) {
 							scrollViewRef.current?.scrollTo({ x: 0, animated: true });
 						}}
 					>
-						<Text className="p-2 text-xl text-white">Remove</Text>
+						<Text className="p-2 text-base text-white">Remove</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

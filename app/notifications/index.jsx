@@ -78,11 +78,11 @@ export default function mainNotifications() {
 						onPress={() => router.back()}
 					>
 						<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-						<Text className="text-3xl">Notifications</Text>
+						<Text className="text-base">Notifications</Text>
 					</Pressable>
 					{notifications.requests.length > 0 && (
 						<View className="m-3">
-							<Text className="text-3xl">Requests</Text>
+							<Text className="text-base">Requests</Text>
 						</View>
 					)}
 					{notifications.requests.map((user, index) => (
@@ -99,12 +99,12 @@ export default function mainNotifications() {
 							className=" items-end mr-5 mt-3"
 							onPress={() => router.push("/requests")}
 						>
-							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
+							<Text className="mr-5 text-base text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}
 					{notifications.notifications.length > 0 && (
 						<View className="m-3">
-							<Text className="text-3xl">Last 7 Days</Text>
+							<Text className="text-base">Last 7 Days</Text>
 						</View>
 					)}
 					{notifications.notifications.map((item, index) => (
@@ -115,12 +115,12 @@ export default function mainNotifications() {
 							className=" items-end mr-5 mt-3"
 							onPress={() => router.push("/latestNotifications")}
 						>
-							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
+							<Text className="mr-5 text-base text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}
 					{notifications.suggestions.length > 0 && (
 						<View className="m-3">
-							<Text className="text-3xl">Suggestions</Text>
+							<Text className="text-base">Suggestions</Text>
 						</View>
 					)}
 					{notifications.suggestions.map((user, index) => (
@@ -137,10 +137,10 @@ export default function mainNotifications() {
 							className=" items-end mr-5 mt-3"
 							onPress={() => router.push("/suggestions")}
 						>
-							<Text className="mr-5 text-2xl text-blue-500">See All</Text>
+							<Text className="mr-5 text-base text-blue-500">See All</Text>
 						</TouchableOpacity>
 					)}
-					<View className="h-[50px]"></View>
+					<View className="h-[40px]"></View>
 				</ScrollView>
 			)}
 		</SafeAreaView>

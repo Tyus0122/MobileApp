@@ -17,7 +17,7 @@ export default function Onboarding2() {
 								className="items-end"
 								onPress={() => router.push("onboarding5")}
 							>
-								<Text className="text-blue-500 text-2xl mr-5">Skip</Text>
+								<Text className="text-blue-500 text-base mr-5">Skip</Text>
 							</Pressable>
 						</View>
 			<View className="flex-1 items-center justify-center">
@@ -35,7 +35,7 @@ export default function Onboarding2() {
 
 				{/* Subtext */}
 				<Text
-					className="font-extrabold text-2xl mt-5 text-center"
+					className="font-extrabold text-base mt-5 text-center"
 					style={{
 						width: "80%",
 						color: "gray",

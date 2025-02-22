@@ -136,8 +136,8 @@ export default function editPost() {
 						/>
 						{/* User Info */}
 						<View>
-							<Text className="text-xl font-semibold">{item.username}</Text>
-							<Text className="text-lg text-gray-500">{item.city}</Text>
+							<Text className="text-base font-semibold">{item.username}</Text>
+							<Text className="text-base text-gray-500">{item.city}</Text>
 						</View>
 					</View>
 

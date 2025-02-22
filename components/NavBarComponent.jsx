@@ -17,7 +17,7 @@ export function NavBarComponent() {
 							}
 						}}
 					>
-						{/* <Text className='text-black text-2xl'>Friendzy</Text> */}
+						{/* <Text className='text-black text-base'>Friendzy</Text> */}
 						<Image
 						source={require("@/assets/tyuss/MLogo.png")}
 							style={{
@@ -30,13 +30,13 @@ export function NavBarComponent() {
 				<View className="flex1 w-[140px]"></View>
 				<View className="flex-1 flex-row items-center justify-between">
 					<Link href={"/help"}>
-						<Ionicons name={"help-circle-sharp"} size={34} />
+						<Ionicons name={"help-circle-sharp"} size={28} />
 					</Link>
 					<Link href={"/notifications"}>
-						<Ionicons name={"notifications-outline"} size={34} />
+						<Ionicons name={"notifications-outline"} size={28} />
 					</Link>
 					<Link href={"/messages"}>
-						<Ionicons name={"chatbox-ellipses"} size={34} />
+						<Ionicons name={"chatbox-ellipses"} size={28} />
 					</Link>
 				</View>
 			</View>

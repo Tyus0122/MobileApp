@@ -113,17 +113,17 @@ export default function LoginScreen() {
 							Sign in to your
 						</Text>
 						<Text className="text-5xl font-extrabold mb-2">Account</Text>
-						<Text className="mb-2 text-lg text-gray-500">
+						<Text className="mb-2 text-base text-gray-500">
 							Enter your mobile number to log in
 						</Text>
 					</View>
 					{error && (
-						<Text className="text-red-500 text-lg mt-2">{errorValue}</Text>
+						<Text className="text-red-500 text-base mt-2">{errorValue}</Text>
 					)}
 					<View className="mt-5">
-						<Text className="text-xl text-gray-500 mb-3">Phone</Text>
+						<Text className="text-base text-gray-500 mb-3">Phone</Text>
 						<View className="flex-row items-center gap-2">
-							<View className="p-2 bg-white h-[50px] rounded-lg flex-row items-center mr-2">
+							<View className="p-2 bg-white h-[40px] rounded-lg flex-row items-center mr-2">
 								<Ionicons name={"chevron-down-outline"} size={8} color="gray" />
 								<PhoneInput
 									ref={PhoneInputRef}
@@ -146,10 +146,10 @@ export default function LoginScreen() {
 						</View>
 					</View>
 					<View className="mt-5 mb-5">
-						<Text className="text-xl text-gray-500">Password</Text>
+						<Text className="text-base text-gray-500">Password</Text>
 						<View className="relative">
 							<TextInput
-								className="bg-white mt-2 h-[50px]  rounded-lg p-2 text-2xl"
+								className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 								secureTextEntry={showPassword}
 								onChangeText={(data) => {
 									setFormData({
@@ -180,7 +180,7 @@ export default function LoginScreen() {
 									color="gray"
 								/>
 							</Pressable>
-							<Text className="text-xl text-gray-500">Remember me</Text>
+							<Text className="text-base text-gray-500">Remember me</Text>
 						</View>
 						<Pressable
 							className="flex-row items-center gap-2"
@@ -188,18 +188,18 @@ export default function LoginScreen() {
 								router.push("/forgotphno");
 							}}
 						>
-							<Text className="text-xl text-blue-500">Forgot Password</Text>
+							<Text className="text-base text-blue-500">Forgot Password</Text>
 						</Pressable>
 					</View>
 					<View className="mt-5">
 						<Pressable
-							className="bg-blue-500 h-[50px] rounded-lg flex-row items-center justify-center"
+							className="bg-blue-500 h-[40px] rounded-lg flex-row items-center justify-center"
 							onPress={validator}
 						>
 							{submit ? (
 								<ActivityIndicator size={"large"} color={"white"} />
 							) : (
-								<Text className="text-white text-2xl font-semibold">
+								<Text className="text-white text-base font-semibold">
 									Log in
 								</Text>
 							)}
@@ -211,7 +211,7 @@ export default function LoginScreen() {
 						<View className="border border-gray-300 w-[45%]"></View>
 					</View>
 					<View className="mt-5 flex-row justify-center">
-						<Text className="text-xl text-gray-500">
+						<Text className="text-base text-gray-500">
 							Not Registered Yet?{" "}
 							<Link href={"/signup"}>
 								<Text className="text-blue-500">Sign Up</Text>

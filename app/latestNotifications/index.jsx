@@ -113,7 +113,7 @@ export default function requests() {
 				onPress={() => router.back()}
 			>
 				<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
-				<Text className="text-3xl">Last 7 Days</Text>
+				<Text className="text-base">Last 7 Days</Text>
 			</Pressable>
 
 			{/* Content */}

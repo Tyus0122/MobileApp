@@ -434,8 +434,8 @@ export default function muPosts() {
 						}}
 					/>
 					<View>
-						<Text className="text-xl font-semibold">{item.username}</Text>
-						<Text className="text-lg text-gray-500">{item.city}</Text>
+						<Text className="text-base font-semibold">{item.username}</Text>
+						<Text className="text-base text-gray-500">{item.city}</Text>
 					</View>
 				</View>
 				<Ionicons
@@ -467,7 +467,7 @@ export default function muPosts() {
 										size={28}
 										color="gray"
 									/>
-									<Text className="text-2xl">Profile</Text>
+									<Text className="text-base">Profile</Text>
 								</Pressable>
 							)}
 							ListFooterComponent={() =>
@@ -568,7 +568,7 @@ export default function muPosts() {
 								keyboardDismissMode="on-drag"
 								contentContainerStyle={{ padding: 10 }}
 							/>
-							<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[50px] border rounded-2xl">
+							<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[40px] border rounded-2xl">
 								<View className="flex-row items-center ml-2 w-[73%]">
 									<Image
 										source={
@@ -624,7 +624,7 @@ export default function muPosts() {
 										]);
 									}}
 								>
-									<Text className="text-3xl">
+									<Text className="text-base">
 										{!posts[0].turn_off_comments
 											? "Turn off comments"
 											: "Turn On Comments"}
@@ -640,10 +640,10 @@ export default function muPosts() {
 										});
 									}}
 								>
-									<Text className="text-3xl">Edit</Text>
+									<Text className="text-base">Edit</Text>
 								</TouchableOpacity>
 								<TouchableOpacity onPress={deletePostHandler}>
-									<Text className="text-3xl text-red-500">Delete</Text>
+									<Text className="text-base text-red-500">Delete</Text>
 								</TouchableOpacity>
 							</View>
 						</BottomSheet>

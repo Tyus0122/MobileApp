@@ -56,7 +56,7 @@ export default function post() {
 				>
 					<View className="flex-1 justify-center items-center">
 						<View className="bg-white w-4/5 p-5 rounded-lg shadow-lg">
-							<Text className="text-lg font-semibold mb-4">
+							<Text className="text-base font-semibold mb-4">
 								Enter Some Text
 							</Text>
 							<TextInput
@@ -139,7 +139,7 @@ export function Preview({ images = imagePlaceholder, setImage }) {
 				<Pressable onPress={() => setImage("")}>
 					<Ionicons name={"close-outline"} size={28} color="gray" />
 				</Pressable>
-				<Text className="text-2xl">New Post</Text>
+				<Text className="text-base">New Post</Text>
 			</View>
 			<View>
 				<FlatList
@@ -168,7 +168,7 @@ export function Preview({ images = imagePlaceholder, setImage }) {
 			<ScrollView>
 				<View>
 					<View className="flex-row items-center justify-between gap-5 pl-5 pr-5 pt-2 pb-2">
-						<Text className="text-xl font-semibold">Add a caption</Text>
+						<Text className="text-base font-semibold">Add a caption</Text>
 						<TextInput
 							className="bg-white border border-gray-300 rounded-lg"
 							style={{
@@ -180,26 +180,26 @@ export function Preview({ images = imagePlaceholder, setImage }) {
 					<View className="flex-row items-center justify-between gap-5 pl-5 pr-5 pt-2 pb-2">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"location-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Add City</Text>
+							<Text className="text-base font-semibold">Add City</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
 					</View>
 					<View className="flex-row items-center justify-between gap-5 pl-5 pr-5 pt-2 pb-2">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"person-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Tag People</Text>
+							<Text className="text-base font-semibold">Tag People</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
 					</View>
 					<View className="flex-row items-center justify-between gap-5 pl-5 pr-5 pt-2 pb-2">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"calendar-outline"} size={28} color="gray" />
-							<Text className="text-xl font-semibold">Event date and time</Text>
+							<Text className="text-base font-semibold">Event date and time</Text>
 						</View>
 					</View>
 					<View className='pl-5 pr-5 pt-2'>
 						<TouchableOpacity className="p-5 bg-blue-500 flex  rounded-xl items-center justify-center">
-							<Text className="text-2xl font-semibold text-white">Share</Text>
+							<Text className="text-base font-semibold text-white">Share</Text>
 						</TouchableOpacity>
 					</View>
 				</View>

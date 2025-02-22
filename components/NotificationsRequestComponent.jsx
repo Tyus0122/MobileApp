@@ -6,9 +6,8 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 } from "react-native";
-import React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { backend_url, debounce_time } from "@/constants/constants";
+import React, { useState } from "react";
+import { backend_url } from "@/constants/constants";
 import { router } from "expo-router";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -22,6 +21,7 @@ export function NotificationsRequestComponent({
 	updateNotificationState,
 }) {
 	const [connectionbuttonloading, setconnectionbuttonloading] = useState(false);
+
 	async function acceptHandler() {
 		try {
 			setconnectionbuttonloading(true);
@@ -30,21 +30,17 @@ export function NotificationsRequestComponent({
 				authorization: "Bearer " + token,
 				"content-type": "application/json",
 			};
-			const data = {
-				user_id: user._id,
-			};
+			const data = { user_id: user._id };
 			const response = await axios.post(
 				backend_url + "v1/user/acceptConnectionRequest",
 				data,
-				{
-					headers,
-				}
+				{ headers }
 			);
-			if (response.status == 200) {
+			if (response.status === 200) {
 				setconnectionbuttonloading(false);
 				updateNotificationState({
 					requests: notifications.requests.filter(
-						(item) => item._id != user._id
+						(item) => item._id !== user._id
 					),
 				});
 			}
@@ -53,6 +49,7 @@ export function NotificationsRequestComponent({
 			console.error(error.message);
 		}
 	}
+
 	async function rejectHandler() {
 		try {
 			setconnectionbuttonloading(true);
@@ -61,21 +58,17 @@ export function NotificationsRequestComponent({
 				authorization: "Bearer " + token,
 				"content-type": "application/json",
 			};
-			const data = {
-				user_id: user._id,
-			};
+			const data = { user_id: user._id };
 			const response = await axios.post(
 				backend_url + "v1/user/rejectConnectionRequest",
 				data,
-				{
-					headers,
-				}
+				{ headers }
 			);
-			if (response.status == 200) {
+			if (response.status === 200) {
 				setconnectionbuttonloading(false);
 				updateNotificationState({
 					requests: notifications.requests.filter(
-						(item) => item._id != user._id
+						(item) => item._id !== user._id
 					),
 				});
 			}
@@ -84,14 +77,15 @@ export function NotificationsRequestComponent({
 			console.error(error.message);
 		}
 	}
+
 	return (
 		<View
 			className="pl-5 pr-5 pt-2 pb-2 ml-5 mr-5 mb-2 border border-gray-300 rounded-xl"
 			key={index}
 		>
-			<View className="flex-row items-center gap-8 justify-between">
+			<View className="flex-row items-center justify-between">
 				<TouchableOpacity
-					className="flex-row items-center gap-8"
+					className="flex-row items-center gap-4 flex-1"
 					onPress={() => {
 						router.push({
 							pathname: "/userProfile",
@@ -99,57 +93,39 @@ export function NotificationsRequestComponent({
 						});
 					}}
 				>
+					<Image
+						source={user?.pic ? { uri: user.pic.url } : imagePlaceholder}
+						style={{
+							width: 50,
+							height: 50,
+							borderRadius: 50,
+							borderColor: "black",
+							borderWidth: 1.5,
+						}}
+					/>
 					<View>
-						<Image
-							source={user?.pic ? { uri: user.pic.url } : imagePlaceholder}
-							class
-							style={{
-								width: 50,
-								height: 50,
-								borderRadius: 50,
-								borderColor: "black",
-								borderWidth: 1.5,
-							}}
-						/>
-					</View>
-					<View>
-						<Text className="text-2xl">{user.username}</Text>
-						<Text className="text-gray-500 text-xl">{user.city}</Text>
+						<Text className="text-base font-semibold">{user.username}</Text>
+						<Text className="text-gray-500 text-sm">{user.city}</Text>
 					</View>
 				</TouchableOpacity>
+
 				{connectionbuttonloading ? (
-					<View
-						className="border rounded-xl pl-2 pr-2 pt-1 pb-1"
-						style={{
-							borderColor: "#24A0ED",
-						}}
-					>
-						<ActivityIndicator size={30} color="blue" />
-					</View>
+					<ActivityIndicator size="small" color="blue" />
 				) : (
-					<View className="flex-row gap-5 items-center justify-between">
+					<View className="flex-row gap-4 items-center">
 						<TouchableOpacity
-							className="border rounded-xl "
-							style={{
-								paddingBottom: 8,
-								paddingTop: 8,
-								paddingLeft: 15,
-								paddingRight: 15,
-								borderColor: "#24A0ED",
-							}}
+							className="border rounded-lg px-4 py-2 border-blue-500"
 							onPress={acceptHandler}
 						>
-							<Text
-								className="text-xl"
-								style={{
-									color: "#24A0ED",
-								}}
-							>
+							<Text className="text-blue-500 text-sm font-semibold">
 								Accept
 							</Text>
 						</TouchableOpacity>
-						<Pressable onPress={rejectHandler}>
-							<Ionicons name={"close-outline"} size={32} color="black" />
+						<Pressable
+							onPress={rejectHandler}
+							className="p-2 bg-gray-200 rounded-full"
+						>
+							<Ionicons name="close-outline" size={24} color="black" />
 						</Pressable>
 					</View>
 				)}
