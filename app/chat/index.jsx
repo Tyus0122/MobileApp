@@ -406,112 +406,107 @@ export default function Chat() {
 	return (
 		<GestureHandlerRootView>
 			<SafeAreaView style={{ flex: 1 }}>
-				<KeyboardAvoidingView
-					style={{ flex: 1 }}
-					behavior={Platform.OS === "ios" ? "position" : "height"}
-				>
-					<View style={{ flex: 1, backgroundColor: "white" }}>
-						{loading ? (
-							<View className="h-screen flex items-center justify-center">
-								<ActivityIndicator size="large" color="#0000ff" />
-							</View>
-						) : (
-							<View style={{ flex: 1, justifyContent: "space-between" }}>
-								<View className="flex-row p-5 items-center justify-between">
-									<View className="flex-row items-center gap-3">
-										<Pressable onPress={() => router.back()}>
-											<Ionicons
-												name="arrow-back-outline"
-												size={28}
-												color="gray"
-											/>
-										</Pressable>
-										<Image
-											source={
-												otherUser.pic && otherUser.pic.url
-													? { uri: otherUser.pic.url }
-													: imagePlaceholder
-											}
-											style={{
-												width: 30,
-												height: 30,
-												borderRadius: 50,
-												borderColor: "black",
-												borderWidth: 1.5,
-											}}
-										/>
-										<Text className="text-base text-black-500">
-											{otherUser.fullname}
-										</Text>
-									</View>
-									<Pressable
-										onPress={() => {
-											setModalVisible(true);
-										}}
-									>
+				<View style={{ flex: 1, backgroundColor: "white" }}>
+					{loading ? (
+						<View className="h-screen flex items-center justify-center">
+							<ActivityIndicator size="large" color="#0000ff" />
+						</View>
+					) : (
+						<View style={{ flex: 1, justifyContent: "space-between" }}>
+							<View className="flex-row p-5 items-center justify-between">
+								<View className="flex-row items-center gap-3">
+									<Pressable onPress={() => router.back()}>
 										<Ionicons
-											name="ellipsis-vertical"
-											size={26}
-											color="black"
+											name="arrow-back-outline"
+											size={28}
+											color="gray"
 										/>
 									</Pressable>
+									<Image
+										source={
+											otherUser.pic && otherUser.pic.url
+												? { uri: otherUser.pic.url }
+												: imagePlaceholder
+										}
+										style={{
+											width: 30,
+											height: 30,
+											borderRadius: 50,
+											borderColor: "black",
+											borderWidth: 1.5,
+										}}
+									/>
+									<Text className="text-base text-black-500">
+										{otherUser.fullname}
+									</Text>
 								</View>
-								{messages.length < 6 && (
-									<View className="mt-5 flex items-center justify-center">
-										<Image
-											source={
-												otherUser.pic && otherUser.pic.url
-													? { uri: otherUser.pic.url }
-													: imagePlaceholder
-											}
-											style={{
-												width: 80,
-												height: 80,
-												borderRadius: 50,
-												borderColor: "black",
-												borderWidth: 3,
-											}}
-										/>
-										{/* <Text className="text-base text-black-500">
+								<Pressable
+									onPress={() => {
+										setModalVisible(true);
+									}}
+								>
+									<Ionicons name="ellipsis-vertical" size={26} color="black" />
+								</Pressable>
+							</View>
+							{messages.length < 6 && (
+								<View className="mt-5 flex items-center justify-center">
+									<Image
+										source={
+											otherUser.pic && otherUser.pic.url
+												? { uri: otherUser.pic.url }
+												: imagePlaceholder
+										}
+										style={{
+											width: 80,
+											height: 80,
+											borderRadius: 50,
+											borderColor: "black",
+											borderWidth: 3,
+										}}
+									/>
+									{/* <Text className="text-base text-black-500">
 										{otherUser.logged_in_user_id}
 									</Text> */}
-										<Text className="text-base text-black-500">
-											{otherUser.fullname}
-										</Text>
-										{/* <Text className="text-base text-black-500">{socket.id}</Text> */}
-										<Text className="text-base text-black-500">
-											{otherUser.username}
-										</Text>
-										<TouchableOpacity
-											className="bg-[#00000040] mt-5 rounded-lg pl-3 pr-3 pt-2 pb-2"
-											onPress={() => {
-												router.push({
-													pathname: "/userProfile",
-													params: { _id: otherUser._id },
-												});
-											}}
-										>
-											<Text className="text-base">View Profile</Text>
-										</TouchableOpacity>
-									</View>
-								)}
-								<FlatList
-									data={groupedMessages}
-									keyExtractor={(item, index) => index.toString()}
-									renderItem={renderItem}
-									onEndReached={endHandler}
-									ListFooterComponent={
-										isLastPage ? (
-											<View></View>
-										) : (
-											<View>
-												<ActivityIndicator size="large" color="#0000ff" />
-											</View>
-										)
-									}
-									inverted
-								/>
+									<Text className="text-base text-black-500">
+										{otherUser.fullname}
+									</Text>
+									{/* <Text className="text-base text-black-500">{socket.id}</Text> */}
+									<Text className="text-base text-black-500">
+										{otherUser.username}
+									</Text>
+									<TouchableOpacity
+										className="bg-[#00000040] mt-5 rounded-lg pl-3 pr-3 pt-2 pb-2"
+										onPress={() => {
+											router.push({
+												pathname: "/userProfile",
+												params: { _id: otherUser._id },
+											});
+										}}
+									>
+										<Text className="text-base">View Profile</Text>
+									</TouchableOpacity>
+								</View>
+							)}
+							<FlatList
+								data={groupedMessages}
+								keyExtractor={(item, index) => index.toString()}
+								renderItem={renderItem}
+								onEndReached={endHandler}
+								ListFooterComponent={
+									isLastPage ? (
+										<View></View>
+									) : (
+										<View>
+											<ActivityIndicator size="large" color="#0000ff" />
+										</View>
+									)
+								}
+								inverted
+							/>
 								<View className="border">
+									<KeyboardAvoidingView
+										behavior={Platform.OS === "ios" ? "position" : "height"}
+									>
 									{error != "" && (
 										<Text className="ml-3 text-red-500">{error}</Text>
 									)}
@@ -549,11 +544,11 @@ export default function Chat() {
 											<Ionicons name="send" size={28} color="black" />
 										</Pressable>
 									</View>
+							</KeyboardAvoidingView>
 								</View>
-							</View>
-						)}
-					</View>
-				</KeyboardAvoidingView>
+						</View>
+					)}
+				</View>
 			</SafeAreaView>
 			{modalVisible && (
 				<BottomSheet

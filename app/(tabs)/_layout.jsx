@@ -41,15 +41,14 @@ export default function tabs() {
 		}
 	};
 	return (
-			<Tabs
+		<Tabs
 				screenOptions={{
 					tabBarShowLabel: false,
 					headerShown: false,
 					tabBarActiveTintColor: "black",
 					tabBarInactiveTintColor: "gray",
 					tabBarStyle: {
-						paddingBottom: 5,
-						height: 50,
+						height: 55,
 						display: isKeyboardVisible ? "none" : "block",
 					},
 				}}
@@ -62,7 +61,7 @@ export default function tabs() {
 							<TabIcon
 								icon={focused ? "home-sharp" : "home-outline"}
 								color={color}
-								size={24}
+								size={20}
 								text="Home"
 								focused={focused}
 							/>
@@ -77,7 +76,7 @@ export default function tabs() {
 							<TabIcon
 								icon={focused ? "calendar-sharp" : "calendar-outline"}
 								color={color}
-								size={24}
+								size={20}
 								focused={focused}
 								text="Hub"
 							/>
@@ -92,7 +91,7 @@ export default function tabs() {
 							<TabIcon
 								icon={focused ? "add-circle-sharp" : "add-circle-outline"}
 								color={color}
-								size={28}
+								size={20}
 								focused={focused}
 								text="Post"
 							/>
@@ -112,7 +111,7 @@ export default function tabs() {
 							<TabIcon
 								icon={focused ? "person-circle-sharp" : "person-circle-outline"}
 								color={color}
-								size={28}
+								size={20}
 								focused={focused}
 								text="Profile"
 							/>

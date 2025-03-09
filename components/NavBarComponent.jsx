@@ -8,7 +8,7 @@ export function NavBarComponent() {
 	const pathname = segments.join("/");
 	return (
 		<View>
-			<View className="h-[60px] flex-row items-center justify-between pl-3 pr-5">
+			<View className="h-[40px] flex-row items-center justify-between pl-3 pr-5">
 				<View className="flex-1">
 					<Pressable
 						onPress={() => {

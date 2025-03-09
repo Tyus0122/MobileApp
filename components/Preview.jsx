@@ -51,9 +51,23 @@ export function Preview({
 		city: "",
 		date: "",
 		time: "",
+		ampm: "AM",
 		files: image,
 	});
+	function isValidDate(dateString) {
+		const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
+		if (!regex.test(dateString)) return false;
+		const [day, month, year] = dateString.split("-").map(Number);
+		const daysInMonth = new Date(year, month, 0).getDate();
+		return day <= daysInMonth;
+	}
+	
+	function isValidTime(timeString) {
+		const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/;
+		return regex.test(timeString);
+	}
 	function validator() {
+		console.log(formData)
 		if (formData.caption == "") {
 			setError(true);
 			setErrorVlaue("Caption is required");
@@ -69,10 +83,20 @@ export function Preview({
 			setErrorVlaue("Date is required");
 			return false;
 		}
+		if (!isValidDate(formData.date)) {
+			setError(true);
+            setErrorVlaue("Invalid date. Please use DD-MM-YYYY format.");
+            return false;
+		}
 		if (formData.time == "") {
 			setError(true);
 			setErrorVlaue("Time is required");
 			return false;
+		}
+		if (!isValidTime(formData.time +" "+ formData.ampm)) {
+			setError(true);
+            setErrorVlaue("Invalid time. Please use HH:MM format.");
+            return false;
 		}
 		return true;
 	}
@@ -87,7 +111,7 @@ export function Preview({
 			const data = new FormData();
 			data.append("city", formData.city);
 			data.append("date", formData.date);
-			data.append("time", formData.time);
+			data.append("time", formData.time +" "+formData.ampm);
 			data.append("caption", formData.caption);
 			data.append("peopleTagged", JSON.stringify(usersIds));
 			formData.files.forEach((file, index) => {
@@ -157,7 +181,7 @@ export function Preview({
 							placeholder="Add a caption for the post..."
 						/>
 					</View>
-					<View className="flex-row items-center justify-start gap-5 p-5">
+					<View className="flex-row items-center justify-start gap-5 ml-5 mr-5">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"location-outline"} size={28} color="gray" />
 							<Text className="text-base font-semibold">Add City</Text>
@@ -175,7 +199,7 @@ export function Preview({
 						/>
 					</View>
 					<TouchableOpacity
-						className="flex-row items-center justify-between gap-5 p-5"
+						className="flex-row items-center justify-between gap-5 m-5"
 						onPress={() => {
 							setModalVisible(true);
 							handleSnapPress(0);
@@ -185,21 +209,62 @@ export function Preview({
 							<Ionicons name={"person-outline"} size={28} color="gray" />
 							<Text className="text-base font-semibold">Tag People</Text>
 						</View>
-						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
+						<Ionicons className='mr-5' name={"chevron-forward-outline"} size={28} color="gray" />
 					</TouchableOpacity>
-					<TouchableOpacity
-						className="flex-row items-center justify-between gap-5 p-5"
-						onPress={() => {
-							setMode("date");
-						}}
-					>
+
+					<View className="flex-row items-center gap-5 p-5 ">
 						<View className="flex-row items-center gap-5">
 							<Ionicons name={"calendar-outline"} size={28} color="gray" />
 							<Text className="text-base font-semibold">Event Date</Text>
 						</View>
-						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
-					</TouchableOpacity>
-					<TouchableOpacity
+						<TextInput
+							className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
+							placeholder="DD-MM-YYYY"
+							onChangeText={(data) => {
+								setError(false);
+								setFormData({
+									...formData,
+									date: data,
+								});
+							}}
+						/>
+					</View>
+					<View className="flex-row items-center gap-5 p-5 ">
+						<View className="flex-row items-center gap-5">
+							<Ionicons name={"time-outline"} size={28} color="gray" />
+							<Text className="text-base font-semibold">Event Time</Text>
+						</View>
+						<TextInput
+							className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
+							placeholder="HH:MM"
+							onChangeText={(data) => {
+								setError(false);
+								setFormData({
+									...formData,
+									time: data,
+								});
+							}}
+						/>
+					</View>
+					<View className="flex-row items-center justify-center mt-3 gap-3">
+						<TouchableOpacity
+							className={`p-3 rounded-md ${
+								formData.ampm === "AM" ? "bg-blue-500" : "bg-gray-300"
+							}`}
+							onPress={() => setFormData({ ...formData, ampm: "AM" })}
+						>
+							<Text className="text-white">AM</Text>
+						</TouchableOpacity>
+						<TouchableOpacity
+							className={`p-3 rounded-md ${
+								formData.ampm === "PM" ? "bg-blue-500" : "bg-gray-300"
+							}`}
+							onPress={() => setFormData({ ...formData, ampm: "PM" })}
+						>
+							<Text className="text-white">PM</Text>
+						</TouchableOpacity>
+					</View>
+					{/* <TouchableOpacity
 						className="flex-row items-center justify-between gap-5 p-5"
 						onPress={() => {
 							setMode("time");
@@ -210,8 +275,8 @@ export function Preview({
 							<Text className="text-base font-semibold">Event End Time</Text>
 						</View>
 						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
-					</TouchableOpacity>
-					{mode === "" ? (
+					</TouchableOpacity> */}
+					{/* {mode === "" ? (
 						<View></View>
 					) : (
 						<DateTimePicker
@@ -235,7 +300,7 @@ export function Preview({
 								}
 							}}
 						/>
-					)}
+					)} */}
 					<View className="p-5">
 						<TouchableOpacity
 							className="p-2 bg-blue-500 flex rounded-xl items-center justify-center h-[60px]"
@@ -245,7 +310,9 @@ export function Preview({
 							{submitLoading ? (
 								<ActivityIndicator size={"large"} color={"white"} />
 							) : (
-								<Text className="text-base font-semibold text-white">Share</Text>
+								<Text className="text-base font-semibold text-white">
+									Share
+								</Text>
 							)}
 						</TouchableOpacity>
 					</View>

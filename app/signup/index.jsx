@@ -46,6 +46,39 @@ export default function Index() {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
 	}
+	function validateDate(dateString) {
+		const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+		const match = dateString.match(regex);
+	
+		if (!match) {
+			return { isValid: false, error: "Invalid format. Use DD-MM-YYYY." };
+		}
+	
+		let [_, day, month, year] = match;
+		day = parseInt(day, 10);
+		month = parseInt(month, 10);
+		year = parseInt(year, 10);
+	
+		if (month < 1 || month > 12) {
+			return { isValid: false, error: "Invalid month. Use values between 01-12." };
+		}
+	
+		if (day < 1 || day > 31) {
+			return { isValid: false, error: "Invalid day. Use values between 01-31." };
+		}
+	
+		// Check days in each month
+		const daysInMonth = {
+			1: 31, 2: (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28, 
+			3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
+		};
+	
+		if (day > daysInMonth[month]) {
+			return { isValid: false, error: `Invalid day for the month. ${month} has only ${daysInMonth[month]} days.` };
+		}
+	
+		return { isValid: true, error: null };
+	}
 	function validation() {
 		if (formData.fullname.length == 0) {
 			setError(true);
@@ -87,13 +120,20 @@ export default function Index() {
 			setErrorVlaue("Passwords do not match");
 			return;
 		}
+		let dob_validation = validateDate(formData.dob)
+		console.log(dob_validation)
+		if (!dob_validation.isValid) {
+			setError(true);
+			setErrorVlaue(dob_validation.error);
+			return 
+		}
 		let { valid, message } = validatePassword(formData.password);
 		if (!valid) {
 			setError(true);
 			setErrorVlaue(message);
 			return;
 		}
-		submitHandler();
+		// submitHandler();
 	}
 	function submitHandler() {
 		setSubmit(true);
@@ -218,6 +258,7 @@ export default function Index() {
 								}}
 							/>
 						</View>
+
 						<View className="mt-5 mb-5">
 							<Text className="text-base text-gray-500">Password</Text>
 							<View className="relative">
@@ -227,6 +268,7 @@ export default function Index() {
 									onChangeText={(data) => {
 										setFormData({
 											...formData,
+											confirmPassword: data,
 											password: data,
 										});
 										setError(false);
@@ -244,51 +286,27 @@ export default function Index() {
 								</Pressable>
 							</View>
 						</View>
-						<View className="mt-5 mb-5">
-							<Text className="text-base text-gray-500">Confirm Password</Text>
-							<View className="relative">
-								<TextInput
-									className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
-									secureTextEntry={showPassword}
-									onChangeText={(data) => {
-										setFormData({
-											...formData,
-											confirmPassword: data,
-										});
-										setError(false);
-									}}
-								/>
-								<Pressable
-									onPress={() => setShowPassword(!showPassword)}
-									className="absolute right-2 top-2 mt-3"
-								>
-									<Ionicons
-										name={showPassword ? "eye-off" : "eye"}
-										size={24}
-										color="gray"
-									/>
-								</Pressable>
-							</View>
-						</View>
 						<View className="mt-5">
-							<Text className="text-base text-gray-500">Birth of date</Text>
+							<Text className="text-base text-gray-500">Birth of date </Text>
 							<View className="relative">
 								<Pressable onPress={() => setmodalopen(!modalopen)}>
 									<TextInput
-										placeholder={formData.dob}
-										editable={false}
+										placeholder={formData.dob || "DD-MM-YYYY"}
+										placeholderTextColor="gray"
+                                        value={formData.dob}
 										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
-									/>
-									<Ionicons
-										className="absolute right-2 top-2 mt-3"
-										name={"calendar-outline"}
-										size={24}
-										color="gray"
+										onChangeText={(data) => {
+											setFormData({
+												...formData,
+												dob: data,
+											});
+											setError(false);
+										}}
 									/>
 								</Pressable>
 							</View>
 						</View>
-						{modalopen && (
+						{/* {modalopen && (
 							<DateTimePicker
 								value={new Date()}
 								mode={"date"}
@@ -305,7 +323,7 @@ export default function Index() {
 									}
 								}}
 							/>
-						)}
+						)} */}
 						<View className="mt-[50px] mb-[50px]">
 							<Pressable
 								className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"

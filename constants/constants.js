@@ -3,7 +3,7 @@ const ip = "https://friendzy.club/"
 export const backend_url = ip + "api/"
 export const socket_url = ip
 
-// const ip = "http://192.168.0.108:"
+// const ip = "http://192.168.0.102:"
 // export const backend_url = ip + "3040/"
 // export const socket_url = ip + "3000"
 

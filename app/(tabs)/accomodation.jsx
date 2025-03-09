@@ -2,10 +2,10 @@ import {
 	View,
 	Text,
 	Image,
-	TextInput,
 	Pressable,
 	ActivityIndicator,
 	FlatList,
+	TextInput,
 	Platform,
 	KeyboardAvoidingView,
 	Keyboard,
@@ -156,6 +156,58 @@ export default function Accomodation() {
 			.catch((err) => {
 				if (AccomodationsPage == 0) setAccomodationLoading(false);
 			});
+	}
+	function validateDate(dateString) {
+		const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
+		const match = dateString.match(regex);
+
+		if (!match) {
+			return { isValid: false, error: "Invalid format. Use DD-MM-YYYY." };
+		}
+
+		let [_, day, month, year] = match;
+		day = parseInt(day, 10);
+		month = parseInt(month, 10);
+		year = parseInt(year, 10);
+
+		if (month < 1 || month > 12) {
+			return {
+				isValid: false,
+				error: "Invalid month. Use values between 01-12.",
+			};
+		}
+
+		if (day < 1 || day > 31) {
+			return {
+				isValid: false,
+				error: "Invalid day. Use values between 01-31.",
+			};
+		}
+
+		// Check days in each month
+		const daysInMonth = {
+			1: 31,
+			2: (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28,
+			3: 31,
+			4: 30,
+			5: 31,
+			6: 30,
+			7: 31,
+			8: 31,
+			9: 30,
+			10: 31,
+			11: 30,
+			12: 31,
+		};
+
+		if (day > daysInMonth[month]) {
+			return {
+				isValid: false,
+				error: `Invalid day for the month. ${month} has only ${daysInMonth[month]} days.`,
+			};
+		}
+
+		return { isValid: true, error: null };
 	}
 	async function fetchData({
 		page = 0,
@@ -454,6 +506,8 @@ export default function Accomodation() {
 			console.error(error.message);
 		}
 	}
+	const [dateError, setDateError] = useState(false);
+	const [dateErrorMessage, setDateErrorMessage] = useState("");
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
 			<SafeAreaView>
@@ -560,7 +614,7 @@ export default function Accomodation() {
 						</Text>
 					}
 					keyboardShouldPersistTaps="always"
-					keyboardDismissMode="on-dragw"
+					keyboardDismissMode="on-drag"
 					contentContainerStyle={{ padding: 10 }}
 					onEndReached={accomodationsEndHandler}
 					ListHeaderComponent={() => (
@@ -571,8 +625,8 @@ export default function Accomodation() {
 									alignItems: "flex-end",
 								}}
 							>
-								<View className='flex-row items-center gap-3'>
-								{/* <Pressable
+								<View className="flex-row items-center gap-3">
+									{/* <Pressable
 									className="flex-row items-center justify-center gap-2"
 									onPress={() => {
 										setAccomodationsPage(0);
@@ -585,28 +639,34 @@ export default function Accomodation() {
 										<Text className="text-base">All</Text>
 									</View>
 								</Pressable> */}
-								<Pressable
-									className="flex-row items-center justify-center gap-2"
-									onPress={() => {
-										setAccomodationsPage(0);
-										if (isChecked) {
-											setIsChecked(false);
-											debounceCallAccomodationSearch(AccomodationSearch, false);
-										} else {
-											setIsChecked(true);
-											debounceCallAccomodationSearch(AccomodationSearch, true);
-										}
-									}}
-								>
-									<View className="flex-row items-center justify-center gap-2">
-										<Ionicons
-											name={isChecked ? "checkbox-outline" : "square-outline"}
-											size={24}
-											color="gray"
-										/>
-										<Text className="text-base text-gray-500">Available</Text>
-									</View>
-								</Pressable>
+									<Pressable
+										className="flex-row items-center justify-center gap-2"
+										onPress={() => {
+											setAccomodationsPage(0);
+											if (isChecked) {
+												setIsChecked(false);
+												debounceCallAccomodationSearch(
+													AccomodationSearch,
+													false
+												);
+											} else {
+												setIsChecked(true);
+												debounceCallAccomodationSearch(
+													AccomodationSearch,
+													true
+												);
+											}
+										}}
+									>
+										<View className="flex-row items-center justify-center gap-2">
+											<Ionicons
+												name={isChecked ? "checkbox-outline" : "square-outline"}
+												size={24}
+												color="gray"
+											/>
+											<Text className="text-base text-gray-500">Available</Text>
+										</View>
+									</Pressable>
 								</View>
 							</View>
 						</View>
@@ -632,15 +692,53 @@ export default function Accomodation() {
 					>
 						<View>
 							<View className="flex-row items-center justify-between pl-5 pr-5">
-								<TouchableOpacity
-									className="flex-row items-center gap-3 pl-3 pr-3 pt-1 pb-1 border rounded-xl"
-									onPress={() => setViewCalendar(!viewCalendar)}
-								>
-									<Ionicons name={"calendar-outline"} size={28} color="gray" />
-									<Text className="text-base font-semi-bold">
-										{datesearchevent ? `${datesearchevent}` : "Pick A Date"}
-									</Text>
-								</TouchableOpacity>
+								<View className="flex-row  items-center gap-3">
+									<View
+										className="flex-row items-center gap-3 pl-3 pr-3 pt-1 pb-1 border rounded-xl"
+										onPress={() => setViewCalendar(!viewCalendar)}
+									>
+										<Ionicons
+											name={"calendar-outline"}
+											size={28}
+											color="gray"
+										/>
+										<TextInput
+											style={{
+												// flex: 1,
+												height: "100%",
+												paddingLeft: 20,
+												paddingRight: 20,
+											}}
+											// className="border border-red-500"
+													onChangeText={(data) => {
+												setDateError(false)
+												setDateSearchEvent(data);
+											}}
+											placeholder="DD-MM-YYYY"
+											value={datesearchevent}
+										/>
+									</View>
+									<TouchableOpacity
+										className="pt-1 pb-1 pl-3 pr-3 flex items-center justify-center border border-blue-500 rounded-xl"
+										onPress={() => {
+											let { isValid, error } = validateDate(datesearchevent);
+											if (!isValid) {
+												setDateError(true)
+												setDateErrorMessage(error)
+											}
+											else {
+												debounceCallDateeventsSearch(
+													datesearchevent,
+													eventSearch
+												);
+											}
+										}}
+									>
+										<Text className="text-black text-base font-semibold">
+											apply
+										</Text>
+									</TouchableOpacity>
+								</View>
 								<TouchableOpacity
 									className="pl-3 pr-3 pt-1 pb-1 border border-red-500 rounded-xl"
 									onPress={() => {
@@ -654,7 +752,12 @@ export default function Accomodation() {
 									</Text>
 								</TouchableOpacity>
 							</View>
-							{viewCalendar && (
+							{dateError && (
+								<Text className="ml-5 mt-2 text-base font-semibold text-red-500">
+									{dateErrorMessage}
+								</Text>
+							)}
+							{/* {viewCalendar && (
 								<DateTimePicker
 									value={new Date()}
 									mode={"date"}
@@ -676,7 +779,7 @@ export default function Accomodation() {
 										setViewCalendar(false);
 									}}
 								/>
-							)}
+							)} */}
 							<FlatList
 								data={posts}
 								keyExtractor={(item, index) => index.toString()}
@@ -690,7 +793,9 @@ export default function Accomodation() {
 									)
 								}
 								contentContainerStyle={{ paddingBottom: 50 }}
-								onEndReached={endHandler}
+										onEndReached={endHandler}
+										keyboardShouldPersistTaps="always"
+					keyboardDismissMode="on-drag"
 								ListEmptyComponent={
 									loading ? (
 										<View className="h-screen flex items-center justify-center">
