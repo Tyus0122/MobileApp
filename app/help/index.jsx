@@ -10,8 +10,6 @@ import {
 	FlatList,
 	TouchableOpacity,
 } from "react-native";
-import { PostComponent } from "@/components/PostComponent";
-import { UserMessageComponent } from "@/components/UserMessageComponent";
 import {
 	useState,
 	useEffect,
@@ -21,7 +19,7 @@ import {
 	useMemo,
 } from "react";
 import React from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -286,31 +284,6 @@ export default function Chat() {
 			</View>
 		);
 	};
-	async function blockHandler() {
-		try {
-			const token = await AsyncStorage.getItem("BearerToken");
-			const headers = {
-				authorization: "Bearer " + token,
-				"content-type": "application/json",
-			};
-			const data = {
-				user_id: otherUser._id,
-				block: true,
-			};
-			const response = await axios.post(
-				backend_url + "v1/user/blockUser",
-				data,
-				{
-					headers,
-				}
-			);
-			if (response.status == 200) {
-				router.push("/");
-			}
-		} catch (error) {
-			console.error(error.message);
-		}
-	}
 	async function fetchDataPageWise({ page }) {
 		socket.on("messagesent", socketRecievehandler);
 		const token = await AsyncStorage.getItem("BearerToken");
@@ -340,7 +313,7 @@ export default function Chat() {
 				<KeyboardAvoidingView
 					style={{ flex: 1 }}
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+					keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
 				>
 					<View style={{ flex: 1, backgroundColor: "white" }}>
 						{loading ? (

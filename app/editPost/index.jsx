@@ -10,6 +10,7 @@ import {
 	ScrollView,
 	TouchableOpacity,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect, useCallback, useRef } from "react";
 import React from "react";
@@ -203,34 +204,21 @@ export default function editPost() {
 
 	return (
 		<GestureHandlerRootView>
-			<View className="bg-white h-full">
-				<KeyboardAvoidingView
-					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-				>
-					<SafeAreaView>
-						<ScrollView
-							keyboardShouldPersistTaps={"always"}
-							keyboardDismissMode="on-drag"
-						>
-							<View>
-								<View>
-									{!isEqual(post, {}) && (
-										<View>
-											<EditPreview
-												setImage={setImage}
-												setModalVisible={setModalVisible}
-												handleSnapPress={handleSnapPress}
-												usersIds={usersIds}
-												post={post}
-												updatePost={updatePost}
-											/>
-										</View>
-									)}
-								</View>
-							</View>
-						</ScrollView>
-					</SafeAreaView>
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps={"always"}
+				keyboardDismissMode="on-drag"
+			>
+				<SafeAreaView className="bg-white h-full">
+					{!isEqual(post, {}) && (
+						<EditPreview
+							setImage={setImage}
+							setModalVisible={setModalVisible}
+							handleSnapPress={handleSnapPress}
+							usersIds={usersIds}
+							post={post}
+							updatePost={updatePost}
+						/>
+					)}
 					{modalVisible && (
 						<BottomSheet
 							ref={sheetRef}
@@ -296,8 +284,8 @@ export default function editPost() {
 							/>
 						</BottomSheet>
 					)}
-				</KeyboardAvoidingView>
-			</View>
+				</SafeAreaView>
+			</KeyboardAwareScrollView>
 		</GestureHandlerRootView>
 	);
 }

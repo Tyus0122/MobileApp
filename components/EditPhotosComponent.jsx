@@ -35,7 +35,7 @@ export function EditPhotosComponent({ images, updatePost, post }) {
 	const renderImages = () => {
 		return images.map((image, index) => (
 			<View key={index}>
-				<View className="flex items-center pl-5 pr-5 mb-2 mt-2" key={index}>
+				<View className="flex items-center mb-2 mt-2" key={index}>
 					<Image source={{ uri: image }} style={styles.image} />
 					<TouchableOpacity
 						className="flex items-center justify-center bg-red-500 rounded-xl mt-3"
@@ -96,7 +96,7 @@ export function EditPhotosComponent({ images, updatePost, post }) {
 }
 const styles = StyleSheet.create({
 	image: {
-		width: 400,
+		width: Math.round(width),
 		height: 400,
 		resizeMode: "cover",
 	},

@@ -448,297 +448,283 @@ export default function muPosts() {
 	}
 	return (
 		<GestureHandlerRootView>
-			<KeyboardAvoidingView
-				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-			>
-				<View className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}>
-					<SafeAreaView>
-						<FlatList
-							data={posts}
-							keyExtractor={(item, index) => index.toString()}
-							ListHeaderComponent={() => (
-								<Pressable
-									onPress={() => router.back()}
-									className="flex-row p-5 items-center gap-3"
-								>
-									<Ionicons
-										name={"arrow-back-outline"}
-										size={28}
-										color="gray"
-									/>
-									<Text className="text-base">Profile</Text>
-								</Pressable>
+			<View className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}>
+				<SafeAreaView>
+					<FlatList
+						data={posts}
+						keyExtractor={(item, index) => index.toString()}
+						ListHeaderComponent={() => (
+							<Pressable
+								onPress={() => router.back()}
+								className="flex-row p-5 items-center gap-3"
+							>
+								<Ionicons name={"arrow-back-outline"} size={28} color="gray" />
+								<Text className="text-base">Profile</Text>
+							</Pressable>
+						)}
+						ListFooterComponent={() =>
+							isLastPage ? (
+								<Text style={{ textAlign: "center", padding: 30 }}>
+									No more posts to display
+								</Text>
+							) : (
+								<ActivityIndicator size="large" color="gray" />
+							)
+						}
+						onEndReached={endHandler}
+						ListEmptyComponent={
+							loading ? (
+								<View className="h-screen flex items-center justify-center">
+									<ActivityIndicator size="large" color="gray" />
+								</View>
+							) : (
+								<View className="h-screen flex items-center justify-center">
+									<Text>No Posts to display</Text>
+								</View>
+							)
+						}
+						renderItem={({ item }) => (
+							<PostComponent
+								post={item}
+								modalVisible={modalVisible}
+								setModalVisible={setModalVisible}
+								handleSnapPress={handleSnapPress}
+								updateCommentState={updateCommentState}
+								inicomments={inicomments}
+								ehandleSnapPress={ehandleSnapPress}
+								eModalVisible={eModalVisible}
+								seteModalVisible={seteModalVisible}
+								setShareModalVisible={setShareModalVisible}
+								shareModalVisible={shareModalVisible}
+								sharehandleSnapPress={sharehandleSnapPress}
+							/>
+						)}
+						refreshControl={
+							<RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
+						}
+					/>
+				</SafeAreaView>
+				{modalVisible && (
+					<BottomSheet
+						ref={sheetRef}
+						snapPoints={snapPoints}
+						enablePanDownToClose
+						className="bg-white h-full"
+						onClose={() => {
+							setModalVisible(false);
+							setCommentState({
+								...commentState,
+								allcomments: [],
+								currentPostId: "",
+							});
+						}}
+					>
+						<BottomSheetFlatList
+							data={commentState.allcomments}
+							keyExtractor={(i) => i._id}
+							renderItem={({ item, index }) => (
+								<CommentComponent
+									item={item}
+									index={index}
+									openKeyboard={openKeyboard}
+									commentState={commentState}
+								/>
 							)}
+							onEndReached={commentsEndHandler}
 							ListFooterComponent={() =>
-								isLastPage ? (
+								commentState.isLastPage ? (
 									<Text style={{ textAlign: "center", padding: 30 }}>
-										No more posts to display
+										You have reached the end of Page
+									</Text>
+								) : commentState.allcomments ? (
+									<View className="flex items-center justify-center">
+										<ActivityIndicator size="large" color="gray" />
+									</View>
+								) : (
+									<View></View>
+								)
+							}
+							ListEmptyComponent={
+								commentState.commentsLoading && !commentState.isLastPage ? (
+									<View></View>
+								) : (
+									<Text style={{ textAlign: "center", padding: 30 }}>
+										No Comments to show
+									</Text>
+								)
+							}
+							keyboardShouldPersistTaps="always"
+							keyboardDismissMode="on-drag"
+							contentContainerStyle={{ padding: 10 }}
+						/>
+						<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[40px] border rounded-2xl">
+							<View className="flex-row items-center ml-2 w-[73%]">
+								<Image
+									source={
+										loggedInUser.pic
+											? { uri: loggedInUser.pic.url }
+											: imagePlaceholder
+									}
+									style={{
+										width: 30,
+										height: 30,
+										borderRadius: 50,
+										borderColor: "black",
+										borderWidth: 1.5,
+									}}
+								/>
+								<TextInput
+									className="h-[45px] pl-5 w-full"
+									ref={inputRef}
+									placeholder="Leave your comment here"
+									value={commentState.comment}
+									onChangeText={(data) => updateCommentState({ comment: data })}
+								/>
+							</View>
+							<Pressable
+								className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
+								disabled={commentSendLoader}
+								onPress={commentHandler}
+							>
+								<Ionicons name="arrow-up-outline" size={24} color="white" />
+							</Pressable>
+						</View>
+					</BottomSheet>
+				)}
+				{eModalVisible && (
+					<BottomSheet
+						ref={eSheetRef}
+						snapPoints={eSnapPoints}
+						enablePanDownToClose
+						// onClose={handleShareClose}
+						className="bg-white"
+					>
+						<View className="flex-1 items-center justify-between mt-5 mb-5">
+							<TouchableOpacity
+								onPress={() => {
+									debounceCallTurnComments(!posts[0].turn_off_comments);
+									setPosts([
+										{
+											...posts[0],
+											turn_off_comments: !posts[0].turn_off_comments,
+										},
+									]);
+								}}
+							>
+								<Text className="text-base">
+									{!posts[0].turn_off_comments
+										? "Turn off comments"
+										: "Turn On Comments"}
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={() => {
+									router.push({
+										pathname: "/editPost",
+										params: {
+											post_id: posts[0]._id,
+										},
+									});
+								}}
+							>
+								<Text className="text-base">Edit</Text>
+							</TouchableOpacity>
+							<TouchableOpacity onPress={deletePostHandler}>
+								<Text className="text-base text-red-500">Delete</Text>
+							</TouchableOpacity>
+						</View>
+					</BottomSheet>
+				)}
+				{shareModalVisible && (
+					<BottomSheet
+						ref={shareSheetRef}
+						snapPoints={shareSnapPoints}
+						enablePanDownToClose
+						className="bg-white"
+						onClose={() => {
+							setShareModalVisible(false);
+							sharehandleSnapPress(-1);
+							updateuserstate({
+								selected_ids: [],
+								page: 0,
+								searchString: "",
+								usersList: userstate.usersList.slice(
+									0,
+									parseInt(userstate.page_limit)
+								),
+							});
+						}}
+					>
+						<View className="p-3 flex-row flex-wrap"></View>
+						<View className="flex-row items-center gap-5 pl-5">
+							<Ionicons
+								name={"close-outline"}
+								size={26}
+								color="gray"
+								onPress={() => {
+									setShareModalVisible(false);
+									sharehandleSnapPress(-1);
+								}}
+							/>
+							<View className="flex-row items-center justify-center bg-[#ECE6F0] rounded-lg w-[80%] p-3">
+								<Ionicons
+									name="search-outline"
+									size={20}
+									color="gray"
+									style={{ position: "absolute", left: 15 }}
+								/>
+								<TextInput
+									style={{
+										flex: 1,
+										height: "100%",
+										paddingLeft: 40,
+									}}
+									onChangeText={(data) => {
+										updateuserstate({ searchString: data, page: 0 });
+										debounceCallSearch(data);
+									}}
+									placeholder="Search by ID or University or Location"
+								/>
+							</View>
+						</View>
+						<BottomSheetFlatList
+							data={userstate.usersList}
+							keyExtractor={(i, index) => index}
+							renderItem={renderItem}
+							onEndReached={shareEndHandler}
+							ListFooterComponent={() =>
+								userstate.isLastPage ? (
+									<Text style={{ textAlign: "center", padding: 30 }}>
+										You have reached the end of Page
 									</Text>
 								) : (
 									<ActivityIndicator size="large" color="gray" />
 								)
 							}
-							onEndReached={endHandler}
 							ListEmptyComponent={
-								loading ? (
-									<View className="h-screen flex items-center justify-center">
-										<ActivityIndicator size="large" color="gray" />
-									</View>
-								) : (
-									<View className="h-screen flex items-center justify-center">
-										<Text>No Posts to display</Text>
-									</View>
-								)
+								<Text style={{ textAlign: "center", padding: 30 }}>
+									No Data: Please change filters
+								</Text>
 							}
-							renderItem={({ item }) => (
-								<PostComponent
-									post={item}
-									modalVisible={modalVisible}
-									setModalVisible={setModalVisible}
-									handleSnapPress={handleSnapPress}
-									updateCommentState={updateCommentState}
-									inicomments={inicomments}
-									ehandleSnapPress={ehandleSnapPress}
-									eModalVisible={eModalVisible}
-									seteModalVisible={seteModalVisible}
-									setShareModalVisible={setShareModalVisible}
-									shareModalVisible={shareModalVisible}
-									sharehandleSnapPress={sharehandleSnapPress}
-								/>
-							)}
-							refreshControl={
-								<RefreshControl
-									refreshing={refresh}
-									onRefresh={refreshHandler}
-								/>
-							}
+							keyboardShouldPersistTaps="always"
+							keyboardDismissMode="on-drag"
+							contentContainerStyle={{ padding: 10 }}
 						/>
-					</SafeAreaView>
-					{modalVisible && (
-						<BottomSheet
-							ref={sheetRef}
-							snapPoints={snapPoints}
-							enablePanDownToClose
-							className="bg-white h-full"
-							onClose={() => {
-								setModalVisible(false);
-								setCommentState({
-									...commentState,
-									allcomments: [],
-									currentPostId: "",
-								});
-							}}
-						>
-							<BottomSheetFlatList
-								data={commentState.allcomments}
-								keyExtractor={(i) => i._id}
-								renderItem={({ item, index }) => (
-									<CommentComponent
-										item={item}
-										index={index}
-										openKeyboard={openKeyboard}
-										commentState={commentState}
-									/>
+						{userstate.selected_ids.length > 0 && (
+							<Pressable
+								className="border p-4 flex-row items-center justify-center bg-blue-500 rounded-full ml-5 mr-5"
+								onPress={sharePostHandler}
+							>
+								{shareloading ? (
+									<ActivityIndicator size="large" color="white" />
+								) : (
+									<Text className="text-4xl text-white">Send</Text>
 								)}
-								onEndReached={commentsEndHandler}
-								ListFooterComponent={() =>
-									commentState.isLastPage ? (
-										<Text style={{ textAlign: "center", padding: 30 }}>
-											You have reached the end of Page
-										</Text>
-									) : commentState.allcomments ? (
-										<View className="flex items-center justify-center">
-											<ActivityIndicator size="large" color="gray" />
-										</View>
-									) : (
-										<View></View>
-									)
-								}
-								ListEmptyComponent={
-									commentState.commentsLoading && !commentState.isLastPage ? (
-										<View></View>
-									) : (
-										<Text style={{ textAlign: "center", padding: 30 }}>
-											No Comments to show
-										</Text>
-									)
-								}
-								keyboardShouldPersistTaps="always"
-								keyboardDismissMode="on-drag"
-								contentContainerStyle={{ padding: 10 }}
-							/>
-							<View className=" m-3 flex-row justify-between items-center bg-[#FFFFFF] h-[40px] border rounded-2xl">
-								<View className="flex-row items-center ml-2 w-[73%]">
-									<Image
-										source={
-											loggedInUser.pic
-												? { uri: loggedInUser.pic.url }
-												: imagePlaceholder
-										}
-										style={{
-											width: 30,
-											height: 30,
-											borderRadius: 50,
-											borderColor: "black",
-											borderWidth: 1.5,
-										}}
-									/>
-									<TextInput
-										className="h-[45px] pl-5 w-full"
-										ref={inputRef}
-										placeholder="Leave your comment here"
-										value={commentState.comment}
-										onChangeText={(data) =>
-											updateCommentState({ comment: data })
-										}
-									/>
-								</View>
-								<Pressable
-									className="pl-5 pr-5 pt-1 pb-1 mr-5 rounded-full bg-[#24A0ED]"
-									disabled={commentSendLoader}
-									onPress={commentHandler}
-								>
-									<Ionicons name="arrow-up-outline" size={24} color="white" />
-								</Pressable>
-							</View>
-						</BottomSheet>
-					)}
-					{eModalVisible && (
-						<BottomSheet
-							ref={eSheetRef}
-							snapPoints={eSnapPoints}
-							enablePanDownToClose
-							// onClose={handleShareClose}
-							className="bg-white"
-						>
-							<View className="flex-1 items-center justify-between mt-5 mb-5">
-								<TouchableOpacity
-									onPress={() => {
-										debounceCallTurnComments(!posts[0].turn_off_comments);
-										setPosts([
-											{
-												...posts[0],
-												turn_off_comments: !posts[0].turn_off_comments,
-											},
-										]);
-									}}
-								>
-									<Text className="text-base">
-										{!posts[0].turn_off_comments
-											? "Turn off comments"
-											: "Turn On Comments"}
-									</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-									onPress={() => {
-										router.push({
-											pathname: "/editPost",
-											params: {
-												post_id: posts[0]._id,
-											},
-										});
-									}}
-								>
-									<Text className="text-base">Edit</Text>
-								</TouchableOpacity>
-								<TouchableOpacity onPress={deletePostHandler}>
-									<Text className="text-base text-red-500">Delete</Text>
-								</TouchableOpacity>
-							</View>
-						</BottomSheet>
-					)}
-					{shareModalVisible && (
-						<BottomSheet
-							ref={shareSheetRef}
-							snapPoints={shareSnapPoints}
-							enablePanDownToClose
-							className="bg-white"
-							onClose={() => {
-								setShareModalVisible(false);
-								sharehandleSnapPress(-1);
-								updateuserstate({
-									selected_ids: [],
-									page: 0,
-									searchString: "",
-									usersList: userstate.usersList.slice(
-										0,
-										parseInt(userstate.page_limit)
-									),
-								});
-							}}
-						>
-							<View className="p-3 flex-row flex-wrap"></View>
-							<View className="flex-row items-center gap-5 pl-5">
-								<Ionicons
-									name={"close-outline"}
-									size={26}
-									color="gray"
-									onPress={() => {
-										setShareModalVisible(false);
-										sharehandleSnapPress(-1);
-									}}
-								/>
-								<View className="flex-row items-center justify-center bg-[#ECE6F0] rounded-lg w-[80%] p-3">
-									<Ionicons
-										name="search-outline"
-										size={20}
-										color="gray"
-										style={{ position: "absolute", left: 15 }}
-									/>
-									<TextInput
-										style={{
-											flex: 1,
-											height: "100%",
-											paddingLeft: 40,
-										}}
-										onChangeText={(data) => {
-											updateuserstate({ searchString: data, page: 0 });
-											debounceCallSearch(data);
-										}}
-										placeholder="Search by ID or University or Location"
-									/>
-								</View>
-							</View>
-							<BottomSheetFlatList
-								data={userstate.usersList}
-								keyExtractor={(i, index) => index}
-								renderItem={renderItem}
-								onEndReached={shareEndHandler}
-								ListFooterComponent={() =>
-									userstate.isLastPage ? (
-										<Text style={{ textAlign: "center", padding: 30 }}>
-											You have reached the end of Page
-										</Text>
-									) : (
-										<ActivityIndicator size="large" color="gray" />
-									)
-								}
-								ListEmptyComponent={
-									<Text style={{ textAlign: "center", padding: 30 }}>
-										No Data: Please change filters
-									</Text>
-								}
-								keyboardShouldPersistTaps="always"
-								keyboardDismissMode="on-drag"
-								contentContainerStyle={{ padding: 10 }}
-							/>
-							{userstate.selected_ids.length > 0 && (
-								<Pressable
-									className="border p-4 flex-row items-center justify-center bg-blue-500 rounded-full ml-5 mr-5"
-									onPress={sharePostHandler}
-								>
-									{shareloading ? (
-										<ActivityIndicator size="large" color="white" />
-									) : (
-										<Text className="text-4xl text-white">Send</Text>
-									)}
-								</Pressable>
-							)}
-						</BottomSheet>
-					)}
-				</View>
-			</KeyboardAvoidingView>
+							</Pressable>
+						)}
+					</BottomSheet>
+				)}
+			</View>
 		</GestureHandlerRootView>
 	);
 }

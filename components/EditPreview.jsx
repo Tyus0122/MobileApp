@@ -7,6 +7,8 @@ import {
 	TextInput,
 	ScrollView,
 	ActivityIndicator,
+	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -30,7 +32,7 @@ export function EditPreview({
 		caption: post.caption,
 		city: post.city,
 		date: post.date,
-		time: post.time.replace(" ", "").replace("AM", "").replace("PM",""),
+		time: post.time.replace(" ", "").replace("AM", "").replace("PM", ""),
 		files: post.files,
 		ampm: post.time[6] + post.time[7],
 	});
@@ -145,203 +147,160 @@ export function EditPreview({
 
 			quality: 1,
 		});
-		// } else if (mode === "gallery" && selection === "multiple") {
-		// 	result = await ImagePicker.launchImageLibraryAsync({
-		// 		mediaTypes: ImagePicker.MediaTypeOptions.Images,
-		// 		allowsMultipleSelection: true,
-		// 		aspect: [1, 1],
-		// 		quality: 1,
-		// 	});
-		// } else {
-		// 	result = await ImagePicker.launchCameraAsync({
-		// 		cameraType: ImagePicker.CameraType.front,
-		// 		allowsEditing: true,
-		// 		aspect: [1, 1],
-		// 		quality: 1,
-		// 	});
-		// }
 		if (!result.canceled) {
 			updatePost({ files: [...post.files, ...result.assets] });
 		}
 	}
 	const [mode, setMode] = useState("");
 	return (
-		<ScrollView keyboardShouldPersistTaps={"always"}>
-			<View>
-				<View className="flex-row items-center justify-between">
-					<Pressable
-						onPress={() => router.back()}
-						className="flex-row p-5 items-center gap-3"
-					>
-						<Ionicons name={"close-outline"} size={28} color="gray" />
-						<Text className="text-base">New Post</Text>
-					</Pressable>
-					<Pressable
-						className="bg-blue-500 flex items-center justify-center p-2 mr-5 rounded-xl"
-						onPress={uploadImage}
-					>
-						<Text className="text-white  text-base">add Photo</Text>
-					</Pressable>
+		<View>
+			<View className="flex-row items-center justify-between">
+				<Pressable
+					onPress={() => router.back()}
+					className="flex-row p-5 items-center gap-3"
+				>
+					<Ionicons name={"close-outline"} size={28} color="gray" />
+					<Text className="text-base">New Post</Text>
+				</Pressable>
+				<Pressable
+					className="bg-blue-500 flex items-center justify-center p-2 mr-5 rounded-xl"
+					onPress={uploadImage}
+				>
+					<Text className="text-white  text-base">add Photo</Text>
+				</Pressable>
+			</View>
+			<EditPhotosComponent
+				images={images}
+				updatePost={updatePost}
+				post={post}
+			/>
+			{error && (
+				<View className="ml-5">
+					<Text className="text-red-500 text-base fornt-semibold">
+						{ErrorVlaue}
+					</Text>
 				</View>
-				<EditPhotosComponent
-					images={images}
-					updatePost={updatePost}
-					post={post}
-				/>
-				{error && (
-					<View className="ml-5">
-						<Text className="text-red-500 text-base fornt-semibold">
-							{ErrorVlaue}
-						</Text>
-					</View>
-				)}
-				<View>
-					<View className="flex-row items-center justify-between gap-5 p-5">
-						<Text className="text-base font-semibold">Add a caption</Text>
-						<TextInput
-							className="bg-white border border-gray-300 rounded-lg p-3"
-							style={{
-								height: 100,
-								width: "70%",
-							}}
-							onChangeText={(data) => {
-								setError(false);
-								setFormData({
-									...formData,
-									caption: data,
-								});
-							}}
-							multiline
-							placeholder="Add a caption for the post..."
-							value={formData.caption}
-						/>
-					</View>
-					<View className="flex-row items-center justify-between gap-5 p-5">
-						<View className="flex-row items-center gap-5">
-							<Ionicons name={"location-outline"} size={28} color="gray" />
-							<Text className="text-base font-semibold">Add City</Text>
-						</View>
-						<TextInput
-							className="bg-white border border-gray-300 rounded-lg p-3 w-[70%]"
-							placeholder="Enter city"
-							onChangeText={(data) => {
-								setError(false);
-								setFormData({
-									...formData,
-									city: data,
-								});
-							}}
-							value={formData.city}
-						/>
-					</View>
-					<TouchableOpacity
-						className="flex-row items-center justify-between gap-5 p-5"
-						onPress={() => {
-							setModalVisible(true);
-							handleSnapPress(0);
+			)}
+			<View>
+				<View className="flex-row items-center justify-between gap-5 p-5">
+					<Text className="text-base font-semibold">Add a caption</Text>
+					<TextInput
+						className="bg-white border border-gray-300 rounded-lg p-3"
+						style={{
+							height: 100,
+							width: "70%",
 						}}
+						onChangeText={(data) => {
+							setError(false);
+							setFormData({
+								...formData,
+								caption: data,
+							});
+						}}
+						multiline
+						placeholder="Add a caption for the post..."
+						value={formData.caption}
+					/>
+				</View>
+				<View className="flex-row items-center justify-between gap-5 p-5">
+					<View className="flex-row items-center gap-5">
+						<Ionicons name={"location-outline"} size={28} color="gray" />
+						<Text className="text-base font-semibold">Add City</Text>
+					</View>
+					<TextInput
+						className="bg-white border border-gray-300 rounded-lg p-3 w-[70%]"
+						placeholder="Enter city"
+						onChangeText={(data) => {
+							setError(false);
+							setFormData({
+								...formData,
+								city: data,
+							});
+						}}
+						value={formData.city}
+					/>
+				</View>
+				<TouchableOpacity
+					className="flex-row items-center justify-between gap-5 p-5"
+					onPress={() => {
+						setModalVisible(true);
+						handleSnapPress(0);
+					}}
+				>
+					<View className="flex-row items-center gap-5">
+						<Ionicons name={"person-outline"} size={28} color="gray" />
+						<Text className="text-base font-semibold">Tag People</Text>
+					</View>
+					<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
+				</TouchableOpacity>
+				<View className="flex-row items-center gap-5 p-5 ">
+					<View className="flex-row items-center gap-5">
+						<Ionicons name={"calendar-outline"} size={28} color="gray" />
+						<Text className="text-base font-semibold">Event Date</Text>
+					</View>
+					<TextInput
+						className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
+						placeholder="DD-MM-YYYY"
+						onChangeText={(data) => {
+							setError(false);
+							setFormData({
+								...formData,
+								date: data,
+							});
+						}}
+						value={formData.date}
+					/>
+				</View>
+				<View className="flex-row items-center gap-5 p-5 ">
+					<View className="flex-row items-center gap-5">
+						<Ionicons name={"time-outline"} size={28} color="gray" />
+						<Text className="text-base font-semibold">Event Time</Text>
+					</View>
+					<TextInput
+						className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
+						placeholder="HH:MM"
+						onChangeText={(data) => {
+							setError(false);
+							setFormData({
+								...formData,
+								time: data,
+							});
+						}}
+						value={formData.time}
+					/>
+				</View>
+				<View className="flex-row items-center justify-center mt-3 gap-3">
+					<TouchableOpacity
+						className={`p-3 rounded-md ${
+							formData.ampm === "AM" ? "bg-blue-500" : "bg-gray-300"
+						}`}
+						onPress={() => setFormData({ ...formData, ampm: "AM" })}
 					>
-						<View className="flex-row items-center gap-5">
-							<Ionicons name={"person-outline"} size={28} color="gray" />
-							<Text className="text-base font-semibold">Tag People</Text>
-						</View>
-						<Ionicons name={"chevron-forward-outline"} size={28} color="gray" />
+						<Text className="text-white">AM</Text>
 					</TouchableOpacity>
-					<View className="flex-row items-center gap-5 p-5 ">
-						<View className="flex-row items-center gap-5">
-							<Ionicons name={"calendar-outline"} size={28} color="gray" />
-							<Text className="text-base font-semibold">Event Date</Text>
-						</View>
-						<TextInput
-							className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
-							placeholder="DD-MM-YYYY"
-							onChangeText={(data) => {
-								setError(false);
-								setFormData({
-									...formData,
-									date: data,
-								});
-							}}
-							value={formData.date}
-						/>
-					</View>
-					<View className="flex-row items-center gap-5 p-5 ">
-						<View className="flex-row items-center gap-5">
-							<Ionicons name={"time-outline"} size={28} color="gray" />
-							<Text className="text-base font-semibold">Event Time</Text>
-						</View>
-						<TextInput
-							className="bg-white border border-gray-300 rounded-lg p-3 w-[60%]"
-							placeholder="HH:MM"
-							onChangeText={(data) => {
-								setError(false);
-								setFormData({
-									...formData,
-									time: data,
-								});
-							}}
-							value={formData.time}
-						/>
-					</View>
-					<View className="flex-row items-center justify-center mt-3 gap-3">
-						<TouchableOpacity
-							className={`p-3 rounded-md ${
-								formData.ampm === "AM" ? "bg-blue-500" : "bg-gray-300"
-							}`}
-							onPress={() => setFormData({ ...formData, ampm: "AM" })}
-						>
-							<Text className="text-white">AM</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							className={`p-3 rounded-md ${
-								formData.ampm === "PM" ? "bg-blue-500" : "bg-gray-300"
-							}`}
-							onPress={() => setFormData({ ...formData, ampm: "PM" })}
-						>
-							<Text className="text-white">PM</Text>
-						</TouchableOpacity>
-					</View>
-					{/* {mode === "" ? (
-						<View></View>
-					) : (
-						<DateTimePicker
-							value={new Date()}
-							mode={mode}
-							is24Hour={false}
-							onChange={(e, dates) => {
-								setError(false);
-								if (mode === "date") {
-									setFormData({
-										...formData,
-										date: formatDate(dates),
-									});
-								} else if (mode === "time") {
-									setFormData({
-										...formData,
-										time: formatTo12Hour(dates),
-									});
-								}
-								setMode("");
-							}}
-						/>
-					)} */}
-					<View className="p-5">
-						<TouchableOpacity
-							className="p-2 bg-blue-500 flex rounded-xl items-center justify-center h-[60px]"
-							onPress={submitHandler}
-							disabled={submitLoading}
-						>
-							{submitLoading ? (
-								<ActivityIndicator size={"large"} color={"white"} />
-							) : (
-								<Text className="text-base font-semibold text-white">
-									Share
-								</Text>
-							)}
-						</TouchableOpacity>
-					</View>
+					<TouchableOpacity
+						className={`p-3 rounded-md ${
+							formData.ampm === "PM" ? "bg-blue-500" : "bg-gray-300"
+						}`}
+						onPress={() => setFormData({ ...formData, ampm: "PM" })}
+					>
+						<Text className="text-white">PM</Text>
+					</TouchableOpacity>
+				</View>
+				<View className="p-5">
+					<TouchableOpacity
+						className="p-2 bg-blue-500 flex rounded-xl items-center justify-center h-[60px]"
+						onPress={submitHandler}
+						disabled={submitLoading}
+					>
+						{submitLoading ? (
+							<ActivityIndicator size={"large"} color={"white"} />
+						) : (
+							<Text className="text-base font-semibold text-white">Share</Text>
+						)}
+					</TouchableOpacity>
 				</View>
 			</View>
-		</ScrollView>
+		</View>
 	);
 }

@@ -8,10 +8,13 @@ import {
 	ActivityIndicator,
 	KeyboardAvoidingView,
 	Platform,
+	Keyboard,
 	StyleSheet,
+	TouchableWithoutFeedback,
 	ScrollView,
 	TouchableOpacity,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect, useCallback, useRef } from "react";
 import React from "react";
@@ -74,8 +77,7 @@ export default function post() {
 				}
 				setIsLastPage(response.data.message.isLastPage);
 			})
-			.catch((err) => {
-			});
+			.catch((err) => {});
 	}
 	useEffect(() => {
 		fetchData();
@@ -146,7 +148,7 @@ export default function post() {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				aspect: [1, 1],
-				
+
 				quality: 1,
 			});
 		} else if (mode === "gallery" && selection === "multiple") {
@@ -171,133 +173,87 @@ export default function post() {
 
 	return (
 		<GestureHandlerRootView>
-			<View className='bg-white h-full'>
-				<KeyboardAvoidingView
-					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-				>
-					<SafeAreaView>
-						<ScrollView
-							keyboardShouldPersistTaps={"always"}
-							keyboardDismissMode="on-drag"
-						>
-							<View>
-								<View>
-									{image == "" ? (
-										<View>
-											<View className="flex-row p-5 items-center gap-3">
-												<Pressable onPress={() => router.back()}>
-													<Ionicons
-														name={"arrow-back-outline"}
-														size={28}
-														color="gray"
-													/>
-												</Pressable>
-												<Text className="text-base">New Post</Text>
+			<KeyboardAwareScrollView
+				keyboardShouldPersistTaps={"always"}
+				keyboardDismissMode="on-drag"
+			>
+				<SafeAreaView className="bg-white">
+					{image === "" ? (
+						<View className="bg-white h-screen">
+							<View className="flex-row p-5 items-center gap-3">
+								<Pressable onPress={() => router.back()}>
+									<Ionicons name="arrow-back-outline" size={28} color="gray" />
+								</Pressable>
+								<Text className="text-base">New Post</Text>
+							</View>
+							<View className="flex items-center justify-center mt-40">
+								<View className="border border-gray-500 p-5 rounded-lg items-center w-[90%] opacity-30">
+									<View className="flex-row flex-wrap justify-center">
+										<TouchableOpacity onPress={() => uploadImage("camera")}>
+											<View className="flex items-center justify-center m-2">
+												<Ionicons name="camera-outline" size={90} />
+												<Text className="text-base font-semibold">Camera</Text>
 											</View>
-											<View
-												className="flex items-center justify-center"
-												style={{
-													marginTop: 150,
-												}}
-											>
-												<View
-													className="border border-gray-500 p-5 rounded-lg items-center w-[90%]"
-													style={{ opacity: 0.3 }}
-												>
-													<View className="flex-row flex-wrap justify-center">
-														<TouchableOpacity
-															onPress={() => uploadImage("camera")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="camera-outline" size={90} />
-																<Text className="text-base font-semibold">
-																	Camera
-																</Text>
-															</View>
-														</TouchableOpacity>
-														<TouchableOpacity
-															onPress={() => uploadImage("gallery", "single")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="image-outline" size={90} />
-																<Text className="text-base font-semibold">
-																	Single
-																</Text>
-															</View>
-														</TouchableOpacity>
-														<TouchableOpacity
-															onPress={() => uploadImage("gallery", "multiple")}
-														>
-															<View
-																className="flex items-center justify-center"
-																style={{ margin: 10 }}
-															>
-																<Ionicons name="images-outline" size={90} />
-																<Text className="text-base font-semibold">
-																	Multiple
-																</Text>
-															</View>
-														</TouchableOpacity>
-													</View>
-													<Text className="text-base font-semibold text-center mt-5 mb-4">
-														Click on the icon to add a new post
-													</Text>
-												</View>
+										</TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => uploadImage("gallery", "single")}
+										>
+											<View className="flex items-center justify-center m-2">
+												<Ionicons name="image-outline" size={90} />
+												<Text className="text-base font-semibold">Single</Text>
 											</View>
-										</View>
-									) : (
-										<View>
-											<Preview
-												image={image}
-												setImage={setImage}
-												setModalVisible={setModalVisible}
-												handleSnapPress={handleSnapPress}
-												usersIds={usersIds}
-											/>
-										</View>
-									)}
+										</TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => uploadImage("gallery", "multiple")}
+										>
+											<View className="flex items-center justify-center m-2">
+												<Ionicons name="images-outline" size={90} />
+												<Text className="text-base font-semibold">
+													Multiple
+												</Text>
+											</View>
+										</TouchableOpacity>
+									</View>
+									<Text className="text-base font-semibold text-center mt-5 mb-4">
+										Click on the icon to add a new post
+									</Text>
 								</View>
 							</View>
-						</ScrollView>
-					</SafeAreaView>
+						</View>
+					) : (
+						<Preview
+							image={image}
+							setImage={setImage}
+							setModalVisible={setModalVisible}
+							handleSnapPress={handleSnapPress}
+						/>
+					)}
+
 					{modalVisible && (
 						<BottomSheet
 							ref={sheetRef}
 							snapPoints={snapPoints}
 							enablePanDownToClose
-							className="bg-white"
 						>
 							<View className="p-3 flex-row flex-wrap">
 								{selected.map((value, key) => (
 									<Pressable
 										key={key}
 										className="pl-2 pr-2 pt-1 pb-1 m-1 bg-blue-500 rounded-xl flex-row gap-1 items-center justify-center"
-										onPress={() => {
-											setSelected((prevSelected) =>
-												prevSelected.filter((item) => item !== value)
-											);
-										}}
+										onPress={() =>
+											setSelected((prev) =>
+												prev.filter((item) => item !== value)
+											)
+										}
 									>
 										<Text className="text-white text-base">{value}</Text>
-										<Ionicons
-											name="close-outline"
-											size={20}
-											color="white"
-											className="mt-1"
-										/>
+										<Ionicons name="close-outline" size={20} color="white" />
 									</Pressable>
 								))}
 							</View>
 							<View className="flex-row items-center gap-5 pl-5">
 								<Ionicons
-									name={"close-outline"}
+									name="close-outline"
 									size={26}
 									color="gray"
 									onPress={() => {
@@ -313,11 +269,7 @@ export default function post() {
 										style={{ position: "absolute", left: 15 }}
 									/>
 									<TextInput
-										style={{
-											flex: 1,
-											height: "100%",
-											paddingLeft: 40,
-										}}
+										style={{ flex: 1, height: "100%", paddingLeft: 40 }}
 										onChangeText={(data) => {
 											setSearch(data);
 											setPage(0);
@@ -346,14 +298,14 @@ export default function post() {
 										No Data: Please change filters
 									</Text>
 								}
-								keyboardShouldPersistTaps="always"
+								keyboardShouldPersistTaps="handled"
 								keyboardDismissMode="on-drag"
 								contentContainerStyle={{ padding: 10 }}
 							/>
 						</BottomSheet>
 					)}
-				</KeyboardAvoidingView>
-			</View>
+				</SafeAreaView>
+			</KeyboardAwareScrollView>
 		</GestureHandlerRootView>
 	);
 }

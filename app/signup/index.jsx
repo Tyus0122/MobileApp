@@ -7,7 +7,10 @@ import {
 	Modal,
 	ScrollView,
 	ActivityIndicator,
+	KeyboardAvoidingView,
+	Platform,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { React, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -49,34 +52,53 @@ export default function Index() {
 	function validateDate(dateString) {
 		const regex = /^(\d{2})-(\d{2})-(\d{4})$/;
 		const match = dateString.match(regex);
-	
+
 		if (!match) {
 			return { isValid: false, error: "Invalid format. Use DD-MM-YYYY." };
 		}
-	
+
 		let [_, day, month, year] = match;
 		day = parseInt(day, 10);
 		month = parseInt(month, 10);
 		year = parseInt(year, 10);
-	
+
 		if (month < 1 || month > 12) {
-			return { isValid: false, error: "Invalid month. Use values between 01-12." };
+			return {
+				isValid: false,
+				error: "Invalid month. Use values between 01-12.",
+			};
 		}
-	
+
 		if (day < 1 || day > 31) {
-			return { isValid: false, error: "Invalid day. Use values between 01-31." };
+			return {
+				isValid: false,
+				error: "Invalid day. Use values between 01-31.",
+			};
 		}
-	
+
 		// Check days in each month
 		const daysInMonth = {
-			1: 31, 2: (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28, 
-			3: 31, 4: 30, 5: 31, 6: 30, 7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
+			1: 31,
+			2: (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28,
+			3: 31,
+			4: 30,
+			5: 31,
+			6: 30,
+			7: 31,
+			8: 31,
+			9: 30,
+			10: 31,
+			11: 30,
+			12: 31,
 		};
-	
+
 		if (day > daysInMonth[month]) {
-			return { isValid: false, error: `Invalid day for the month. ${month} has only ${daysInMonth[month]} days.` };
+			return {
+				isValid: false,
+				error: `Invalid day for the month. ${month} has only ${daysInMonth[month]} days.`,
+			};
 		}
-	
+
 		return { isValid: true, error: null };
 	}
 	function validation() {
@@ -120,12 +142,12 @@ export default function Index() {
 			setErrorVlaue("Passwords do not match");
 			return;
 		}
-		let dob_validation = validateDate(formData.dob)
-		console.log(dob_validation)
+		let dob_validation = validateDate(formData.dob);
+		console.log(dob_validation);
 		if (!dob_validation.isValid) {
 			setError(true);
 			setErrorVlaue(dob_validation.error);
-			return 
+			return;
 		}
 		let { valid, message } = validatePassword(formData.password);
 		if (!valid) {
@@ -162,7 +184,7 @@ export default function Index() {
 			});
 	}
 	return (
-		<ScrollView
+		<KeyboardAwareScrollView
 			keyboardShouldPersistTaps={"always"}
 			keyboardDismissMode="on-drag"
 		>
@@ -293,7 +315,7 @@ export default function Index() {
 									<TextInput
 										placeholder={formData.dob || "DD-MM-YYYY"}
 										placeholderTextColor="gray"
-                                        value={formData.dob}
+										value={formData.dob}
 										className="bg-white mt-2 h-[40px]  rounded-lg p-2 text-base"
 										onChangeText={(data) => {
 											setFormData({
@@ -306,24 +328,7 @@ export default function Index() {
 								</Pressable>
 							</View>
 						</View>
-						{/* {modalopen && (
-							<DateTimePicker
-								value={new Date()}
-								mode={"date"}
-								is24Hour={true}
-								onChange={(e, dates) => {
-									console.log(e.type);
-									setmodalopen(!modalopen);
-									setError(false);
-									if (e.type === "set") {
-										setFormData({
-											...formData,
-											dob: formatDate(dates),
-										});
-									}
-								}}
-							/>
-						)} */}
+
 						<View className="mt-[50px] mb-[50px]">
 							<Pressable
 								className="bg-blue-500 h-[40px] rounded-lg flex items-center justify-center"
@@ -341,6 +346,6 @@ export default function Index() {
 					</View>
 				</View>
 			</SafeAreaView>
-		</ScrollView>
+		</KeyboardAwareScrollView>
 	);
 }
