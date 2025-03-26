@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { React, useState, useEffect, useContext, useRef } from "react";
 import { Link, router } from "expo-router";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import PhoneInput from "react-native-phone-input";
@@ -86,18 +87,18 @@ export default function LoginScreen() {
 				}
 				if (err.status === 420) {
 					setError(true);
-                    setErrorVlaue("phone number or password is incorrect");
+					setErrorVlaue("phone number or password is incorrect");
 				}
 				console.log(err.status);
 			});
 	}
 	return (
-		<SafeAreaView>
-			<ToastManager duration={3000} />
-			<ScrollView
-				keyboardShouldPersistTaps={"always"}
-				keyboardDismissMode="on-drag"
-			>
+		<KeyboardAwareScrollView
+			keyboardShouldPersistTaps={"always"}
+			keyboardDismissMode="on-drag"
+		>
+			<SafeAreaView>
+				<ToastManager duration={3000} />
 				<View className="h-screen bg-blue-50 p-[15%]">
 					<View className="items-center mt-[40px] mb-5">
 						<Image
@@ -219,7 +220,7 @@ export default function LoginScreen() {
 						</Text>
 					</View>
 				</View>
-			</ScrollView>
-		</SafeAreaView>
+			</SafeAreaView>
+		</KeyboardAwareScrollView>
 	);
 }

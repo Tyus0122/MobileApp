@@ -684,7 +684,7 @@ export default function Accomodation() {
 			) : (
 				<KeyboardAvoidingView
 					behavior={Platform.OS === "ios" ? "padding" : "height"}
-					keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+					keyboardVerticalOffset={Platform.OS === "ios" ? 5 : 0}
 					style={{ flex: 1 }}
 				>
 					<View

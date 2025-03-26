@@ -197,7 +197,7 @@ export default function Profile() {
 											</View>
 											<View className="w-[80%] mt-3 mb-5 flex-row items-center justify-center gap-5">
 												<TouchableOpacity
-													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
+													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2 w-[75px]"
 													onPress={() => {
 														router.push({
 															pathname: "/editProfile",
@@ -218,7 +218,7 @@ export default function Profile() {
 													</Text>
 												</TouchableOpacity>
 												<TouchableOpacity
-													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2"
+													className=" bg-[#24A0ED] rounded-xl flex items-center justify-center pl-3 pr-3 py-2 w-[75px]"
 													onPress={() => {
 														router.push({
 															pathname: "/shareProfile",

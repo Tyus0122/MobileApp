@@ -434,7 +434,7 @@ export default function Home() {
 		<GestureHandlerRootView>
 			<KeyboardAvoidingView
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
-				keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+				keyboardVerticalOffset={Platform.OS === "ios" ? 5 : 0}
 			>
 				<View className={`${modalVisible ? "bg-gray-300" : "bg-white"} h-full`}>
 					<SafeAreaView>
