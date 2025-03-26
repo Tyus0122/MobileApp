@@ -39,20 +39,40 @@ export function EditPreview({
 	let [error, setError] = useState(false);
 	let [ErrorVlaue, setErrorVlaue] = useState("");
 	let images = post.files.map((i) => i.url ?? i.uri);
-	function isValidDate(dateString) {
+	function validateDate(dateString) {
 		const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
-		if (!regex.test(dateString)) return false;
+
+		if (!regex.test(dateString))
+			return { valid: false, error: "Invalid date format. Use DD-MM-YYYY." };
+
 		const [day, month, year] = dateString.split("-").map(Number);
 		const daysInMonth = new Date(year, month, 0).getDate();
-		return day <= daysInMonth;
+
+		if (day > daysInMonth)
+			return {
+				valid: false,
+				error: `Invalid day. ${month}-${year} only has ${daysInMonth} days.`,
+			};
+
+		// Convert input date to a Date object
+		const inputDate = new Date(year, month - 1, day);
+
+		// Get today's date with time reset to 00:00:00
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		if (inputDate < today)
+			return { valid: false, error: "Date cannot be in the past." };
+
+		return { valid: true, error: null };
 	}
+
 
 	function isValidTime(timeString) {
 		const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/;
 		return regex.test(timeString);
 	}
 	function validator() {
-		console.log(formData);
 		if (formData.caption == "") {
 			setError(true);
 			setErrorVlaue("Caption is required");
@@ -68,9 +88,10 @@ export function EditPreview({
 			setErrorVlaue("Date is required");
 			return false;
 		}
-		if (!isValidDate(formData.date)) {
+		let { valid, error } = validateDate(formData.date);
+		if (!valid) {
 			setError(true);
-			setErrorVlaue("Invalid date. Please use DD-MM-YYYY format.");
+			setErrorVlaue(error);
 			return false;
 		}
 		if (formData.time == "") {
@@ -107,7 +128,6 @@ export function EditPreview({
 					uri: file.url ?? file.uri,
 				});
 			});
-			console.log(data);
 			const response = await axios.post(
 				backend_url + "v1/user/postEditPost",
 				data,
@@ -136,7 +156,6 @@ export function EditPreview({
 		}
 	}
 	async function uploadImage(mode = "gallery", selection = "single") {
-		console.log("hello world");
 		let result = {};
 
 		// if (mode === "gallery" && selection === "single") {

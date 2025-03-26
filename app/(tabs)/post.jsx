@@ -226,6 +226,7 @@ export default function post() {
 							setImage={setImage}
 							setModalVisible={setModalVisible}
 							handleSnapPress={handleSnapPress}
+							usersIds={usersIds}
 						/>
 					)}
 
